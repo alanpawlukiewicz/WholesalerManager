@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 using System.Text;
 using WholesalerManager.Core.Domain.Entities;
 
@@ -16,14 +17,16 @@ namespace WholesalerManager.Core.DTO.ProductDTO
 
         public string? ProductDescription { get; set; }
 
+        [Required(ErrorMessage = "Category is required.")]
         public Guid? CategoryID { get; set; }
 
         [Required(ErrorMessage = "Unit price is required.")]
-        public decimal UnitPrice { get; set; }
+        [RegularExpression("^\\d+([.,]\\d{1,2})?$", ErrorMessage = "Unit price must be of money type.")]
+        public string? UnitPrice { get; set; }
 
-        public int StockQuantity { get; set; }
+        public int StockQuantity { get; set; } = 0;
 
-        public int ReorderLevel { get; set; }
+        public int ReorderLevel { get; set; } = 0;
 
         public Product ToProduct()
         {
@@ -33,7 +36,7 @@ namespace WholesalerManager.Core.DTO.ProductDTO
                 SKU = SKU,
                 ProductDescription = ProductDescription,
                 CategoryID = CategoryID,
-                UnitPrice = UnitPrice,
+                UnitPrice = decimal.Parse(UnitPrice!.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture),
                 StockQuantity = StockQuantity,
                 ReorderLevel = ReorderLevel
             };

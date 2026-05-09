@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WholesaleManager.Infrastructure\WholesaleManager.Infrastructure.csproj" />
+    <ProjectReference Include="..\WholesaleManager.Infrastructure\WholesalerManager.Infrastructure.csproj" />
     <ProjectReference Include="..\WholesalerManager.Core\WholesalerManager.Core.csproj" />
   </ItemGroup>
 

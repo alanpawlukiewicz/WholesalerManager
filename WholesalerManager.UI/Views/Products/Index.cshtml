@@ -35,6 +35,8 @@
                 <td>@product.FormattedUnitPrice</td>
                 <td>@product.StockQuantity</td>
                 <td>@product.ReorderLevel</td>
+                <td><a class="btn btn-primary" asp-controller="Products" asp-action="Update" asp-route-id="@product.ProductID" role="button">Update</a></td>
+                <td><a class="btn btn-danger" asp-controller="Products" asp-action="Delete" asp-route-id="@product.ProductID" role="button">Delete</a></td>
             </tr>
         }
     </tbody>

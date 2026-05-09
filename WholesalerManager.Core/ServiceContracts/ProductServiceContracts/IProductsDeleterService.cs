@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WholesalerManager.Core.ServiceContracts.ProductServiceContracts
 {
-    internal interface IProductsDeleterService
+    public interface IProductsDeleterService
     {
         /// <summary>
         /// Deletes product with the given productID from the database. Returns true if the product is successfully deleted, otherwise false.

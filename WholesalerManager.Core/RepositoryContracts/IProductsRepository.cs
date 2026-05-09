@@ -5,6 +5,9 @@ using WholesalerManager.Core.Domain.Entities;
 
 namespace WholesalerManager.Core.RepositoryContracts
 {
+    /// <summary>
+    /// Represent data logic for managing products.
+    /// </summary>
     public interface IProductsRepository
     {
         /// <summary>
