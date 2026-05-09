@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
+using WholesalerManager.Core.Domain.Entities;
+
+namespace WholesaleManager.Infrastructure.DatabaseContext
+{
+    public class ApplicationDbContext : DbContext
+    {
+
+        public ApplicationDbContext(DbContextOptions options) : base(options)
+        {
+        }
+        public virtual DbSet<Product> Product { get; set; }
+        public virtual DbSet<Category> Category { get; set; }
+
+    }
+}

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ProductResponse>
+@{
+    ViewBag.Title = "Products";
+}
+
+<h1>Products</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>SKU</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Unit Price</th>
+            <th>Stock Quantity</th>
+            <th>Reorder Level</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.ProductName</td>
+                <td>@product.SKU</td>
+                <td>@product.ProductDescription</td>
+                <td>@product.CategoryName</td>
+                <td>@product.FormattedUnitPrice</td>
+                <td>@product.StockQuantity</td>
+                <td>@product.ReorderLevel</td>
+            </tr>
+        }
+    </tbody>
+</table>
