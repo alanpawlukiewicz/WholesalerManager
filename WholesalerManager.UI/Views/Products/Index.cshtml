@@ -3,6 +3,14 @@
     ViewBag.Title = "Products";
 }
 
+<div class="container">
+    <header class="d-flex justify-content-center py-3">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a asp-controller="Products" asp-action="Create" class="nav-link">Add Product</a></li>
+        </ul>
+    </header>
+</div>
+
 <h1>Products</h1>
 <table class="table">
     <thead>

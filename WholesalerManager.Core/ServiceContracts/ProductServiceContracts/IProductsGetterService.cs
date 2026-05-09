@@ -6,6 +6,9 @@ using WholesalerManager.Core.DTO.ProductDTO;
 
 namespace WholesalerManager.Core.ServiceContracts.ProductServiceContracts
 {
+    /// <summary>
+    /// Represent buisness logic for getting products from the system. This service defines the contract for retrieving products, which includes methods for fetching all products and fetching a product by its unique identifier (ProductID).
+    /// </summary>
     public interface IProductsGetterService
     {
         /// <summary>
