@@ -15,6 +15,7 @@ namespace WholesaleManager.Infrastructure.DatabaseContext
         }
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<Category> Category { get; set; }
-
+        public virtual DbSet<Supplier> Supplier { get; set; }
+        public virtual DbSet<Delivery> Delivery { get; set; }
     }
 }
