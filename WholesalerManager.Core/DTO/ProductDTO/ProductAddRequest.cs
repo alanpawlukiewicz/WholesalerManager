@@ -24,9 +24,9 @@ namespace WholesalerManager.Core.DTO.ProductDTO
         [RegularExpression("^\\d+([.,]\\d{1,2})?$", ErrorMessage = "Unit price must be of money type.")]
         public string? UnitPrice { get; set; }
 
-        public int StockQuantity { get; set; } = 0;
+        public int StockQuantity { get; set; }
 
-        public int ReorderLevel { get; set; } = 0;
+        public int ReorderLevel { get; set; }
 
         public Product ToProduct()
         {

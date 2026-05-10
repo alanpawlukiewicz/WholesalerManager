@@ -51,35 +51,65 @@ namespace WholesalerManager.UI.Controllers
         public async Task<IActionResult> Create(ProductAddRequest productAddRequest)
         {
             await _productsAdderService.AddProduct(productAddRequest);
+            TempData["InfoMessage"] = $"Product has been added successfully.";
+
             return RedirectToAction("Index", "Products");
         }
 
         [Route("[action]/{id}")]
         [HttpGet]
-        public async Task<IActionResult> Update(Guid i)
+        public async Task<IActionResult> Update(Guid id)
         {
-            return View();
+            var product = await _productsGetterService.GetProductById(id);
+            if (product is null)
+            {
+                TempData["ErrorMessage"] = $"Product could not be found.";
+                return RedirectToAction("Index", "Products");
+            }
+
+            var productUpdateRequest = product.ToProductUpdateRequest();
+            var categories = await _categoriesGetterService.GetAllCategories();
+            ViewBag.Categories = categories.Select(c => new SelectListItem()
+            {
+                Value = c.CategoryID.ToString(),
+                Text = c.CategoryName
+            });
+
+            return View(productUpdateRequest);
         }
 
         [Route("[action]/{id}")]
         [HttpPost]
         public async Task<IActionResult> Update(ProductUpdateRequest productUpdateRequest)
         {
-            return View();
+            await _productsUpdaterService.UpdateProduct(productUpdateRequest);
+            TempData["InfoMessage"] = $"Product has been updated successfully.";
+
+            return RedirectToAction("Index", "Products");
         }
 
         [Route("[action]/{id}")]
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            return View();
+            var product = await _productsGetterService.GetProductById(id);
+            if (product is null)
+            {
+                TempData["ErrorMessage"] = $"Product could not be found.";
+                return RedirectToAction("Index", "Products");
+            }
+            var productDeleteRequest = product.ToProductDeleteRequest();
+            return View(productDeleteRequest);
         }
 
         [Route("[action]/{id}")]
         [HttpPost]
-        public async Task<IActionResult> Delete(ProductResponse personResponse)
+        public async Task<IActionResult> Delete(ProductDeleteRequest productDeleteRequest)
         {
-            return View();
+            await _productsDeleterService.DeleteProduct(productDeleteRequest.ProductID);
+            TempData["InfoMessage"] = $"Product has been deleted successfully.";
+
+            return RedirectToAction("Index", "Products");
         }
     }
 }

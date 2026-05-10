@@ -32,6 +32,33 @@ namespace WholesalerManager.Core.DTO.ProductDTO
         public int ReorderLevel { get; set; }
 
         public string FormattedUnitPrice => UnitPrice.ToString("0.#0");
+
+
+        public ProductUpdateRequest ToProductUpdateRequest()
+        {
+            return new ProductUpdateRequest()
+            {
+                ProductID = ProductID,
+                ProductName = ProductName,
+                SKU = SKU,
+                ProductDescription = ProductDescription,
+                CategoryID = CategoryID,
+                UnitPrice = UnitPrice.ToString(),
+                StockQuantity = StockQuantity,
+                ReorderLevel = ReorderLevel
+            };
+        }
+
+        public ProductDeleteRequest ToProductDeleteRequest()
+        {
+            return new ProductDeleteRequest()
+            {
+                ProductID = ProductID,
+                ProductName = ProductName,
+                SKU = SKU,
+                StockQuantity = StockQuantity
+            };
+        }
     }
 
     public static class ProductExtensions
