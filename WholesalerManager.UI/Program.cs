@@ -33,6 +33,7 @@ builder.Services.AddScoped<ICategoriesGetterService, CategoriesGetterService>();
 builder.Services.AddScoped<ISuppliersGetterService, SuppliersGetterService>();
 
 builder.Services.AddScoped<IDeliveriesGetterService, DeliveriesGetterService>();
+builder.Services.AddScoped<IDeliveriesAdderService, DeliveriesAdderService>();
 
 // Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

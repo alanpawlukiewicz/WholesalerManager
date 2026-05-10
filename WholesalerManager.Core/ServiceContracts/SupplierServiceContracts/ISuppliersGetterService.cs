@@ -15,7 +15,7 @@ namespace WholesalerManager.Core.ServiceContracts.SupplierServiceContracts
         /// </summary>
         /// <returns>A task that represents the asynchronous operation. The task result contains a list of <see
         /// cref="SupplierResponse"/> DTO objects representing all suppliers. The list is empty if no suppliers are found.</returns>
-        Task<List<SupplierResponse>> GetAllSuppliersAsync();
+        Task<List<SupplierResponse>> GetAllSuppliers();
 
         /// <summary>
         /// Asynchronously retrieves the supplier details for the specified supplier identifier.

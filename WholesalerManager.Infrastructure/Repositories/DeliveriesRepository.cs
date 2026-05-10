@@ -17,6 +17,13 @@ namespace WholesalerManager.Infrastructure.Repositories
             _db = db;
         }
 
+        public async Task<Delivery> AddDelivery(Delivery delivery)
+        {
+            await _db.Delivery.AddAsync(delivery);
+            await _db.SaveChangesAsync();
+            return delivery;
+        }
+
         public async Task<List<Delivery>> GetAllDeliveries()
         {
             return await _db.Delivery.Include("Supplier").ToListAsync();

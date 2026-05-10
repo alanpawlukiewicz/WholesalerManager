@@ -22,5 +22,12 @@ namespace WholesalerManager.Core.RepositoryContracts
         /// <param name="deliveryID">The unique identifier of the delivery to retrieve.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the delivery if found; otherwise, null.</returns>
         Task<Delivery?> GetDeliveryById(Guid deliveryID);
+
+        /// <summary>
+        /// Asynchronously adds new delivery to database.
+        /// </summary>
+        /// <param name="delivery"></param>
+        /// <returns></returns>
+        Task<Delivery> AddDelivery(Delivery delivery);
     }
 }

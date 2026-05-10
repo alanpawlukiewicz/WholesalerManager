@@ -16,7 +16,7 @@ namespace WholesalerManager.Core.Services.SupplierServices
             _suppliersRepository = suppliersRepository;
         }
 
-        public async Task<List<SupplierResponse>> GetAllSuppliersAsync()
+        public async Task<List<SupplierResponse>> GetAllSuppliers()
         {
             var suppliers = await _suppliersRepository.GetAllSuppliers();
             return suppliers.Select(s => s.ToSupplierResponse()).ToList();
