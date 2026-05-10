@@ -1,8 +1,8 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="WholesalerManager.Core/WholesalerManager.Core.csproj" Id="55584e2d-7235-4c64-884e-ec577618d47a" />
+    <Project Path="WholesalerManager.Infrastructure/WholesalerManager.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/" />
-  <Project Path="WholesalerManager.Infrastructure/WholesalerManager.Infrastructure.csproj" />
   <Project Path="WholesalerManager.UI/WholesalerManager.UI.csproj" />
 </Solution>

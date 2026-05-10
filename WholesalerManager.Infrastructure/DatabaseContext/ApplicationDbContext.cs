@@ -17,5 +17,11 @@ namespace WholesaleManager.Infrastructure.DatabaseContext
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<Supplier> Supplier { get; set; }
         public virtual DbSet<Delivery> Delivery { get; set; }
+        public virtual DbSet<DeliveryItem> DeliveryItem { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DeliveryItem>().HasKey(di => new { di.DeliveryID, di.ProductID });
+        }
     }
 }

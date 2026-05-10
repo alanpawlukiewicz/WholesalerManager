@@ -29,5 +29,6 @@ namespace WholesalerManager.Core.RepositoryContracts
         /// <param name="delivery"></param>
         /// <returns></returns>
         Task<Delivery> AddDelivery(Delivery delivery);
+
     }
 }

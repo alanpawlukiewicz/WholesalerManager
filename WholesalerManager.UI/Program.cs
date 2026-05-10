@@ -11,6 +11,8 @@ using WholesalerManager.Core.ServiceContracts.SupplierServiceContracts;
 using WholesalerManager.Core.Services.SupplierServices;
 using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
 using WholesalerManager.Core.Services.DeliveryServices;
+using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
+using WholesalerManager.Core.Services.DeliveryItemServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,7 @@ builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
 builder.Services.AddScoped<ISuppliersRepository, SuppliersRepository>();
 builder.Services.AddScoped<IDeliveriesRepository, DeliveriesRepository>();
+builder.Services.AddScoped<IDeliveryItemsRepository, DeliveryItemsRepository>();
 
 //Services
 builder.Services.AddScoped<IProductsGetterService, ProductsGetterService>();
@@ -34,6 +37,9 @@ builder.Services.AddScoped<ISuppliersGetterService, SuppliersGetterService>();
 
 builder.Services.AddScoped<IDeliveriesGetterService, DeliveriesGetterService>();
 builder.Services.AddScoped<IDeliveriesAdderService, DeliveriesAdderService>();
+
+builder.Services.AddScoped<IDeliveryItemsGetterService, DeliveryItemsGetterService>();
+builder.Services.AddScoped<IDeliveryItemsAdderService, DeliveryItemsAdderService>();
 
 // Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
