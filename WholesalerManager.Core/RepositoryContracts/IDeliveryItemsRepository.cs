@@ -38,5 +38,32 @@ namespace WholesalerManager.Core.RepositoryContracts
         /// <param name="items"></param>
         /// <returns></returns>
         Task<List<DeliveryItem>> AddMultipleDeliveryItems(List<DeliveryItem> items);
+
+        /// <summary>
+        /// Asynchronously updates delivery item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        Task<DeliveryItem?> UpdateDeliveryItem(DeliveryItem item);
+
+        /// <summary>
+        /// Updates multiple delivery items in a single operation.
+        /// </summary>
+        /// <remarks>The method performs updates in bulk, which may improve performance compared to
+        /// updating items individually. The returned list contains the updated delivery items in the same order as the
+        /// input list.</remarks>
+        /// <param name="items">A list of <see cref="DeliveryItem"/> objects to update. Cannot be null or empty. Each item in the list
+        /// represents a delivery item to be updated.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a list of <see
+        /// cref="DeliveryItem"/> objects reflecting the updated state after the operation completes.</returns>
+        Task<List<DeliveryItem?>> UpdateMultipleDeliveryItems(List<DeliveryItem> items);
+
+        /// <summary>
+        /// Deletes the specified delivery item asynchronously.
+        /// </summary>
+        /// <param name="item">The delivery item to delete. Cannot be null.</param>
+        /// <returns>A task that represents the asynchronous delete operation. The task result contains the deleted delivery
+        /// item.</returns>
+        Task<bool> DeleteDeliveryItem(DeliveryItem item);
     }
 }

@@ -8,6 +8,8 @@ namespace WholesalerManager.Core.Domain.Entities
 {
     public class DeliveryItem
     {
+        [Key]
+        public Guid DeliveryItemID { get; set; }
         public Guid? DeliveryID { get; set; }
         public Guid? ProductID { get; set; }
 

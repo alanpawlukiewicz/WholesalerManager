@@ -1,10 +1,12 @@
-﻿@model RegisterDeliveryModel
+﻿@model UpdateDeliveryWithProductsModel
 @{
     int i = ViewBag.Index;
 }
 <hr />
 <div class="mb-3">
-    <label asp-for="Items[@i].ProductID" class="form-label">Add Product</label>
+    <input asp-for="Items[@i].DeliveryItemID" type="hidden" />
+    <input asp-for="Items[@i].DeliveryID" type="hidden" value="@ViewBag.DeliveryID"/>
+    <label asp-for="Items[@i].ProductID" class="form-label">Product no. @i</label>
     <select asp-for="Items[@i].ProductID" class="form-select product-select">
         <option value="">Select Product</option>
         @foreach (ProductResponse product in ViewBag.Products)

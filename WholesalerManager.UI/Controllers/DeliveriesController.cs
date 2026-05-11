@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.DTO;
 using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.DTO.DeliveryItemDTO;
@@ -8,6 +9,7 @@ using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.Core.ServiceContracts.SupplierServiceContracts;
+using WholesalerManager.Core.Services.ProductServices;
 using WholesalerManager.UI.Models;
 using WholesalerManager.UI.ViewComponents;
 
@@ -18,27 +20,44 @@ namespace WholesalerManager.UI.Controllers
     {
         private readonly IDeliveriesGetterService _deliveriesGetterService;
         private readonly IDeliveriesAdderService _deliveriesAdderService;
+        private readonly IDeliveriesUpdaterService _deliveriesUpdaterService;
 
         private readonly ISuppliersGetterService _suppliersGetterService;
 
+        private readonly IDeliveryItemsAdderService _deliveryItemsAdderService;
+        private readonly IDeliveryItemsGetterService _deliveryItemsGetterService;
+        private readonly IDeliveryItemsUpdaterService _deliveryItemsUpdaterService;
+
         private readonly IProductsGetterService _productsGetterService;
 
-        private readonly IDeliveryItemsAdderService _deliveryItemsAdderService;
-
-        public DeliveriesController(IDeliveriesGetterService deliveriesGetterService, ISuppliersGetterService suppliersGetterService, IDeliveriesAdderService deliveriesAdderService, IProductsGetterService productsGetterService, IDeliveryItemsAdderService deliveryItemsAdderService)
+        public DeliveriesController(IDeliveriesGetterService deliveriesGetterService, ISuppliersGetterService suppliersGetterService, IDeliveriesAdderService deliveriesAdderService, IDeliveryItemsAdderService deliveryItemsAdderService, IDeliveryItemsGetterService deliveryItemsGetterService, IProductsGetterService productsGetterService, IDeliveriesUpdaterService deliveriesUpdaterService, IDeliveryItemsUpdaterService deliveryItemsUpdaterService)
         {
             _deliveriesGetterService = deliveriesGetterService;
             _deliveriesAdderService = deliveriesAdderService;
             _suppliersGetterService = suppliersGetterService;
-            _productsGetterService = productsGetterService;
             _deliveryItemsAdderService = deliveryItemsAdderService;
+            _deliveryItemsGetterService = deliveryItemsGetterService;
+            _productsGetterService = productsGetterService;
+            _deliveriesUpdaterService = deliveriesUpdaterService;
+            _deliveryItemsUpdaterService = deliveryItemsUpdaterService;
         }
 
         [Route("[action]")]
         public async Task<IActionResult> Index()
         {
             var deliveries = await _deliveriesGetterService.GetAllDeliveries();
-            return View(deliveries);
+            var items = await _deliveryItemsGetterService.GetAllDeliveryItems();
+            List<DeliveryWithProductsModel> model = new List<DeliveryWithProductsModel>();
+            foreach(var delivery in deliveries)
+            {
+                DeliveryWithProductsModel c = new DeliveryWithProductsModel()
+                {
+                    Delivery = delivery,
+                    Items = items.Where(i => i.DeliveryID == delivery.DeliveryID).ToList()
+                };
+                model.Add(c);
+            }
+            return View(model);
         }
 
         [Route("[action]")]
@@ -73,11 +92,57 @@ namespace WholesalerManager.UI.Controllers
             return RedirectToAction("Index", "Deliveries");
         }
 
+        [Route("[action]/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> Update(Guid id)
+        {
+            var foundDelivery = await _deliveriesGetterService.GetDeliveryById(id);
+            var deliveryUpdateRequest = foundDelivery?.ToDeliveryUpdateRequest();
+            var deliveryItems = await _deliveryItemsGetterService.GetAllDeliveryItemsFromDelivery(id);
+
+            var suppliers = await _suppliersGetterService.GetAllSuppliers();
+            ViewBag.Suppliers = suppliers.Select(s => new SelectListItem()
+            {
+                Value = s.SupplierID.ToString(),
+                Text = s.SupplierName
+            });
+
+            var updateDeliveryWithProductsModel = new UpdateDeliveryWithProductsModel()
+            {
+                Delivery = deliveryUpdateRequest,
+                Items = deliveryItems?.Select(i => i?.ToDeliveryItemUpdateRequest()).ToList()
+            };
+
+            ViewBag.Products = await _productsGetterService.GetAllProducts();
+
+            return View(updateDeliveryWithProductsModel);
+        }
+
+        [Route("[action]/{id}")]
+        [HttpPost]
+        public async Task<IActionResult> Update(UpdateDeliveryWithProductsModel updateDeliveryWithProductsModel)
+        {
+            await _deliveriesUpdaterService.UpdateDelivery(updateDeliveryWithProductsModel.Delivery);
+            await _deliveryItemsUpdaterService.UpdateMultipleDeliveryItems(updateDeliveryWithProductsModel.Items);
+            TempData["InfoMessage"] = $"Delivery informations have been updated successfully.";
+
+            return RedirectToAction("Index", "Deliveries");
+        }
+
+
+
         [Route("get-product/{index}")]
         [HttpGet]
         public IActionResult GetProduct(int index)
         {
             return ViewComponent("AddDeliveryItem", new { index = index });
+        }
+
+        [Route("Update/get-update-product/{index}/{deliveryID}")]
+        [HttpGet]
+        public IActionResult GetUpdateProduct(int index, Guid deliveryID)
+        {
+            return ViewComponent("UpdateDeliveryItem", new { index = index, deliveryID = deliveryID });
         }
     }
 }

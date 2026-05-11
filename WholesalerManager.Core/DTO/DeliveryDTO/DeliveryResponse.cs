@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using WholesalerManager.Core.Domain.Entities;
+using WholesalerManager.Core.Enums;
 
 namespace WholesalerManager.Core.DTO.DeliveryDTO
 {
@@ -18,6 +19,17 @@ namespace WholesalerManager.Core.DTO.DeliveryDTO
         public DateTime? DeliveryDate { get; set; }
 
         public string? Status { get; set; }
+
+        public DeliveryUpdateRequest ToDeliveryUpdateRequest()
+        {
+            return new DeliveryUpdateRequest()
+            {
+                DeliveryID = DeliveryID,
+                SupplierID = SupplierID,
+                DeliveryDate = DeliveryDate,
+                Status = Enum.TryParse<DeliveryStatus>(Status, out var result) ? result : null
+            };
+        }
     }
 
     public static class DeliveryExtensions

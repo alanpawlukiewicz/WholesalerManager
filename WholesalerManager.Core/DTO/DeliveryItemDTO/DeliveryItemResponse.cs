@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using WholesalerManager.Core.Domain.Entities;
+using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.DTO.ProductDTO;
 
 namespace WholesalerManager.Core.DTO.DeliveryItemDTO
 {
     public class DeliveryItemResponse
     {
+        public Guid DeliveryItemID { get; set; }
         public Guid? DeliveryID { get; set; }
         public Guid? ProductID { get; set; }
 
@@ -23,6 +26,41 @@ namespace WholesalerManager.Core.DTO.DeliveryItemDTO
         //public Delivery? Delivery { get; set; }
 
         //public Product? Product { get; set; }
+
+        public DeliveryItemUpdateRequest ToDeliveryItemUpdateRequest()
+        {
+            return new DeliveryItemUpdateRequest()
+            { 
+                DeliveryItemID = DeliveryItemID,
+                DeliveryID = DeliveryID,
+                ProductID = ProductID,
+                Quantity = Quantity,
+                PriceAtSale = PriceAtSale.ToString()
+            };
+        }
+
+        public DeliveryItemAddRequest ToDeliveryItemAddRequest()
+        {
+            return new DeliveryItemAddRequest()
+            {
+                DeliveryID = DeliveryID,
+                ProductID = ProductID,
+                Quantity = Quantity,
+                PriceAtSale = PriceAtSale.ToString()
+            };
+        }
+
+        public DeliveryItem ToDeliveryItem()
+        {
+            return new DeliveryItem()
+            {
+                DeliveryItemID = DeliveryItemID,
+                DeliveryID = DeliveryID,
+                ProductID = ProductID,
+                Quantity= Quantity,
+                PriceAtSale = PriceAtSale
+            };
+        }
     }
 
     public static class DeliveryItemExtensions
@@ -36,6 +74,7 @@ namespace WholesalerManager.Core.DTO.DeliveryItemDTO
         {
             return new DeliveryItemResponse()
             {
+                DeliveryItemID = item.DeliveryItemID,
                 DeliveryID = item.DeliveryID,
                 ProductID = item.ProductID,
                 Quantity = item.Quantity,
@@ -45,6 +84,17 @@ namespace WholesalerManager.Core.DTO.DeliveryItemDTO
                 ProductUnitPrice = item.Product?.UnitPrice
                 //Delivery = item.Delivery,
                 //Product = item.Product
+            };
+        }
+
+        public static DeliveryItemAddRequest ToDeliveryItemAddRequest(this DeliveryItem item)
+        {
+            return new DeliveryItemAddRequest()
+            {
+                DeliveryID = item.DeliveryID,
+                ProductID = item.ProductID,
+                Quantity = item.Quantity,
+                PriceAtSale = item.PriceAtSale.ToString()
             };
         }
     }

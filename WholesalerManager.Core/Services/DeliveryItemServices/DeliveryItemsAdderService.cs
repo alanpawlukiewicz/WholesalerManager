@@ -30,6 +30,7 @@ namespace WholesalerManager.Core.Services.DeliveryItemServices
             ValidationHelper.ModelValidation(itemAddRequest);
 
             var item = itemAddRequest.ToDeliveryItem();
+            item.DeliveryItemID = Guid.NewGuid();
             var addedItem = await _deliveryItemsRepository.AddDeliveryItem(item);
 
             return addedItem.ToDeliveryItemResponse();
@@ -48,9 +49,14 @@ namespace WholesalerManager.Core.Services.DeliveryItemServices
                 ValidationHelper.ModelValidation(item);
             }
 
-            var addedItems = await _deliveryItemsRepository.AddMultipleDeliveryItems(itemAddRequests.Select(i => i.ToDeliveryItem()).ToList());
+            List<DeliveryItemResponse> addedItems = new List<DeliveryItemResponse>() { };
 
-            return addedItems.Select(i => i.ToDeliveryItemResponse()).ToList();
+            foreach (var item in itemAddRequests)
+            {
+                addedItems.Add(await AddDeliveryItem(item));
+            }
+
+            return addedItems;
         }
     }
 }

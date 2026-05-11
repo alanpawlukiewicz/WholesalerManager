@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DeliveryResponse>
+﻿@model IEnumerable<DeliveryWithProductsModel>
 @{
     ViewBag.Title = "Deliveries";
 }
@@ -23,15 +23,29 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var delivery in Model)
+        @foreach (var dwp in Model)
         {
             <tr>
-                <td>@delivery.SupplierName</td>
-                <td>@delivery.DeliveryDate</td>
-                <td>@delivery.Status</td>
-                <td><a class="btn btn-primary" asp-controller="Deliveries" asp-action="Update" asp-route-id="@delivery.DeliveryID" role="button">Update</a></td>
-                <td><a class="btn btn-danger" asp-controller="Deliveries" asp-action="Delete" asp-route-id="@delivery.DeliveryID" role="button">Delete</a></td>
+                <td>@dwp.Delivery?.SupplierName</td>
+                <td>@dwp.Delivery?.DeliveryDate</td>
+                <td>@dwp.Delivery?.Status</td>
+                <td><a class="btn btn-primary" asp-controller="Deliveries" asp-action="Update" asp-route-id="@dwp.Delivery?.DeliveryID" role="button">Update</a></td>
+                <td><a class="btn btn-danger" asp-controller="Deliveries" asp-action="Delete" asp-route-id="@dwp.Delivery?.DeliveryID" role="button">Delete</a></td>
             </tr>
+            @if(dwp.Items is not null)
+            {
+                @foreach (DeliveryItemResponse item in dwp.Items)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td>@item.SKU</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.ProductUnitPrice</td>
+                        <td></td>
+                    </tr>
+                }
+            }
+            
         }
     </tbody>
 </table>

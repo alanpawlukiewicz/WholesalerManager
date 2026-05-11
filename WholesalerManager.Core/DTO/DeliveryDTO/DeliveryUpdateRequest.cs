@@ -8,25 +8,26 @@ using WholesalerManager.Core.Enums;
 
 namespace WholesalerManager.Core.DTO.DeliveryDTO
 {
-    public class DeliveryAddRequest
+    public class DeliveryUpdateRequest
     {
-        [Required(ErrorMessage = "Please select supplier.")]
+        public Guid DeliveryID { get; set; }
+
         public Guid? SupplierID { get; set; }
 
-        [Required(ErrorMessage = "Please enter date of order.")]
         public DateTime? DeliveryDate { get; set; }
 
-        public DeliveryStatus Status { get; set; } = DeliveryStatus.ORDERED;
-
+        public DeliveryStatus? Status { get; set; }
 
         public Delivery ToDelivery()
         {
             return new Delivery()
             {
+                DeliveryID = DeliveryID,
                 SupplierID = SupplierID,
                 DeliveryDate = DeliveryDate,
                 Status = Status.ToString()
             };
         }
+
     }
 }

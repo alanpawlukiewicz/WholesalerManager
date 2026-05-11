@@ -37,9 +37,11 @@ builder.Services.AddScoped<ISuppliersGetterService, SuppliersGetterService>();
 
 builder.Services.AddScoped<IDeliveriesGetterService, DeliveriesGetterService>();
 builder.Services.AddScoped<IDeliveriesAdderService, DeliveriesAdderService>();
+builder.Services.AddScoped<IDeliveriesUpdaterService, DeliveriesUpdaterService>();
 
 builder.Services.AddScoped<IDeliveryItemsGetterService, DeliveryItemsGetterService>();
 builder.Services.AddScoped<IDeliveryItemsAdderService, DeliveryItemsAdderService>();
+builder.Services.AddScoped<IDeliveryItemsUpdaterService, DeliveryItemsUpdaterService>();
 
 // Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

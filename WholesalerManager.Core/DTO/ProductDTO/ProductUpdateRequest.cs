@@ -42,7 +42,7 @@ namespace WholesalerManager.Core.DTO.ProductDTO
                 SKU = SKU,
                 ProductDescription = ProductDescription,
                 CategoryID = CategoryID,
-                UnitPrice = decimal.Parse(UnitPrice!.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture),
+                UnitPrice = UnitPrice is not null ? decimal.Parse(UnitPrice!.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture) : 0,
                 StockQuantity = StockQuantity,
                 ReorderLevel = ReorderLevel
             };

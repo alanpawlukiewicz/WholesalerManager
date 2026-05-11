@@ -33,5 +33,23 @@ namespace WholesalerManager.Infrastructure.Repositories
         {
             return await _db.Delivery.Include("Supplier").FirstOrDefaultAsync(d => d.DeliveryID == deliveryID);
         }
+
+        public async Task<Delivery?> UpdateDelivery(Delivery delivery)
+        {
+            Delivery? matchingDelivery = await _db.Delivery.FirstOrDefaultAsync(d => d.DeliveryID == delivery.DeliveryID);
+
+            if (matchingDelivery is null)
+            {
+                return null;
+            }
+
+            matchingDelivery.DeliveryDate = delivery.DeliveryDate;
+            matchingDelivery.Status = delivery.Status;
+            matchingDelivery.SupplierID = delivery.SupplierID;
+
+            await _db.SaveChangesAsync();
+
+            return matchingDelivery;
+        }
     }
 }
