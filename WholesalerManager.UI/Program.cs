@@ -13,42 +13,58 @@ using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
 using WholesalerManager.Core.Services.DeliveryServices;
 using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
 using WholesalerManager.Core.Services.DeliveryItemServices;
+using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
+using WholesalerManager.Core.Services.CustomerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-// Repositories
+#region Repositories
 builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
 builder.Services.AddScoped<ISuppliersRepository, SuppliersRepository>();
 builder.Services.AddScoped<IDeliveriesRepository, DeliveriesRepository>();
 builder.Services.AddScoped<IDeliveryItemsRepository, DeliveryItemsRepository>();
+builder.Services.AddScoped<ICustomersRepository, CustomersRepository>();
 
-//Services
+#endregion
+
+#region Services
+
+// Products
 builder.Services.AddScoped<IProductsGetterService, ProductsGetterService>();
 builder.Services.AddScoped<IProductsAdderService, ProductsAdderService>();
 builder.Services.AddScoped<IProductsDeleterService, ProductsDeleterService>();
 builder.Services.AddScoped<IProductsUpdaterService, ProductsUpdaterService>();
 
+// Categories
 builder.Services.AddScoped<ICategoriesGetterService, CategoriesGetterService>();
 
+// Suppliers
 builder.Services.AddScoped<ISuppliersGetterService, SuppliersGetterService>();
 
+// Deliveries
 builder.Services.AddScoped<IDeliveriesGetterService, DeliveriesGetterService>();
 builder.Services.AddScoped<IDeliveriesAdderService, DeliveriesAdderService>();
 builder.Services.AddScoped<IDeliveriesUpdaterService, DeliveriesUpdaterService>();
 builder.Services.AddScoped<IDeliveriesDeleterService, DeliveriesDeleterService>();
 
+// DeliveryItems
 builder.Services.AddScoped<IDeliveryItemsGetterService, DeliveryItemsGetterService>();
 builder.Services.AddScoped<IDeliveryItemsAdderService, DeliveryItemsAdderService>();
 builder.Services.AddScoped<IDeliveryItemsUpdaterService, DeliveryItemsUpdaterService>();
+
+// Customers
+builder.Services.AddScoped<ICustomersGetterService, CustomersGetterService>();
 
 // Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+#endregion
 
 
 var app = builder.Build();

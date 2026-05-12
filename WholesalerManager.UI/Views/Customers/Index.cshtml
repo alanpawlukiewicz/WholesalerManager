@@ -1,0 +1,39 @@
+﻿@model IEnumerable<CustomerResponse>
+@{
+    ViewBag.Title = "Customers";
+}
+
+<div class="container">
+    <header class="d-flex justify-content-center py-3">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a asp-controller="Customers" asp-action="Create" class="nav-link">Add New Customer</a></li>
+        </ul>
+    </header>
+</div>
+
+<h1>Products</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Company Name</th>
+            <th>TIN</th>
+            <th>Contact Email</th>
+            <th>Address</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model)
+        {
+            <tr>
+                <td>@customer.CompanyName</td>
+                <td>@customer.TIN</td>
+                <td>@customer.ContactEmail</td>
+                <td>@customer.Address</td>
+                <td><a class="btn btn-primary" asp-controller="Customers" asp-action="Update" asp-route-id="@customer.CustomerID" role="button">Update</a></td>
+                <td><a class="btn btn-danger" asp-controller="Customers" asp-action="Delete" asp-route-id="@customer.CustomerID" role="button">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -18,6 +18,7 @@ namespace WholesaleManager.Infrastructure.DatabaseContext
         public virtual DbSet<Supplier> Supplier { get; set; }
         public virtual DbSet<Delivery> Delivery { get; set; }
         public virtual DbSet<DeliveryItem> DeliveryItem { get; set; }
+        public virtual DbSet<Customer> Customer { get; set; }
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{
