@@ -24,6 +24,18 @@ namespace WholesalerManager.Infrastructure.Repositories
             return customer;
         }
 
+        public async Task<bool> DeleteCustomer(Guid customerID)
+        {
+            var foundCustomer = await GetCustomerById(customerID);
+            if (foundCustomer is null)
+            {
+                return false;
+            }
+            _db.Customer.Remove(foundCustomer);
+            int rowsAffected = await _db.SaveChangesAsync();
+            return rowsAffected > 0;
+        }
+
         public async Task<List<Customer>> GetAllCustomers()
         {
             return await _db.Customer.ToListAsync();

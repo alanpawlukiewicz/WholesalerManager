@@ -1,0 +1,32 @@
+﻿@model CustomerDeleteRequest
+@{
+    ViewBag.Title = "Delete Customer";
+}
+
+<h1>Delete Customer</h1>
+
+<form asp-controller="Customers" asp-action="Delete" method="post">
+    <input asp-for="CustomerID" type="hidden">
+    <div class="mb-3">
+        <label asp-for="CustomerName" class="form-label">Customer Name</label>
+        <input asp-for="CustomerName" class="form-control" readonly>
+        <span asp-validation-for="CustomerName" class="text-danger"></span>
+        @* <div class="form-text"></div> *@
+    </div>
+
+    <div class="mb-3" id="tin-container">
+        <label asp-for="TIN" class="form-label">Taxpayer Identification Number (TIN)</label>
+        <input asp-for="TIN" class="form-control" id="tin-input" readonly>
+        <span asp-validation-for="TIN" class="text-danger"></span>
+    </div>
+
+    <h3 class="text-danger">Are you sure you want to delete this customer?</h3>
+    <button type="submit" class="btn btn-primary">Delete</button>
+</form>
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="window.jQuery" asp-fallback-src="~/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js" integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="window.jQuery.validator" asp-fallback-src="~/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js" integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="window.jQuery.validator.unobtrusive" asp-fallback-src="~/jquery.validate.unobtrusive.min.js"></script>
+}

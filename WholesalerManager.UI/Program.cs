@@ -59,6 +59,7 @@ builder.Services.AddScoped<IDeliveryItemsUpdaterService, DeliveryItemsUpdaterSer
 builder.Services.AddScoped<ICustomersGetterService, CustomersGetterService>();
 builder.Services.AddScoped<ICustomersAdderService, CustomersAdderService>();
 builder.Services.AddScoped<ICustomersUpdaterService, CustomersUpdaterService>();
+builder.Services.AddScoped<ICustomersDeleterService, CustomersDeleterService>();
 
 // Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

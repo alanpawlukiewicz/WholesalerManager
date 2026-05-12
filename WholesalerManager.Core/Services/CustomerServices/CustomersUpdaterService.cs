@@ -26,7 +26,7 @@ namespace WholesalerManager.Core.Services.CustomerServices
             }
             var matchingPerson = await _customersGetterService.GetCustomerByTIN(customerUpdateRequest.TIN);
 
-            // Check if updated TIN isn't already in table
+            // Check if updated TIN isn't already in table in another record
             if (matchingPerson is not null && matchingPerson.CustomerID != customerUpdateRequest.CustomerID)
             {
                 return false;

@@ -45,5 +45,12 @@ namespace WholesalerManager.Core.RepositoryContracts
         /// <param name="customer"></param>
         /// <returns></returns>
         Task<bool> UpdateCustomer(Customer customer);
+
+        /// <summary>
+        /// Asynchronously deletes customer by unique id.
+        /// </summary>
+        /// <param name="customerID"></param>
+        /// <returns></returns>
+        Task<bool> DeleteCustomer(Guid customerID);
     }
 }

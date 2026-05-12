@@ -29,6 +29,16 @@ namespace WholesalerManager.Core.DTO.CustomerDTO
                 Address = Address
             };
         }
+
+        public CustomerDeleteRequest ToCustomerDeleteRequest()
+        {
+            return new CustomerDeleteRequest()
+            {
+                CustomerID = CustomerID,
+                CustomerName = CustomerName,
+                TIN = TIN
+            };
+        }
     }
 
     public static class CustomerExtensions
