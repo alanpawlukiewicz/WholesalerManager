@@ -1,11 +1,13 @@
-﻿@model CustomerAddRequest
+﻿@model CustomerUpdateRequest
 @{
-    ViewBag.Title = "Register Customer";
+    ViewBag.Title = "Update Customer";
+    bool hasTin = Model.TIN is not null ? true : false;
 }
 
-<h1>Register New Customer</h1>
+<h1>Update Customer Credentials</h1>
 
-<form asp-controller="Customers" asp-action="Create" method="post">
+<form asp-controller="Customers" asp-action="Update" method="post">
+    <input asp-for="CustomerID" type="hidden">
     <div class="mb-3">
         <label asp-for="CustomerName" class="form-label">Customer Name</label>
         <input asp-for="CustomerName" class="form-control">
@@ -13,12 +15,24 @@
         @* <div class="form-text"></div> *@
     </div>
 
-    <p><input type="checkbox" id="has-tin" checked="checked"/> The customer has a TIN</p>
-    <div class="mb-3" id="tin-container">
-        <label asp-for="TIN" class="form-label">Taxpayer Identification Number (TIN)</label>
-        <input asp-for="TIN" class="form-control" id="tin-input">
-        <span asp-validation-for="TIN" class="text-danger"></span>
-    </div>
+    @if (hasTin)
+    {
+        <p><input type="checkbox" id="has-tin" checked /> The customer has a TIN</p>
+        <div class="mb-3" id="tin-container">
+            <label asp-for="TIN" class="form-label">Taxpayer Identification Number (TIN)</label>
+            <input asp-for="TIN" class="form-control" id="tin-input">
+            <span asp-validation-for="TIN" class="text-danger"></span>
+        </div>
+    }
+    else
+    {
+        <p><input type="checkbox" id="has-tin" /> The customer has a TIN</p> 
+        <div class="mb-3 d-none" id="tin-container">
+            <label asp-for="TIN" class="form-label">Taxpayer Identification Number (TIN)</label>
+            <input asp-for="TIN" class="form-control" id="tin-input">
+            <span asp-validation-for="TIN" class="text-danger"></span>
+        </div>
+    }
 
     <div class="mb-3">
         <label asp-for="ContactEmail" class="form-label">Contact Email</label>
@@ -33,7 +47,7 @@
         <span asp-validation-for="Address" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Register</button>
+    <button type="submit" class="btn btn-primary">Update</button>
 </form>
 
 @section Scripts

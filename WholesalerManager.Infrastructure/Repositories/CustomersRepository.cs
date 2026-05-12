@@ -38,5 +38,23 @@ namespace WholesalerManager.Infrastructure.Repositories
         {
             return await _db.Customer.FirstOrDefaultAsync(c => c.TIN == TIN);
         }
+
+        public async Task<bool> UpdateCustomer(Customer customer)
+        {
+            Customer? matchingCustomer = await GetCustomerById(customer.CustomerID);
+            if (matchingCustomer is null)
+            {
+                return false;
+            }
+
+            matchingCustomer.CustomerName = customer.CustomerName;
+            matchingCustomer.TIN = customer.TIN;
+            matchingCustomer.ContactEmail = customer.ContactEmail;
+            matchingCustomer.Address = customer.Address;
+
+            await _db.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

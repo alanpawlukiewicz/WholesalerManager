@@ -38,5 +38,12 @@ namespace WholesalerManager.Core.RepositoryContracts
         /// <param name="customer"></param>
         /// <returns></returns>
         Task<Customer> AddNewCustomer(Customer customer);
+
+        /// <summary>
+        /// Asynchronously updates customer.
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns></returns>
+        Task<bool> UpdateCustomer(Customer customer);
     }
 }

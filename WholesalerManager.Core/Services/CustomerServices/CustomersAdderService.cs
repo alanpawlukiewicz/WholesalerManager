@@ -7,12 +7,12 @@ using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 
 namespace WholesalerManager.Core.Services.CustomerServices
 {
-    public class CustomerAdderService : ICustomerAdderService
+    public class CustomersAdderService : ICustomersAdderService
     {
         private readonly ICustomersRepository _customersRepository;
         private readonly ICustomersGetterService _customersGetterService;
 
-        public CustomerAdderService(ICustomersRepository customersRepository, ICustomersGetterService customersGetterService)
+        public CustomersAdderService(ICustomersRepository customersRepository, ICustomersGetterService customersGetterService)
         {
             _customersRepository = customersRepository;
             _customersGetterService = customersGetterService;

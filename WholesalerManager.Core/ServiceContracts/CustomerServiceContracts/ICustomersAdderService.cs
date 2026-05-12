@@ -8,7 +8,7 @@ namespace WholesalerManager.Core.ServiceContracts.CustomerServiceContracts
     /// <summary>
     /// Defines a service for asynchronously adding a new customer to the system.
     /// </summary>
-    public interface ICustomerAdderService
+    public interface ICustomersAdderService
     {
         /// <summary>
         /// Asynchronously adds customer.

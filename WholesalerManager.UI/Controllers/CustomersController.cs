@@ -8,12 +8,14 @@ namespace WholesalerManager.UI.Controllers
     public class CustomersController : Controller
     {
         private readonly ICustomersGetterService _customersGetterService;
-        private readonly ICustomerAdderService _customerAdderService;
+        private readonly ICustomersAdderService _customersAdderService;
+        private readonly ICustomersUpdaterService _customersUpdaterService;
 
-        public CustomersController(ICustomersGetterService customersGetterService, ICustomerAdderService customerAdderService)
+        public CustomersController(ICustomersGetterService customersGetterService, ICustomersAdderService customersAdderService, ICustomersUpdaterService customersUpdaterService)
         {
             _customersGetterService = customersGetterService;
-            _customerAdderService = customerAdderService;
+            _customersAdderService = customersAdderService;
+            _customersUpdaterService = customersUpdaterService;
         }
 
         [Route("[action]")]
@@ -35,7 +37,7 @@ namespace WholesalerManager.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CustomerAddRequest customerAddRequest)
         {
-            bool isAdded = await _customerAdderService.AddCustomer(customerAddRequest);
+            bool isAdded = await _customersAdderService.AddCustomer(customerAddRequest);
             if (!isAdded) 
             {
                 TempData["ErrorMessage"] = "Customer could not be registered.";
@@ -43,6 +45,36 @@ namespace WholesalerManager.UI.Controllers
             else
             {
                 TempData["InfoMessage"] = "Customer has been successfully registered.";
+            }
+            return RedirectToAction("Index", "Customers");
+        }
+
+        [Route("[action]/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> Update(Guid id)
+        {
+            var foundCustomer = await _customersGetterService.GetCustomerByID(id);
+            if (foundCustomer is null)
+            {
+                TempData["ErrorMessage"] = "Customer could not be found.";
+                return RedirectToAction("Index", "Customers");
+            }
+
+            return View(foundCustomer.ToCustomerUpdateRequest());
+        }
+
+        [Route("[action]/{id}")]
+        [HttpPost]
+        public async Task<IActionResult> Update(CustomerUpdateRequest customerUpdateRequest)
+        {
+            bool isUpdated = await _customersUpdaterService.UpdateCustomer(customerUpdateRequest);
+            if (!isUpdated)
+            {
+                TempData["ErrorMessage"] = "Customer could not be updated.";
+            }
+            else
+            {
+                TempData["InfoMessage"] = "Customer has been successfully updated.";
             }
             return RedirectToAction("Index", "Customers");
         }
