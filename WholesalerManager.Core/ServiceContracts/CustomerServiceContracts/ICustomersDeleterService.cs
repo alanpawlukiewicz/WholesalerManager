@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WholesalerManager.Core.DTO.CustomerDTO;
 
 namespace WholesalerManager.Core.ServiceContracts.CustomerServiceContracts
 {
@@ -14,6 +15,6 @@ namespace WholesalerManager.Core.ServiceContracts.CustomerServiceContracts
         /// </summary>
         /// <param name="customerID"></param>
         /// <returns></returns>
-        Task<bool> DeleteCustomer(Guid? customerID);
+        Task<bool> DeleteCustomer(CustomerDeleteRequest? customerDeleteRequest);
     }
 }

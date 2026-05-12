@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WholesalerManager.Core.DTO.CustomerDTO;
+using WholesalerManager.Core.DTO.ProductDTO;
+using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 
@@ -15,13 +18,16 @@ namespace WholesalerManager.Core.Services.CustomerServices
             _customersRepository = customersRepository;
         }
 
-        public async Task<bool> DeleteCustomer(Guid? customerID)
+        public async Task<bool> DeleteCustomer(CustomerDeleteRequest? customerDeleteRequest)
         {
-            if (customerID is null)
+            if (customerDeleteRequest is null)
             {
-                throw new ArgumentNullException(nameof(customerID));
+                throw new ArgumentNullException(nameof(customerDeleteRequest));
             }
-            return await _customersRepository.DeleteCustomer(customerID.Value);
+
+            ValidationHelper.ModelValidation(customerDeleteRequest);
+
+            return await _customersRepository.DeleteCustomer(customerDeleteRequest.CustomerID);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.DTO.DeliveryItemDTO;
+using WholesalerManager.Core.DTO.ProductDTO;
+using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
 
@@ -22,6 +24,9 @@ namespace WholesalerManager.Core.Services.DeliveryItemServices
             {
                 throw new ArgumentNullException(nameof(deliveryItemUpdateRequest));
             }
+
+            ValidationHelper.ModelValidation(deliveryItemUpdateRequest);
+
             DeliveryItem item = deliveryItemUpdateRequest.ToDeliveryItem();
 
             DeliveryItem? changedItem = null;

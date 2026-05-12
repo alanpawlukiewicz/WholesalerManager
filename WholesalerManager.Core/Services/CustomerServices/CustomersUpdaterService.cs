@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using WholesalerManager.Core.DTO.CustomerDTO;
+using WholesalerManager.Core.DTO.ProductDTO;
+using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 
@@ -24,6 +26,9 @@ namespace WholesalerManager.Core.Services.CustomerServices
             {
                 throw new ArgumentNullException(nameof(customerUpdateRequest));
             }
+
+            ValidationHelper.ModelValidation(customerUpdateRequest);
+
             var matchingPerson = await _customersGetterService.GetCustomerByTIN(customerUpdateRequest.TIN);
 
             // Check if updated TIN isn't already in table in another record

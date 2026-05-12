@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using WholesalerManager.Core.DTO.CustomerDTO;
+using WholesalerManager.Core.DTO.ProductDTO;
+using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 
@@ -24,6 +26,8 @@ namespace WholesalerManager.Core.Services.CustomerServices
             {
                 throw new ArgumentNullException(nameof(customerAddRequest));
             }
+
+            ValidationHelper.ModelValidation(customerAddRequest);
 
             CustomerResponse? matchingCustomer = await _customersGetterService.GetCustomerByTIN(customerAddRequest.TIN);
             if (matchingCustomer is not null)
