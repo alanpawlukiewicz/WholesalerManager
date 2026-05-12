@@ -98,7 +98,7 @@ namespace WholesalerManager.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(CustomerDeleteRequest customerDeleteRequest)
         {
-            bool isDeleted = await _customersDeleterService.DeleteCustomer(customerDeleteRequest.CustomerID);
+            bool isDeleted = await _customersDeleterService.DeleteCustomer(customerDeleteRequest);
             if (!isDeleted)
             {
                 TempData["ErrorMessage"] = "Customer could not be deleted.";
