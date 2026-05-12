@@ -30,7 +30,17 @@ namespace WholesalerManager.Core.Services.CustomerServices
             }
             var foundCustomer = await _customersRepository.GetCustomerById(customerID.Value);
 
-            return foundCustomer is null ? null : foundCustomer.ToCustomerResponse();
+            return foundCustomer?.ToCustomerResponse();
+        }
+
+        public async Task<CustomerResponse?> GetCustomerByTIN(string? TIN)
+        {
+            if (TIN is null)
+            {
+                return null;
+            }
+            var matchingCustomer = await _customersRepository.GetCustomerByTIN(TIN);
+            return matchingCustomer?.ToCustomerResponse();
         }
     }
 }

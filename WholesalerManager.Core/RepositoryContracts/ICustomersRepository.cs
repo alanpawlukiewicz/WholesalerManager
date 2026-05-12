@@ -24,5 +24,19 @@ namespace WholesalerManager.Core.RepositoryContracts
         /// <returns>A task that represents the asynchronous operation. The task result contains the customer associated with the
         /// specified identifier, or null if no customer is found.</returns>
         Task<Customer?> GetCustomerById(Guid customerID);
+
+        /// <summary>
+        /// Asynchronously retrieves a customer by the specified TIN.
+        /// </summary>
+        /// <param name="TIN"></param>
+        /// <returns></returns>
+        Task<Customer?> GetCustomerByTIN(string TIN);
+
+        /// <summary>
+        /// Asynchronously adds new customer.
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns></returns>
+        Task<Customer> AddNewCustomer(Customer customer);
     }
 }

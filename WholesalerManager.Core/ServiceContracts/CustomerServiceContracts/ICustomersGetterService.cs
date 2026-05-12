@@ -25,5 +25,12 @@ namespace WholesalerManager.Core.ServiceContracts.CustomerServiceContracts
         /// <returns>A task that represents the asynchronous operation. The task result contains a <see cref="CustomerResponse"/>
         /// with the customer's details if found; otherwise, <see langword="null"/>.</returns>
         Task<CustomerResponse?> GetCustomerByID(Guid? customerID);
+
+        /// <summary>
+        /// Asynchronously retrieves customer details for specified TIN.
+        /// </summary>
+        /// <param name="TIN"></param>
+        /// <returns></returns>
+        Task<CustomerResponse?> GetCustomerByTIN(string? TIN);
     }
 }

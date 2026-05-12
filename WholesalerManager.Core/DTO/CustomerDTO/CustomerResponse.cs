@@ -10,7 +10,7 @@ namespace WholesalerManager.Core.DTO.CustomerDTO
     {
         public Guid CustomerID { get; set; }
 
-        public string? CompanyName { get; set; }
+        public string? CustomerName { get; set; }
 
         public string? TIN { get; set; }
 
@@ -26,7 +26,7 @@ namespace WholesalerManager.Core.DTO.CustomerDTO
             return new CustomerResponse()
             {
                 CustomerID = customer.CustomerID,
-                CompanyName = customer.CompanyName,
+                CustomerName = customer.CustomerName,
                 TIN = customer.TIN,
                 ContactEmail = customer.ContactEmail,
                 Address = customer.Address,

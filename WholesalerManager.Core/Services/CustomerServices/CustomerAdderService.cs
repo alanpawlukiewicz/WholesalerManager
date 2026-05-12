@@ -1,0 +1,39 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using WholesalerManager.Core.DTO.CustomerDTO;
+using WholesalerManager.Core.RepositoryContracts;
+using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
+
+namespace WholesalerManager.Core.Services.CustomerServices
+{
+    public class CustomerAdderService : ICustomerAdderService
+    {
+        private readonly ICustomersRepository _customersRepository;
+        private readonly ICustomersGetterService _customersGetterService;
+
+        public CustomerAdderService(ICustomersRepository customersRepository, ICustomersGetterService customersGetterService)
+        {
+            _customersRepository = customersRepository;
+            _customersGetterService = customersGetterService;
+        }
+
+        public async Task<bool> AddCustomer(CustomerAddRequest? customerAddRequest)
+        {
+            if (customerAddRequest is null)
+            {
+                throw new ArgumentNullException(nameof(customerAddRequest));
+            }
+
+            CustomerResponse? matchingCustomer = await _customersGetterService.GetCustomerByTIN(customerAddRequest.TIN);
+            if (matchingCustomer is not null)
+            {
+                return false;
+            }
+            var customerToAdd = customerAddRequest.ToCustomer();
+            customerToAdd.CustomerID = Guid.NewGuid();
+            await _customersRepository.AddNewCustomer(customerToAdd);
+            return true;
+        }
+    }
+}

@@ -6,7 +6,7 @@
 <div class="container">
     <header class="d-flex justify-content-center py-3">
         <ul class="nav nav-pills">
-            <li class="nav-item"><a asp-controller="Customers" asp-action="Create" class="nav-link">Add New Customer</a></li>
+            <li class="nav-item"><a asp-controller="Customers" asp-action="Create" class="nav-link">Register New Customer</a></li>
         </ul>
     </header>
 </div>
@@ -15,7 +15,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Company Name</th>
+            <th>Customer Name</th>
             <th>TIN</th>
             <th>Contact Email</th>
             <th>Address</th>
@@ -27,7 +27,7 @@
         @foreach (var customer in Model)
         {
             <tr>
-                <td>@customer.CompanyName</td>
+                <td>@customer.CustomerName</td>
                 <td>@customer.TIN</td>
                 <td>@customer.ContactEmail</td>
                 <td>@customer.Address</td>

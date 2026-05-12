@@ -1,0 +1,62 @@
+﻿@model CustomerAddRequest
+@{
+    ViewBag.Title = "Register Customer";
+}
+
+<h1>Register New Customer</h1>
+
+<form asp-controller="Customers" asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="CustomerName" class="form-label">Customer Name</label>
+        <input asp-for="CustomerName" class="form-control">
+        <span asp-validation-for="CustomerName" class="text-danger"></span>
+        @* <div class="form-text"></div> *@
+    </div>
+
+    <p><input type="checkbox" id="has-tin" checked="checked"/>The customer has a TIN</p>
+    <div class="mb-3" id="tin-container">
+        <label asp-for="TIN" class="form-label">Taxpayer Identification Number (TIN)</label>
+        <input asp-for="TIN" class="form-control" id="tin-input">
+        <span asp-validation-for="TIN" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ContactEmail" class="form-label">Contact Email</label>
+        <input asp-for="ContactEmail" class="form-control">
+        <span asp-validation-for="ContactEmail" class="text-danger"></span>
+        @* <div class="form-text"></div> *@
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Address" class="form-label">Address</label>
+        <input asp-for="Address" class="form-control">
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="window.jQuery" asp-fallback-src="~/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js" integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="window.jQuery.validator" asp-fallback-src="~/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js" integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="window.jQuery.validator.unobtrusive" asp-fallback-src="~/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        const hasTin = document.getElementById("has-tin");
+        const tinInput = document.getElementById("tin-input");
+        const tinContainer = document.getElementById("tin-container");
+
+        hasTin.addEventListener("change", () => {
+            if (hasTin.checked)
+            {
+                tinContainer.classList.remove("d-none");
+            }
+            else
+            {
+                tinContainer.classList.add("d-none");
+                tinInput.value = null;
+            }
+        })
+    </script>
+}

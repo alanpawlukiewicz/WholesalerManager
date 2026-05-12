@@ -11,7 +11,7 @@ namespace WholesalerManager.Core.Domain.Entities
         public Guid CustomerID { get; set; }
 
         [StringLength(50)]
-        public string? CompanyName { get; set; }
+        public string? CustomerName { get; set; }
 
         [StringLength(9)]
         public string? TIN { get; set; }

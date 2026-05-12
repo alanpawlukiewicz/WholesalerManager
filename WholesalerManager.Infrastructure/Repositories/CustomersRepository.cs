@@ -17,6 +17,13 @@ namespace WholesalerManager.Infrastructure.Repositories
             _db = db;
         }
 
+        public async Task<Customer> AddNewCustomer(Customer customer)
+        {
+            await _db.Customer.AddAsync(customer);
+            await _db.SaveChangesAsync();
+            return customer;
+        }
+
         public async Task<List<Customer>> GetAllCustomers()
         {
             return await _db.Customer.ToListAsync();
@@ -25,6 +32,11 @@ namespace WholesalerManager.Infrastructure.Repositories
         public async Task<Customer?> GetCustomerById(Guid customerID)
         {
             return await _db.Customer.FirstOrDefaultAsync(c => c.CustomerID == customerID);
+        }
+
+        public async Task<Customer?> GetCustomerByTIN(string TIN)
+        {
+            return await _db.Customer.FirstOrDefaultAsync(c => c.TIN == TIN);
         }
     }
 }
