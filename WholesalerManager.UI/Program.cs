@@ -38,6 +38,7 @@ builder.Services.AddScoped<ISuppliersGetterService, SuppliersGetterService>();
 builder.Services.AddScoped<IDeliveriesGetterService, DeliveriesGetterService>();
 builder.Services.AddScoped<IDeliveriesAdderService, DeliveriesAdderService>();
 builder.Services.AddScoped<IDeliveriesUpdaterService, DeliveriesUpdaterService>();
+builder.Services.AddScoped<IDeliveriesDeleterService, DeliveriesDeleterService>();
 
 builder.Services.AddScoped<IDeliveryItemsGetterService, DeliveryItemsGetterService>();
 builder.Services.AddScoped<IDeliveryItemsAdderService, DeliveryItemsAdderService>();

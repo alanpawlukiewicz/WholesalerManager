@@ -25,6 +25,7 @@ namespace WholesalerManager.Core.Services.DeliveryItemServices
             DeliveryItem item = deliveryItemUpdateRequest.ToDeliveryItem();
 
             DeliveryItem? changedItem = null;
+            // Check if item is being added to an existing delivery
             if (item.DeliveryItemID == Guid.Empty)
             {
                 changedItem = (await _deliveryItemsAdderService.AddDeliveryItem(item.ToDeliveryItemAddRequest())).ToDeliveryItem();

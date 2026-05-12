@@ -24,6 +24,13 @@ namespace WholesalerManager.Infrastructure.Repositories
             return delivery;
         }
 
+        public async Task<bool> DeleteDeliveryById(Guid deliveryID)
+        {
+            _db.Delivery.RemoveRange(_db.Delivery.Where(d => d.DeliveryID == deliveryID));
+            int rowsAffected = await _db.SaveChangesAsync();
+            return rowsAffected > 0;
+        }
+
         public async Task<List<Delivery>> GetAllDeliveries()
         {
             return await _db.Delivery.Include("Supplier").ToListAsync();

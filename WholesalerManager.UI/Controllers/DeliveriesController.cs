@@ -27,19 +27,24 @@ namespace WholesalerManager.UI.Controllers
         private readonly IDeliveryItemsAdderService _deliveryItemsAdderService;
         private readonly IDeliveryItemsGetterService _deliveryItemsGetterService;
         private readonly IDeliveryItemsUpdaterService _deliveryItemsUpdaterService;
+        private readonly IDeliveriesDeleterService _deliveryDeleterService;
 
         private readonly IProductsGetterService _productsGetterService;
 
-        public DeliveriesController(IDeliveriesGetterService deliveriesGetterService, ISuppliersGetterService suppliersGetterService, IDeliveriesAdderService deliveriesAdderService, IDeliveryItemsAdderService deliveryItemsAdderService, IDeliveryItemsGetterService deliveryItemsGetterService, IProductsGetterService productsGetterService, IDeliveriesUpdaterService deliveriesUpdaterService, IDeliveryItemsUpdaterService deliveryItemsUpdaterService)
+        public DeliveriesController(IDeliveriesGetterService deliveriesGetterService, ISuppliersGetterService suppliersGetterService, IDeliveriesAdderService deliveriesAdderService, IDeliveryItemsAdderService deliveryItemsAdderService, IDeliveryItemsGetterService deliveryItemsGetterService, IProductsGetterService productsGetterService, IDeliveriesUpdaterService deliveriesUpdaterService, IDeliveryItemsUpdaterService deliveryItemsUpdaterService, IDeliveriesDeleterService deliveriesDeleterService)
         {
             _deliveriesGetterService = deliveriesGetterService;
             _deliveriesAdderService = deliveriesAdderService;
+            _deliveryDeleterService = deliveriesDeleterService;
+            _deliveriesUpdaterService = deliveriesUpdaterService;
+
             _suppliersGetterService = suppliersGetterService;
+
             _deliveryItemsAdderService = deliveryItemsAdderService;
             _deliveryItemsGetterService = deliveryItemsGetterService;
-            _productsGetterService = productsGetterService;
-            _deliveriesUpdaterService = deliveriesUpdaterService;
             _deliveryItemsUpdaterService = deliveryItemsUpdaterService;
+
+            _productsGetterService = productsGetterService;
         }
 
         [Route("[action]")]
@@ -124,9 +129,25 @@ namespace WholesalerManager.UI.Controllers
         {
             await _deliveriesUpdaterService.UpdateDelivery(updateDeliveryWithProductsModel.Delivery);
             await _deliveryItemsUpdaterService.UpdateMultipleDeliveryItems(updateDeliveryWithProductsModel.Items);
-            TempData["InfoMessage"] = $"Delivery informations have been updated successfully.";
+            TempData["InfoMessage"] = "Delivery data have been updated successfully.";
 
             return RedirectToAction("Index", "Deliveries");
+        }
+
+        [Route("[action]/{deliveryID}")]
+        [HttpDelete]
+        public async Task<IActionResult> Delete(Guid deliveryID)
+        {
+            if (deliveryID == Guid.Empty)
+            {
+                ViewData["ErrorMessage"] = "Delivery data could not be deleted.";
+                return PartialView("_errorToastPartialView");
+            }
+
+            await _deliveryDeleterService.DeleteDeliveryByID(deliveryID);
+
+            ViewData["InfoMessage"] = "Delivery data have been deleted successfully.";
+            return PartialView("_infoToastPartialView");
         }
 
 

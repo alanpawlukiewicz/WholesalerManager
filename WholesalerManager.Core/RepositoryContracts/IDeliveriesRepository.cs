@@ -37,5 +37,12 @@ namespace WholesalerManager.Core.RepositoryContracts
         /// <returns></returns>
         Task<Delivery?> UpdateDelivery(Delivery delivery);
 
+        /// <summary>
+        /// Asynchronously deletes delivery and associated DeliveryItem records.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>True if deleted, false if not.</returns>
+        Task<bool> DeleteDeliveryById(Guid deliveryID);
+
     }
 }

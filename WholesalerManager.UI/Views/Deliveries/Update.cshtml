@@ -101,7 +101,6 @@
 
         // Add new product to form
         addBtn.addEventListener("click", async () => {
-            console.log('123');
             try
             {
                 var response = await fetch(`get-update-product/${i}/${'@Model.Delivery!.DeliveryID'}`, {method: "GET"});

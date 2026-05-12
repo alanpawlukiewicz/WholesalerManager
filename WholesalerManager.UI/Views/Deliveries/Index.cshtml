@@ -22,30 +22,100 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    
         @foreach (var dwp in Model)
         {
-            <tr>
-                <td>@dwp.Delivery?.SupplierName</td>
-                <td>@dwp.Delivery?.DeliveryDate</td>
-                <td>@dwp.Delivery?.Status</td>
-                <td><a class="btn btn-primary" asp-controller="Deliveries" asp-action="Update" asp-route-id="@dwp.Delivery?.DeliveryID" role="button">Update</a></td>
-                <td><a class="btn btn-danger" asp-controller="Deliveries" asp-action="Delete" asp-route-id="@dwp.Delivery?.DeliveryID" role="button">Delete</a></td>
-            </tr>
-            @if(dwp.Items is not null)
-            {
-                @foreach (DeliveryItemResponse item in dwp.Items)
+        <tbody class="delivery-record">
+                <tr>
+                    <td>@dwp.Delivery?.SupplierName</td>
+                    <td>@dwp.Delivery?.DeliveryDate</td>
+                    <td>@dwp.Delivery?.Status</td>
+                    <td><a class="btn btn-primary" asp-controller="Deliveries" asp-action="Update" asp-route-id="@dwp.Delivery?.DeliveryID" role="button">Update</a></td>
+                    <td><button class="btn btn-danger delete-btn" data-deliveryID="@dwp.Delivery?.DeliveryID">Delete</button></td>
+                </tr>
+                @if (dwp.Items is not null)
                 {
-                    <tr>
-                        <td>@item.ProductName</td>
-                        <td>@item.SKU</td>
-                        <td>@item.Quantity</td>
-                        <td>@item.ProductUnitPrice</td>
-                        <td></td>
-                    </tr>
+                    @foreach (DeliveryItemResponse item in dwp.Items)
+                    {
+                        <tr>
+                            <td>@item.ProductName</td>
+                            <td>@item.SKU</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.ProductUnitPrice</td>
+                            <td></td>
+                        </tr>
+                    }
                 }
-            }
+        </tbody>
+            
             
         }
-    </tbody>
+    
 </table>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete delivery information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this delivery entry?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="modal-delete-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        const modalElement = document.getElementById('deleteModal');
+        const deleteBtns = document.querySelectorAll(".delete-btn");
+        const modalDeleteBtn = document.getElementById('modal-delete-btn');
+        let currentDeliveryId = '';
+        const myModal = new bootstrap.Modal(modalElement);
+
+        deleteBtns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                currentDeliveryId = btn.getAttribute('data-deliveryID');
+                myModal.show();
+            });
+        });
+
+        modalDeleteBtn.addEventListener('click', async () => {
+            try
+            {
+                if (currentDeliveryId == "")
+                {
+                    return;
+                }
+                var response = await fetch(`Delete/${currentDeliveryId}`, {method: "DELETE"});
+                var responseBody = await response.text();
+                const toastContainer = document.getElementById("toast");
+                toastContainer.innerHTML = responseBody;
+
+                const deliveryToDelete = document.querySelector(`button[data-deliveryID="${currentDeliveryId}"]`).closest(".delivery-record");
+                if(deliveryToDelete)
+                {
+                    deliveryToDelete.remove();
+                }
+
+                const toastElement = document.querySelector(".toast");
+                if (toastElement) {
+                    const bootstrapToast = new bootstrap.Toast(toastElement);
+                    bootstrapToast.show();
+                }
+            }
+            catch (error)
+            {
+                console.error(error);
+            }
+        });
+        
+    </script>
+}
