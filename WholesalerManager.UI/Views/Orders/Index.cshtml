@@ -1,12 +1,12 @@
-﻿@model IEnumerable<DeliveryWithProductsModel>
+﻿@model IEnumerable<OrderWithProductsModel>
 @{
-    ViewBag.Title = "Deliveries";
+    ViewBag.Title = "Orders";
 }
 
 <div class="container">
     <header class="d-flex justify-content-center py-3">
         <ul class="nav nav-pills">
-            <li class="nav-item"><a asp-controller="Deliveries" asp-action="Create" class="nav-link">Register New Delivery</a></li>
+            <li class="nav-item"><a asp-controller="Orders" asp-action="Create" class="nav-link">Register New Order</a></li>
         </ul>
     </header>
 </div>
@@ -15,8 +15,9 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Supplier Name</th>
-            <th>Delivery Date</th>
+            <th>Customer Name</th>
+            <th>Customer's TIN</th>
+            <th>Order Date</th>
             <th>Status</th>
             <th></th>
             <th></th>
@@ -27,22 +28,24 @@
     {
         <tbody class="delivery-record">
             <tr>
-                <td>@dwp.Delivery?.SupplierName</td>
-                <td>@dwp.Delivery?.DeliveryDate</td>
-                <td>@dwp.Delivery?.Status</td>
-                <td><a class="btn btn-primary" asp-controller="Deliveries" asp-action="Update" asp-route-id="@dwp.Delivery?.DeliveryID" role="button">Update</a></td>
-                <td><button class="btn btn-danger delete-btn" data-deliveryID="@dwp.Delivery?.DeliveryID">Delete</button></td>
+                <td>@dwp.Order?.CustomerName</td>
+                <td>@dwp.Order?.TIN</td>
+                <td>@dwp.Order?.OrderDate</td>
+                <td>@dwp.Order?.Status</td>
+                <td><a class="btn btn-primary" asp-controller="Orders" asp-action="Update" asp-route-id="@dwp.Order?.OrderID" role="button">Update</a></td>
+                <td><button class="btn btn-danger delete-btn" data-deliveryID="@dwp.Order?.OrderID">Delete</button></td>
             </tr>
             @if (dwp.Items is not null)
             {
-                @foreach (DeliveryItemResponse item in dwp.Items)
+                @foreach (OrderItemResponse? item in dwp.Items)
                 {
                     <tr>
-                        <td>@item.ProductName</td>
-                        <td>@item.SKU</td>
-                        <td>@item.Quantity</td>
-                        <td>@item.PriceAtSale</td>
-                        <td>@item.ProductUnitPrice</td>
+                        <td>@item?.ProductName</td>
+                        <td>@item?.SKU</td>
+                        <td>@item?.Quantity</td>
+                        <td>@item?.PriceAtSale</td>
+                        <td>@item?.ProductUnitPrice</td>
+                        <td></td>
                     </tr>
                 }
             }
@@ -57,11 +60,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Delete delivery information</h5>
+                <h5 class="modal-title">Delete order information</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete this delivery entry?</p>
+                <p>Are you sure you want to delete this order entry?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -77,12 +80,12 @@
         const modalElement = document.getElementById('deleteModal');
         const deleteBtns = document.querySelectorAll(".delete-btn");
         const modalDeleteBtn = document.getElementById('modal-delete-btn');
-        let currentDeliveryId = '';
+        let currentOrderId = '';
         const myModal = new bootstrap.Modal(modalElement);
 
         deleteBtns.forEach((btn) => {
             btn.addEventListener('click', () => {
-                currentDeliveryId = btn.getAttribute('data-deliveryID');
+                currentOrderId = btn.getAttribute('data-deliveryID');
                 myModal.show();
             });
         });
@@ -90,16 +93,16 @@
         modalDeleteBtn.addEventListener('click', async () => {
             try
             {
-                if (currentDeliveryId == "")
+                if (currentOrderId == "")
                 {
                     return;
                 }
-                var response = await fetch(`Delete/${currentDeliveryId}`, {method: "DELETE"});
+                var response = await fetch(`Delete/${currentOrderId}`, {method: "DELETE"});
                 var responseBody = await response.text();
                 const toastContainer = document.getElementById("toast");
                 toastContainer.innerHTML = responseBody;
 
-                const deliveryToDelete = document.querySelector(`button[data-deliveryID="${currentDeliveryId}"]`).closest(".delivery-record");
+                const deliveryToDelete = document.querySelector(`button[data-deliveryID="${currentOrderId}"]`).closest(".delivery-record");
                 if(deliveryToDelete)
                 {
                     deliveryToDelete.remove();

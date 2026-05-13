@@ -15,6 +15,10 @@ using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
 using WholesalerManager.Core.Services.DeliveryItemServices;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 using WholesalerManager.Core.Services.CustomerServices;
+using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
+using WholesalerManager.Core.Services.OrderServices;
+using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
+using WholesalerManager.Core.Services.OrderItemServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +31,8 @@ builder.Services.AddScoped<ISuppliersRepository, SuppliersRepository>();
 builder.Services.AddScoped<IDeliveriesRepository, DeliveriesRepository>();
 builder.Services.AddScoped<IDeliveryItemsRepository, DeliveryItemsRepository>();
 builder.Services.AddScoped<ICustomersRepository, CustomersRepository>();
+builder.Services.AddScoped<IOrdersRepository, OrdersRepository>();
+builder.Services.AddScoped<IOrderItemsRepository, OrderItemsRepository>();
 
 #endregion
 
@@ -60,6 +66,13 @@ builder.Services.AddScoped<ICustomersGetterService, CustomersGetterService>();
 builder.Services.AddScoped<ICustomersAdderService, CustomersAdderService>();
 builder.Services.AddScoped<ICustomersUpdaterService, CustomersUpdaterService>();
 builder.Services.AddScoped<ICustomersDeleterService, CustomersDeleterService>();
+
+// Orders
+builder.Services.AddScoped<IOrdersGetterService, OrdersGetterService>();
+builder.Services.AddScoped<IOrdersDeleterService, OrdersDeleterService>();
+
+// OrderItems
+builder.Services.AddScoped<IOrderItemsGetterService, OrderItemsGetterService>();
 
 // Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
