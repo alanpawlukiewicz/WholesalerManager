@@ -5,27 +5,26 @@ using System.Text;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Helpers;
 
-namespace WholesalerManager.Core.DTO.DeliveryItemDTO
+namespace WholesalerManager.Core.DTO.OrderItemDTO
 {
-    public class DeliveryItemAddRequest
+    public class OrderItemAddRequest
     {
-        
-        [Required(ErrorMessage = "Please select delivery.")]
-        public Guid? DeliveryID { get; set; }
-        [Required(ErrorMessage = "Please select product connected to delivery.")]
-        public Guid? ProductID { get; set; }
+        //public Guid OrderItemID { get; set; }
+        [Required(ErrorMessage = "Please select order.")]
+        public Guid? OrderID { get; set; }
 
+        [Required(ErrorMessage = "Please select product connected to order.")]
+        public Guid? ProductID { get; set; }
         public int Quantity { get; set; }
 
         [RegularExpression("^\\d+([.,]\\d{1,2})?$", ErrorMessage = "Unit price must be of money type.")]
         public string? PriceAtSale { get; set; }
 
-
-        public DeliveryItem ToDeliveryItem()
+        public OrderItem ToOrderItem()
         {
-            return new DeliveryItem()
+            return new OrderItem()
             {
-                DeliveryID = DeliveryID,
+                OrderID = OrderID,
                 ProductID = ProductID,
                 Quantity = Quantity,
                 PriceAtSale = PriceAtSale.ToDecimalSafe()

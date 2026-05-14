@@ -25,10 +25,10 @@ namespace WholesalerManager.UI.Controllers
             var orders = await _ordersGetterService.GetAllOrders();
             var orderItems = await _orderItemsGetterService.GetAllOrderItems();
 
-            List<OrderWithProductsModel> model = new List<OrderWithProductsModel>();
+            List<OrderWithProductsViewModel> model = new List<OrderWithProductsViewModel>();
             foreach (var order in orders)
             {
-                OrderWithProductsModel c = new OrderWithProductsModel()
+                OrderWithProductsViewModel c = new OrderWithProductsViewModel()
                 {
                     Order = order,
                     Items = orderItems.Where(i => i.OrderID == order.OrderID).ToList()

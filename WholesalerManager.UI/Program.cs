@@ -70,9 +70,13 @@ builder.Services.AddScoped<ICustomersDeleterService, CustomersDeleterService>();
 // Orders
 builder.Services.AddScoped<IOrdersGetterService, OrdersGetterService>();
 builder.Services.AddScoped<IOrdersDeleterService, OrdersDeleterService>();
+builder.Services.AddScoped<IOrdersUpdaterService, OrdersUpdaterService>();
+builder.Services.AddScoped<IOrdersAdderService, OrdersAdderService>();
 
 // OrderItems
 builder.Services.AddScoped<IOrderItemsGetterService, OrderItemsGetterService>();
+builder.Services.AddScoped<IOrderItemsAdderService, OrderItemsAdderService>();
+builder.Services.AddScoped<IOrderItemsUpdaterService, OrderItemsUpdaterService>();
 
 // Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

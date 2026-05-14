@@ -38,7 +38,6 @@ namespace WholesalerManager.Core.Services.DeliveryServices
 
             var delivery = deliveryAddRequest.ToDelivery();
             delivery.DeliveryID = Guid.NewGuid();
-            delivery.DeliveryDate = delivery.DeliveryDate?.AddDays(supplier.LeadTime);
             var addedDelivery = await _deliveriesRepository.AddDelivery(delivery);
 
             return addedDelivery.ToDeliveryResponse();

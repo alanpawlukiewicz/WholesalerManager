@@ -10,13 +10,13 @@ namespace WholesalerManager.Core.DTO.DeliveryDTO
 {
     public class DeliveryUpdateRequest
     {
-        [Required()]
+        [Required]
         public Guid DeliveryID { get; set; }
 
         public Guid? SupplierID { get; set; }
 
         [Required(ErrorMessage = "Please enter valid date.")]
-        public DateTime? DeliveryDate { get; set; }
+        public DateTime? OrderDate { get; set; }
 
         [Required(ErrorMessage = "Delivery must have a status.")]
         public DeliveryStatus? Status { get; set; }
@@ -27,7 +27,7 @@ namespace WholesalerManager.Core.DTO.DeliveryDTO
             {
                 DeliveryID = DeliveryID,
                 SupplierID = SupplierID,
-                DeliveryDate = DeliveryDate,
+                OrderDate = OrderDate,
                 Status = Status.ToString()
             };
         }

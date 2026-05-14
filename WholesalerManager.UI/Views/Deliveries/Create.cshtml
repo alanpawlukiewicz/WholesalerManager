@@ -1,4 +1,4 @@
-﻿@model RegisterDeliveryModel
+﻿@model RegisterDeliveryViewModel
 @{
     ViewBag.Title = "Register New Delivery";
 }
@@ -18,9 +18,9 @@
         </div>
 
         <div class="mb-3">
-            <label asp-for="DeliveryAddRequest.DeliveryDate" class="form-label">Order Date</label>
-            <input asp-for="DeliveryAddRequest.DeliveryDate" class="form-control" value="@ViewBag.CurrentDate">
-            <span asp-validation-for="DeliveryAddRequest.DeliveryDate" class="text-danger"></span>
+            <label asp-for="DeliveryAddRequest.OrderDate" class="form-label">Order Date</label>
+            <input asp-for="DeliveryAddRequest.OrderDate" class="form-control" value="@ViewBag.CurrentDate">
+            <span asp-validation-for="DeliveryAddRequest.OrderDate" class="text-danger"></span>
             @* <div class="form-text"></div> *@
         </div>
 

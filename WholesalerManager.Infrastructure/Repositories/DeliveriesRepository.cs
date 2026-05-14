@@ -50,7 +50,7 @@ namespace WholesalerManager.Infrastructure.Repositories
                 return null;
             }
 
-            matchingDelivery.DeliveryDate = delivery.DeliveryDate;
+            matchingDelivery.OrderDate = delivery.OrderDate;
             matchingDelivery.Status = delivery.Status;
             matchingDelivery.SupplierID = delivery.SupplierID;
 

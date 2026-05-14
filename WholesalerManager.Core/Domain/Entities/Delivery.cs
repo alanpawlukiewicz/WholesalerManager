@@ -15,7 +15,7 @@ namespace WholesalerManager.Core.Domain.Entities
 
         public Guid? SupplierID { get; set; }
 
-        public DateTime? DeliveryDate { get; set; }
+        public DateTime? OrderDate { get; set; }
 
         [StringLength(20)]
         public string? Status { get; set; }

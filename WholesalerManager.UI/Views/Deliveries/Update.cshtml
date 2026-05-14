@@ -1,4 +1,4 @@
-﻿@model UpdateDeliveryWithProductsModel
+﻿@model UpdateDeliveryWithProductsViewModel
 @{
     ViewBag.Title = "Update delivery status";
 }
@@ -19,9 +19,9 @@
         </div>
 
         <div class="mb-3">
-            <label asp-for="Delivery.DeliveryDate" class="form-label">Order Date</label>
-            <input asp-for="Delivery.DeliveryDate" class="form-control" />
-            <span asp-validation-for="Delivery.DeliveryDate" class="text-danger"></span>
+            <label asp-for="Delivery.OrderDate" class="form-label">Order Date</label>
+            <input asp-for="Delivery.OrderDate" class="form-control" />
+            <span asp-validation-for="Delivery.OrderDate" class="text-danger"></span>
             @* <div class="form-text"></div> *@
         </div>
 

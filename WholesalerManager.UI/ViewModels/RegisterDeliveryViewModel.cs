@@ -3,7 +3,7 @@ using WholesalerManager.Core.DTO.DeliveryItemDTO;
 
 namespace WholesalerManager.UI.Models
 {
-    public class RegisterDeliveryModel
+    public class RegisterDeliveryViewModel
     {
         public DeliveryAddRequest? DeliveryAddRequest { get; set; }
 

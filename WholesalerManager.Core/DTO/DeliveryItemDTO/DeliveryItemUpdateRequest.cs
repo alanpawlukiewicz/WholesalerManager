@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using WholesalerManager.Core.Domain.Entities;
+using WholesalerManager.Core.Helpers;
 
 namespace WholesalerManager.Core.DTO.DeliveryItemDTO
 {
@@ -29,7 +30,7 @@ namespace WholesalerManager.Core.DTO.DeliveryItemDTO
                 DeliveryID = DeliveryID,
                 ProductID = ProductID,
                 Quantity = Quantity,
-                PriceAtSale = PriceAtSale is not null ? decimal.Parse(PriceAtSale.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture) : 0,
+                PriceAtSale = PriceAtSale.ToDecimalSafe(),
             };
         }
     }

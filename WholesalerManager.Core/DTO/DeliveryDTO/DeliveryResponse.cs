@@ -16,7 +16,7 @@ namespace WholesalerManager.Core.DTO.DeliveryDTO
 
         public string? SupplierName { get; set; }
 
-        public DateTime? DeliveryDate { get; set; }
+        public DateTime? OrderDate { get; set; }
 
         public string? Status { get; set; }
 
@@ -26,7 +26,7 @@ namespace WholesalerManager.Core.DTO.DeliveryDTO
             {
                 DeliveryID = DeliveryID,
                 SupplierID = SupplierID,
-                DeliveryDate = DeliveryDate,
+                OrderDate = OrderDate,
                 Status = Enum.TryParse<DeliveryStatus>(Status, out var result) ? result : null
             };
         }
@@ -46,7 +46,7 @@ namespace WholesalerManager.Core.DTO.DeliveryDTO
                 DeliveryID = delivery.DeliveryID,
                 SupplierID = delivery.SupplierID,
                 SupplierName = delivery.Supplier?.SupplierName,
-                DeliveryDate = delivery.DeliveryDate,
+                OrderDate = delivery.OrderDate,
                 Status = delivery.Status
             };
         }

@@ -52,10 +52,10 @@ namespace WholesalerManager.UI.Controllers
         {
             var deliveries = await _deliveriesGetterService.GetAllDeliveries();
             var items = await _deliveryItemsGetterService.GetAllDeliveryItems();
-            List<DeliveryWithProductsModel> model = new List<DeliveryWithProductsModel>();
+            List<DeliveryWithProductsViewModel> model = new List<DeliveryWithProductsViewModel>();
             foreach(var delivery in deliveries)
             {
-                DeliveryWithProductsModel c = new DeliveryWithProductsModel()
+                DeliveryWithProductsViewModel c = new DeliveryWithProductsViewModel()
                 {
                     Delivery = delivery,
                     Items = items.Where(i => i.DeliveryID == delivery.DeliveryID).ToList()
@@ -81,7 +81,7 @@ namespace WholesalerManager.UI.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> Create(RegisterDeliveryModel registerDeliveryViewModel)
+        public async Task<IActionResult> Create(RegisterDeliveryViewModel registerDeliveryViewModel)
         {
             if (registerDeliveryViewModel is null || registerDeliveryViewModel.Items is null)
             {
@@ -112,7 +112,7 @@ namespace WholesalerManager.UI.Controllers
                 Text = s.SupplierName
             });
 
-            var updateDeliveryWithProductsModel = new UpdateDeliveryWithProductsModel()
+            var updateDeliveryWithProductsModel = new UpdateDeliveryWithProductsViewModel()
             {
                 Delivery = deliveryUpdateRequest,
                 Items = deliveryItems?.Select(i => i?.ToDeliveryItemUpdateRequest()).ToList()
@@ -125,7 +125,7 @@ namespace WholesalerManager.UI.Controllers
 
         [Route("[action]/{id}")]
         [HttpPost]
-        public async Task<IActionResult> Update(UpdateDeliveryWithProductsModel updateDeliveryWithProductsModel)
+        public async Task<IActionResult> Update(UpdateDeliveryWithProductsViewModel updateDeliveryWithProductsModel)
         {
             await _deliveriesUpdaterService.UpdateDelivery(updateDeliveryWithProductsModel.Delivery);
             await _deliveryItemsUpdaterService.UpdateMultipleDeliveryItems(updateDeliveryWithProductsModel.Items);

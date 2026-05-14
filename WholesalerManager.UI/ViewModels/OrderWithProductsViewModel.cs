@@ -5,7 +5,7 @@ using WholesalerManager.Core.DTO.OrderItemDTO;
 
 namespace WholesalerManager.UI.Models
 {
-    public class OrderWithProductsModel
+    public class OrderWithProductsViewModel
     {
         public OrderResponse? Order { get; set; }
         public List<OrderItemResponse>? Items { get; set; }

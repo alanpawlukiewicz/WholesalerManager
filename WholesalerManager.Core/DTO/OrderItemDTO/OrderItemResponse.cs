@@ -17,6 +17,18 @@ namespace WholesalerManager.Core.DTO.OrderItemDTO
         public string? ProductName { get; set; }
         public string? SKU { get; set; }
         public decimal? ProductUnitPrice { get; set; }
+
+        public OrderItem ToOrderItem()
+        {
+            return new OrderItem()
+            {
+                OrderItemID = OrderItemID,
+                OrderID = OrderID,
+                ProductID = ProductID,
+                Quantity = Quantity,
+                PriceAtSale = PriceAtSale
+            };
+        }
     }
 
     public static class OrderItemExtensions
@@ -40,6 +52,18 @@ namespace WholesalerManager.Core.DTO.OrderItemDTO
                 ProductUnitPrice = item.Product?.UnitPrice
                 //Order = item.Order,
                 //Product = item.Product
+            };
+        }
+
+        public static OrderItemAddRequest ToOrderItemAddRequest(this OrderItem item)
+        {
+            return new OrderItemAddRequest()
+            {
+                OrderID = item.OrderID,
+                ProductID = item.ProductID,
+                Quantity = item.Quantity,
+                PriceAtSale = item.PriceAtSale.ToString(),
+               
             };
         }
 

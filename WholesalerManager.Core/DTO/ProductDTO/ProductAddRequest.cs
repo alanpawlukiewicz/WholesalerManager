@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 using System.Text;
 using WholesalerManager.Core.Domain.Entities;
+using WholesalerManager.Core.Helpers;
 
 namespace WholesalerManager.Core.DTO.ProductDTO
 {
@@ -39,7 +40,7 @@ namespace WholesalerManager.Core.DTO.ProductDTO
                 SKU = SKU,
                 ProductDescription = ProductDescription,
                 CategoryID = CategoryID,
-                UnitPrice = decimal.Parse(UnitPrice!.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture),
+                UnitPrice = UnitPrice.ToDecimalSafe(),
                 StockQuantity = StockQuantity,
                 ReorderLevel = ReorderLevel
             };

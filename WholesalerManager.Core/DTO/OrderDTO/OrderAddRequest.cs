@@ -6,26 +6,26 @@ using System.Text;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Enums;
 
-namespace WholesalerManager.Core.DTO.DeliveryDTO
+namespace WholesalerManager.Core.DTO.OrderDTO
 {
-    public class DeliveryAddRequest
+    public class OrderAddRequest
     {
-        [Required(ErrorMessage = "Please select supplier.")]
-        public Guid? SupplierID { get; set; }
+        [Required(ErrorMessage = "Please select customer.")]
+        public Guid? CustomerID { get; set; }
 
         [Required(ErrorMessage = "Please enter date of order.")]
         public DateTime? OrderDate { get; set; }
 
-        public DeliveryStatus Status { get; set; } = DeliveryStatus.ORDERED;
+        public OrderStatus? Status { get; set; } = OrderStatus.PENDING;
 
 
-        public Delivery ToDelivery()
+        public Order ToOrder()
         {
-            return new Delivery()
+            return new Order()
             {
-                SupplierID = SupplierID,
+                CustomerID = CustomerID,
                 OrderDate = OrderDate,
-                Status = Status.ToString()
+                Status = Status?.ToString(),
             };
         }
     }

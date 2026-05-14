@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DeliveryWithProductsModel>
+﻿@model IEnumerable<DeliveryWithProductsViewModel>
 @{
     ViewBag.Title = "Deliveries";
 }
@@ -28,7 +28,7 @@
         <tbody class="delivery-record">
             <tr>
                 <td>@dwp.Delivery?.SupplierName</td>
-                <td>@dwp.Delivery?.DeliveryDate</td>
+                <td>@dwp.Delivery?.OrderDate</td>
                 <td>@dwp.Delivery?.Status</td>
                 <td><a class="btn btn-primary" asp-controller="Deliveries" asp-action="Update" asp-route-id="@dwp.Delivery?.DeliveryID" role="button">Update</a></td>
                 <td><button class="btn btn-danger delete-btn" data-deliveryID="@dwp.Delivery?.DeliveryID">Delete</button></td>
