@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
+using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.UI.ViewModels;
 
 namespace WholesalerManager.UI.Controllers
@@ -9,14 +12,41 @@ namespace WholesalerManager.UI.Controllers
     public class OrdersController : Controller
     {
         private readonly IOrdersGetterService _ordersGetterService;
-        private readonly IOrderItemsGetterService _orderItemsGetterService;
+        private readonly IOrdersAdderService _ordersAdderService;
+        private readonly IOrdersUpdaterService _ordersUpdaterService;
         private readonly IOrdersDeleterService _ordersDeleterService;
 
-        public OrdersController(IOrdersGetterService ordersGetterService, IOrderItemsGetterService orderItemsGetterService, IOrdersDeleterService ordersDeleterService)
+        private readonly IOrderItemsGetterService _orderItemsGetterService;
+        private readonly IOrderItemsAdderService _orderItemsAdderService;
+        private readonly IOrderItemsUpdaterService _orderItemsUpdaterService;
+
+        private readonly IProductsGetterService _productsGetterService;
+
+        private readonly ICustomersGetterService _customersGetterService;
+
+
+        public OrdersController(IOrdersGetterService ordersGetterService, 
+            IOrdersAdderService ordersAdderService, 
+            IOrdersUpdaterService ordersUpdaterService, 
+            IOrdersDeleterService ordersDeleterService, 
+            IOrderItemsGetterService orderItemsGetterService, 
+            IOrderItemsAdderService orderItemsAdderService, 
+            IOrderItemsUpdaterService orderItemsUpdaterService, 
+            IProductsGetterService productsGetterService, 
+            ICustomersGetterService customersGetterService)
         {
             _ordersGetterService = ordersGetterService;
-            _orderItemsGetterService = orderItemsGetterService;
+            _ordersAdderService = ordersAdderService;
+            _ordersUpdaterService = ordersUpdaterService;
             _ordersDeleterService = ordersDeleterService;
+
+            _orderItemsGetterService = orderItemsGetterService;
+            _orderItemsAdderService = orderItemsAdderService;
+            _orderItemsUpdaterService = orderItemsUpdaterService;
+
+            _productsGetterService = productsGetterService;
+
+            _customersGetterService = customersGetterService;
         }
 
         [Route("[action]")]
@@ -39,6 +69,75 @@ namespace WholesalerManager.UI.Controllers
             return View(model);
         }
 
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var customers = await _customersGetterService.GetAllCustomers();
+            ViewBag.Customers = customers.Select(s => new SelectListItem()
+            {
+                Value = s.CustomerID.ToString(),
+                Text = s.CustomerName
+            });
+            ViewBag.CurrentDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+            return View();
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        public async Task<IActionResult> Create(RegisterOrderViewModel registerOrderViewModel)
+        {
+            if (registerOrderViewModel is null || registerOrderViewModel.Items is null)
+            {
+                TempData["ErrorMessage"] = $"Order could not be registered.";
+                return RedirectToAction("Index", "Orders");
+            }
+            var order = await _ordersAdderService.AddOrder(registerOrderViewModel.OrderAddRequest);
+
+            registerOrderViewModel.Items.ForEach(i => i.OrderID = order.OrderID);
+            await _orderItemsAdderService.AddMultipleOrderItems(registerOrderViewModel.Items);
+
+            TempData["InfoMessage"] = $"Order has been registered successfully.";
+            return RedirectToAction("Index", "Orders");
+        }
+
+        [Route("[action]/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> Update(Guid id)
+        {
+            var foundOrder = await _ordersGetterService.GetOrderByID(id);
+            var orderUpdateRequest = foundOrder?.ToOrderUpdateRequest();
+            var orderItems = await _orderItemsGetterService.GetAllOrderItemsFromOrder(id);
+
+            var customers = await _customersGetterService.GetAllCustomers();
+            ViewBag.Customers = customers.Select(s => new SelectListItem()
+            {
+                Value = s.CustomerID.ToString(),
+                Text = s.CustomerName
+            });
+
+            var updateOrderWithProductsModel = new UpdateOrderWithProductsViewModel()
+            {
+                Order = orderUpdateRequest,
+                Items = orderItems?.Select(i => i?.ToOrderItemUpdateRequest()).ToList()
+            };
+
+            ViewBag.Products = await _productsGetterService.GetAllProducts();
+
+            return View(updateOrderWithProductsModel);
+        }
+
+        [Route("[action]/{id}")]
+        [HttpPost]
+        public async Task<IActionResult> Update(UpdateOrderWithProductsViewModel updateOrderWithProductsModel)
+        {
+            await _ordersUpdaterService.UpdateOrder(updateOrderWithProductsModel.Order);
+            await _orderItemsUpdaterService.UpdateMultipleOrderItems(updateOrderWithProductsModel.Items);
+            TempData["InfoMessage"] = "Order data have been updated successfully.";
+
+            return RedirectToAction("Index", "Orders");
+        }
+
         [Route("[action]/{orderID}")]
         [HttpDelete]
         public async Task<IActionResult> Delete(Guid orderID)
@@ -53,6 +152,20 @@ namespace WholesalerManager.UI.Controllers
 
             ViewData["InfoMessage"] = "Order data have been deleted successfully.";
             return PartialView("_infoToastPartialView");
+        }
+
+        [Route("get-product/{index}")]
+        [HttpGet]
+        public IActionResult GetProduct(int index)
+        {
+            return ViewComponent("AddOrderItem", new { index = index });
+        }
+
+        [Route("Update/get-update-product/{index}/{orderID}")]
+        [HttpGet]
+        public IActionResult GetUpdateProduct(int index, Guid orderID)
+        {
+            return ViewComponent("UpdateOrderItem", new { index = index, orderID = orderID });
         }
     }
 }

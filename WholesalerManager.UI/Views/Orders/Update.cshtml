@@ -1,63 +1,85 @@
-﻿@model RegisterDeliveryViewModel
+﻿@model UpdateOrderWithProductsViewModel
 @{
-    ViewBag.Title = "Register New Delivery";
+    ViewBag.Title = "Update order status";
 }
 
-<h1>Register New Delivery</h1>
+<h1>Update Order</h1>
 
-<form id="deliveryRegisterForm" asp-controller="Deliveries" asp-action="Create" method="post">
+<form id="orderUpdateForm" asp-controller="Orders" asp-action="Update" method="post">
     <div class="form-group">
+        <input asp-for="Order.OrderID" type="hidden">
 
         <div class="mb-3">
-            <label asp-for="DeliveryAddRequest.SupplierID" class="form-label">Supplier</label>
-            <select class="form-select" asp-for="DeliveryAddRequest.SupplierID" asp-items="@ViewBag.Suppliers">
-                <option value="">Select Supplier</option>
+            <label asp-for="Order.CustomerID" class="form-label">Customer</label>
+            <select class="form-select" asp-for="Order.CustomerID" asp-items="@ViewBag.Customers">
+                <option value="">Select Customer</option>
             </select>
-            <span asp-validation-for="DeliveryAddRequest.SupplierID" class="text-danger"></span>
+            <span asp-validation-for="Order.CustomerID" class="text-danger"></span>
             @* <div class="form-text"></div> *@
         </div>
 
         <div class="mb-3">
-            <label asp-for="DeliveryAddRequest.OrderDate" class="form-label">Order Date</label>
-            <input asp-for="DeliveryAddRequest.OrderDate" class="form-control" value="@ViewBag.CurrentDate">
-            <span asp-validation-for="DeliveryAddRequest.OrderDate" class="text-danger"></span>
+            <label asp-for="Order.OrderDate" class="form-label">Order Date</label>
+            <input asp-for="Order.OrderDate" class="form-control" />
+            <span asp-validation-for="Order.OrderDate" class="text-danger"></span>
             @* <div class="form-text"></div> *@
         </div>
 
-        <div class="form-check">
-            <input class="form-check-input" type="radio" asp-for="DeliveryAddRequest.Status" value="@Enum.GetName(DeliveryStatus.ORDERED)" checked>
-            <label class="form-check-label" for="@Enum.GetName(DeliveryStatus.ORDERED)">
-                Ordered
-            </label>
-        </div>
-        <div class="form-check mb-3">
-            <input class="form-check-input" type="radio" asp-for="DeliveryAddRequest.Status" value="@Enum.GetName(DeliveryStatus.IN_TRANSIT)">
-            <label class="form-check-label" for="@Enum.GetName(DeliveryStatus.IN_TRANSIT)">
-                Already in transit
-            </label>
+        <div class="mb-3">
+            <label asp-for="Order.Status" class="form-label">Status</label>
+            <select class="form-select" asp-for="Order.Status">
+                @foreach (var status in Enum.GetNames<OrderStatus>())
+                {
+                    if (Model.Order?.Status is not null)
+                    {
+                        if (status == Model.Order?.Status.ToString())
+                        {
+                            <option selected="selected" value="@status">@status</option>
+                        }
+                        else
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    }
+                    else
+                    {
+                        <option value="@status">@status</option>
+                    }
+
+                }
+            </select>
+            <span asp-validation-for="Order.Status" class="text-danger"></span>
+            @* <div class="form-text"></div> *@
         </div>
 
         <div id="products">
-
-            @await Component.InvokeAsync("AddDeliveryItem", new
+            @if (Model.Items is not null)
             {
-                index = 0
-            })
-        </div>
-
-        <div class="mb-3">
-            <button type="button" class="btn btn-secondary" id="addProductBtn">Add New Product</button>
+                @for (int i = 0; i < Model.Items.Count(); i++)
+                {
+                    @await Component.InvokeAsync("UpdateOrderItem", new
+                    {
+                        index = @i,
+                        orderID = Model.Order!.OrderID
+                    })
+                }
+                
+            }
+                
         </div>
         
         <div class="mb-3">
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="button" class="btn btn-secondary" id="addProductBtn">Add New Product</button>
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Update</button>
         </div>
     </div>
 </form>
 
 @section Scripts
 {
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="window.jQuery" asp-fallback-src="~/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js" integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="window.jQuery.validator" asp-fallback-src="~/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js" integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="window.jQuery.validator.unobtrusive" asp-fallback-src="~/jquery.validate.unobtrusive.min.js"></script>
@@ -73,7 +95,7 @@
             $.validator.unobtrusive.parse($form);
         }
 
-        let i = 1;
+        let i = @Model.Items?.Count()
         const addBtn = document.getElementById("addProductBtn");
         const productsContainer = document.getElementById("products");
 
@@ -81,12 +103,12 @@
         addBtn.addEventListener("click", async () => {
             try
             {
-                var response = await fetch(`get-product/${i}`, {method: "GET"});
+                var response = await fetch(`get-update-product/${i}/${'@Model.Order!.OrderID'}`, {method: "GET"});
                 var responseBody = await response.text();
                 productsContainer.insertAdjacentHTML('beforeend', responseBody);
                 i++;
 
-                reinitializeValidation('#deliveryRegisterForm');
+                reinitializeValidation('#orderUpdateForm');
             }
             catch (error)
             {
@@ -112,3 +134,4 @@
         });
     </script>
 }
+

@@ -10,8 +10,9 @@ using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.Core.ServiceContracts.SupplierServiceContracts;
 using WholesalerManager.Core.Services.ProductServices;
-using WholesalerManager.UI.ViewModels;
+using WholesalerManager.Core.Services.SupplierServices;
 using WholesalerManager.UI.ViewComponents;
+using WholesalerManager.UI.ViewModels;
 
 namespace WholesalerManager.UI.Controllers
 {
@@ -21,28 +22,36 @@ namespace WholesalerManager.UI.Controllers
         private readonly IDeliveriesGetterService _deliveriesGetterService;
         private readonly IDeliveriesAdderService _deliveriesAdderService;
         private readonly IDeliveriesUpdaterService _deliveriesUpdaterService;
-
-        private readonly ISuppliersGetterService _suppliersGetterService;
+        private readonly IDeliveriesDeleterService _deliveryDeleterService;
 
         private readonly IDeliveryItemsAdderService _deliveryItemsAdderService;
         private readonly IDeliveryItemsGetterService _deliveryItemsGetterService;
         private readonly IDeliveryItemsUpdaterService _deliveryItemsUpdaterService;
-        private readonly IDeliveriesDeleterService _deliveryDeleterService;
+
+        private readonly ISuppliersGetterService _suppliersGetterService;
 
         private readonly IProductsGetterService _productsGetterService;
 
-        public DeliveriesController(IDeliveriesGetterService deliveriesGetterService, ISuppliersGetterService suppliersGetterService, IDeliveriesAdderService deliveriesAdderService, IDeliveryItemsAdderService deliveryItemsAdderService, IDeliveryItemsGetterService deliveryItemsGetterService, IProductsGetterService productsGetterService, IDeliveriesUpdaterService deliveriesUpdaterService, IDeliveryItemsUpdaterService deliveryItemsUpdaterService, IDeliveriesDeleterService deliveriesDeleterService)
+        public DeliveriesController(IDeliveriesGetterService deliveriesGetterService, 
+            IDeliveriesAdderService deliveriesAdderService, 
+            IDeliveriesUpdaterService deliveriesUpdaterService, 
+            IDeliveriesDeleterService deliveriesDeleterService, 
+            IDeliveryItemsAdderService deliveryItemsAdderService, 
+            IDeliveryItemsGetterService deliveryItemsGetterService, 
+            IDeliveryItemsUpdaterService deliveryItemsUpdaterService, 
+            ISuppliersGetterService suppliersGetterService, 
+            IProductsGetterService productsGetterService)
         {
             _deliveriesGetterService = deliveriesGetterService;
             _deliveriesAdderService = deliveriesAdderService;
             _deliveryDeleterService = deliveriesDeleterService;
             _deliveriesUpdaterService = deliveriesUpdaterService;
 
-            _suppliersGetterService = suppliersGetterService;
-
             _deliveryItemsAdderService = deliveryItemsAdderService;
             _deliveryItemsGetterService = deliveryItemsGetterService;
             _deliveryItemsUpdaterService = deliveryItemsUpdaterService;
+
+            _suppliersGetterService = suppliersGetterService;
 
             _productsGetterService = productsGetterService;
         }

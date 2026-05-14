@@ -1,0 +1,32 @@
+﻿@model UpdateOrderWithProductsViewModel
+@{
+    int i = ViewBag.Index;
+}
+<hr />
+<div class="mb-3">
+    <input asp-for="Items[@i].OrderItemID" type="hidden" />
+    <input asp-for="Items[@i].OrderID" type="hidden" value="@ViewBag.OrderID"/>
+    <label asp-for="Items[@i].ProductID" class="form-label">Product no. @i</label>
+    <select asp-for="Items[@i].ProductID" class="form-select product-select">
+        <option value="">Select Product</option>
+        @foreach (ProductResponse product in ViewBag.Products)
+        {
+            <option value="@product.ProductID" data-price="@product.UnitPrice">@product.ProductName</option>
+        }
+    </select>
+    <span asp-validation-for="Items[@i].ProductID" class="text-danger"></span>
+
+    <div class="mb-2">
+        <label asp-for="Items[@i].Quantity" class="form-label">Quantity</label>
+        <input class="form-control" asp-for="Items[@i].Quantity">
+        <span asp-validation-for="Items[@i].Quantity" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="Items[@i].PriceAtSale" class="form-label">Current Price</label>
+        <input class="form-control price-input" asp-for="Items[@i].PriceAtSale">
+        <span asp-validation-for="Items[@i].PriceAtSale" class="text-danger"></span>
+    </div>
+    
+</div>
+<hr />

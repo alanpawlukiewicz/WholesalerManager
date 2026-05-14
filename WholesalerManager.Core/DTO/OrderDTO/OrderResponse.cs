@@ -4,6 +4,7 @@ using System.Text;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.DTO.OrderItemDTO;
+using WholesalerManager.Core.Enums;
 
 namespace WholesalerManager.Core.DTO.OrderDTO
 {
@@ -15,6 +16,17 @@ namespace WholesalerManager.Core.DTO.OrderDTO
         public string? Status { get; set; }
         public string? CustomerName { get; set; }
         public string? TIN { get; set; }
+
+        public OrderUpdateRequest ToOrderUpdateRequest()
+        {
+            return new OrderUpdateRequest()
+            {
+                OrderID = OrderID,
+                CustomerID = CustomerID,
+                OrderDate = OrderDate,
+                Status = Enum.TryParse<OrderStatus>(Status, out var result) ? result : null,
+            };
+        }
     }
 
     public static class OrderExtensions

@@ -29,6 +29,18 @@ namespace WholesalerManager.Core.DTO.OrderItemDTO
                 PriceAtSale = PriceAtSale
             };
         }
+
+        public OrderItemUpdateRequest ToOrderItemUpdateRequest()
+        {
+            return new OrderItemUpdateRequest()
+            {
+                OrderItemID = OrderItemID,
+                OrderID = OrderID,
+                ProductID = ProductID,
+                Quantity=Quantity,
+                PriceAtSale = PriceAtSale.ToString()
+            };
+        }
     }
 
     public static class OrderItemExtensions
