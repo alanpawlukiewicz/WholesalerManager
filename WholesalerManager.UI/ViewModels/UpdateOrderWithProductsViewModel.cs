@@ -5,9 +5,9 @@ using WholesalerManager.Core.DTO.OrderItemDTO;
 
 namespace WholesalerManager.UI.ViewModels
 {
-    public class OrderWithProductsViewModel
+    public class UpdateOrderWithProductsViewModel
     {
-        public OrderResponse? Order { get; set; }
-        public List<OrderItemResponse>? Items { get; set; }
+        public OrderUpdateRequest? Order { get; set; }
+        public List<OrderItemUpdateRequest?>? Items { get; set; }
     }
 }

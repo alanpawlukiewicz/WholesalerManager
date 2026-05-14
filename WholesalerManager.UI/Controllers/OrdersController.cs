@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
-using WholesalerManager.UI.Models;
+using WholesalerManager.UI.ViewModels;
 
 namespace WholesalerManager.UI.Controllers
 {

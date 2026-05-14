@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using WholesalerManager.Core.Domain.Entities;
 
-namespace WholesaleManager.Infrastructure.DatabaseContext
+namespace WholesalerManager.Infrastructure.DatabaseContext
 {
     public class ApplicationDbContext : DbContext
     {

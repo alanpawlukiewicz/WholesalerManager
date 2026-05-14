@@ -1,7 +1,7 @@
 ﻿using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.DTO.DeliveryItemDTO;
 
-namespace WholesalerManager.UI.Models
+namespace WholesalerManager.UI.ViewModels
 {
     public class RegisterDeliveryViewModel
     {

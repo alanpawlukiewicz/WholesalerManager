@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using WholesaleManager.Infrastructure.DatabaseContext;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.RepositoryContracts;
+using WholesalerManager.Infrastructure.DatabaseContext;
 
 namespace WholesaleManager.Infrastructure.Repositories
 {

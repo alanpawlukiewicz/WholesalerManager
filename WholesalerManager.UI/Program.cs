@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using WholesaleManager.Infrastructure.DatabaseContext;
 using WholesalerManager.Core.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.Core.Services.ProductServices;
@@ -19,6 +18,7 @@ using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
 using WholesalerManager.Core.Services.OrderServices;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.Services.OrderItemServices;
+using WholesalerManager.Infrastructure.DatabaseContext;
 
 var builder = WebApplication.CreateBuilder(args);
 

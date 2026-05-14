@@ -10,7 +10,7 @@ using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.Core.ServiceContracts.SupplierServiceContracts;
 using WholesalerManager.Core.Services.ProductServices;
-using WholesalerManager.UI.Models;
+using WholesalerManager.UI.ViewModels;
 using WholesalerManager.UI.ViewComponents;
 
 namespace WholesalerManager.UI.Controllers

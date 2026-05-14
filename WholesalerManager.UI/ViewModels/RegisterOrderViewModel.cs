@@ -5,9 +5,10 @@ using WholesalerManager.Core.DTO.OrderItemDTO;
 
 namespace WholesalerManager.UI.ViewModels
 {
-    public class OrderWithProductsViewModel
+    public class RegisterOrderViewModel
     {
-        public OrderResponse? Order { get; set; }
-        public List<OrderItemResponse>? Items { get; set; }
+        public OrderAddRequest? OrderAddRequest { get; set; }
+
+        public List<OrderItemAddRequest>? Items { get; set; }
     }
 }
