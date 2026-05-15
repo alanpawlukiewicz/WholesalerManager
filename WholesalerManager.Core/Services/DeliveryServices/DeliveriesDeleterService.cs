@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using WholesalerManager.Core.RepositoryContracts;
+using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
 
 namespace WholesalerManager.Core.Services.DeliveryServices

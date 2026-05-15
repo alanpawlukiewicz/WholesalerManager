@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WholesalerManager.Core.Domain.Entities;
+using WholesalerManager.Core.Domain.IdentityEntities;
 
 namespace WholesalerManager.Infrastructure.DatabaseContext
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
 
         public ApplicationDbContext(DbContextOptions options) : base(options)

@@ -1,0 +1,71 @@
+﻿@model RegisterDTO
+@{
+    ViewBag.Title = "Register New User";
+}
+
+<h1>Register New User</h1>
+
+<form asp-controller="Account" asp-action="Register" method="post">
+    <div class="mb-3">
+        <label asp-for="FirstName" class="form-label">First Name</label>
+        <input asp-for="FirstName" class="form-control">
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+        @* <div class="form-text"></div> *@
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LastName" class="form-label">Last Name</label>
+        <input asp-for="LastName" class="form-control">
+        <span asp-validation-for="LastName" class="text-danger"></span>
+        @* <div class="form-text"></div> *@
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label">Email</label>
+        <input asp-for="Email" class="form-control">
+        <span asp-validation-for="Email" class="text-danger"></span>
+        @* <div class="form-text"></div> *@
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Phone" class="form-label">Phone</label>
+        <input asp-for="Phone" class="form-control">
+        <span asp-validation-for="Phone" class="text-danger"></span>
+        @* <div class="form-text"></div> *@
+    </div>
+
+    <p><input type="checkbox" id="has-password" checked="checked"/> Automatically generate password</p>
+    <div class="mb-3 d-none" id="password-container">
+        <label asp-for="Password" class="form-label">Password</label>
+        <input asp-for="Password" class="form-control" type="password" id="password-input">
+        <span asp-validation-for="Password" class="text-danger"></span>
+        @* <div class="form-text"></div> *@
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="window.jQuery" asp-fallback-src="~/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js" integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="window.jQuery.validator" asp-fallback-src="~/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js" integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="window.jQuery.validator.unobtrusive" asp-fallback-src="~/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        const hasPassword = document.getElementById("has-password");
+        const passwordInput = document.getElementById("password-input");
+        const passwordContainer = document.getElementById("password-container");
+
+        hasPassword.addEventListener("change", () => {
+            if (hasPassword.checked)
+            {
+                passwordContainer.classList.add("d-none");
+                passwordInput.value = null;
+            }
+            else
+            {
+                passwordContainer.classList.remove("d-none");
+            }
+        })
+    </script>
+}

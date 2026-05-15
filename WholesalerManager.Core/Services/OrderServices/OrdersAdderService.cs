@@ -4,9 +4,9 @@ using System.Text;
 using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.DTO.ProductDTO;
 using WholesalerManager.Core.Helpers;
-using WholesalerManager.Core.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
+using WholesalerManager.Core.Domain.RepositoryContracts;
 
 namespace WholesalerManager.Core.Services.OrderServices
 {

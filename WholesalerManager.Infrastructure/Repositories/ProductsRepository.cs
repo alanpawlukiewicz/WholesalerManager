@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using WholesalerManager.Core.Domain.Entities;
-using WholesalerManager.Core.RepositoryContracts;
+using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Infrastructure.DatabaseContext;
 
 namespace WholesaleManager.Infrastructure.Repositories

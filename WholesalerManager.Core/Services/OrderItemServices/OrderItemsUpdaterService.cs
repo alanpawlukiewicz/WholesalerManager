@@ -1,8 +1,8 @@
 ﻿using WholesalerManager.Core.Domain.Entities;
+using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.OrderItemDTO;
 using WholesalerManager.Core.DTO.ProductDTO;
 using WholesalerManager.Core.Helpers;
-using WholesalerManager.Core.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 
 namespace WholesalerManager.Core.Services.OrderItemServices

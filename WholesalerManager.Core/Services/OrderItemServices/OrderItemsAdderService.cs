@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.DTO.OrderItemDTO;
 using WholesalerManager.Core.DTO.ProductDTO;
 using WholesalerManager.Core.Helpers;
-using WholesalerManager.Core.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.DeliveryItemDTO;
-using WholesalerManager.Core.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
 
 namespace WholesalerManager.Core.Services.DeliveryItemServices

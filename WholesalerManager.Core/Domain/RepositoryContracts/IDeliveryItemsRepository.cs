@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using WholesalerManager.Core.Domain.Entities;
 
-namespace WholesalerManager.Core.RepositoryContracts
+namespace WholesalerManager.Core.Domain.RepositoryContracts
 {
     /// <summary>
     /// Represents data layer logic of n:n connection between Delivery and Product tables.

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using WholesalerManager.Core.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.Core.Services.ProductServices;
 using WholesaleManager.Infrastructure.Repositories;
@@ -19,6 +18,12 @@ using WholesalerManager.Core.Services.OrderServices;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.Services.OrderItemServices;
 using WholesalerManager.Infrastructure.DatabaseContext;
+using WholesalerManager.Core.Domain.RepositoryContracts;
+using Microsoft.AspNetCore.Identity;
+using WholesalerManager.Core.Domain.IdentityEntities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using WholesalerManager.Core.ServiceContracts;
+using WholesalerManager.Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,11 +83,22 @@ builder.Services.AddScoped<IOrderItemsGetterService, OrderItemsGetterService>();
 builder.Services.AddScoped<IOrderItemsAdderService, OrderItemsAdderService>();
 builder.Services.AddScoped<IOrderItemsUpdaterService, OrderItemsUpdaterService>();
 
+// Username and password generation
+builder.Services.AddScoped<IUserNameGeneratorService, UserNameGeneratorService>();
+builder.Services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
+
 // Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+// Indetity
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders()
+    .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
+    .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>(); 
 
 #endregion
 
