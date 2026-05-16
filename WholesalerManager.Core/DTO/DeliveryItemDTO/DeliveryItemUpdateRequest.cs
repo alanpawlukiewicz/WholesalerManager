@@ -9,10 +9,9 @@ namespace WholesalerManager.Core.DTO.DeliveryItemDTO
 {
     public class DeliveryItemUpdateRequest
     {
-        [Required()]
-        public Guid DeliveryItemID { get; set; }
+        public Guid? DeliveryItemID { get; set; }
 
-        [Required(ErrorMessage = "Please select delivery.")]
+        [Required]
         public Guid? DeliveryID { get; set; }
         [Required(ErrorMessage = "Please select product connected to delivery.")]
         public Guid? ProductID { get; set; }
@@ -26,7 +25,7 @@ namespace WholesalerManager.Core.DTO.DeliveryItemDTO
         {
             return new DeliveryItem()
             {
-                DeliveryItemID = DeliveryItemID,
+                DeliveryItemID = DeliveryItemID ?? Guid.Empty,
                 DeliveryID = DeliveryID,
                 ProductID = ProductID,
                 Quantity = Quantity,

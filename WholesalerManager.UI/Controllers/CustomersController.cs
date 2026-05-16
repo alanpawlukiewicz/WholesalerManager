@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WholesalerManager.Core.DTO;
 using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 
 namespace WholesalerManager.UI.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class CustomersController : Controller
     {
         private readonly ICustomersGetterService _customersGetterService;
@@ -20,7 +21,6 @@ namespace WholesalerManager.UI.Controllers
             _customersDeleterService = customersDeleterService;
         }
 
-        [Route("[action]")]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -28,17 +28,21 @@ namespace WholesalerManager.UI.Controllers
             return View(customers);
         }
 
-        [Route("[action]")]
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        [Route("[action]")]
         [HttpPost]
         public async Task<IActionResult> Create(CustomerAddRequest customerAddRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                return View(customerAddRequest);
+            }
+
             bool isAdded = await _customersAdderService.AddCustomer(customerAddRequest);
             if (!isAdded) 
             {
@@ -51,7 +55,7 @@ namespace WholesalerManager.UI.Controllers
             return RedirectToAction("Index", "Customers");
         }
 
-        [Route("[action]/{id}")]
+        [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
         {
@@ -65,10 +69,16 @@ namespace WholesalerManager.UI.Controllers
             return View(foundCustomer.ToCustomerUpdateRequest());
         }
 
-        [Route("[action]/{id}")]
+        [Route("{id}")]
         [HttpPost]
         public async Task<IActionResult> Update(CustomerUpdateRequest customerUpdateRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                return View(customerUpdateRequest);
+            }
+
             bool isUpdated = await _customersUpdaterService.UpdateCustomer(customerUpdateRequest);
             if (!isUpdated)
             {
@@ -81,7 +91,7 @@ namespace WholesalerManager.UI.Controllers
             return RedirectToAction("Index", "Customers");
         }
 
-        [Route("[action]/{id}")]
+        [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -94,10 +104,16 @@ namespace WholesalerManager.UI.Controllers
             return View(foundCustomer.ToCustomerDeleteRequest());
         }
 
-        [Route("[action]/{id}")]
+        [Route("{id}")]
         [HttpPost]
         public async Task<IActionResult> Delete(CustomerDeleteRequest customerDeleteRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                return View(customerDeleteRequest);
+            }
+
             bool isDeleted = await _customersDeleterService.DeleteCustomer(customerDeleteRequest);
             if (!isDeleted)
             {

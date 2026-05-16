@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
@@ -50,6 +51,7 @@ namespace WholesalerManager.UI.Controllers
         }
 
         [Route("[action]")]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var orders = await _ordersGetterService.GetAllOrders();
@@ -87,6 +89,20 @@ namespace WholesalerManager.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(RegisterOrderViewModel registerOrderViewModel)
         {
+            if (!ModelState.IsValid)
+            {
+                var customers = await _customersGetterService.GetAllCustomers();
+                ViewBag.Customers = customers.Select(s => new SelectListItem()
+                {
+                    Value = s.CustomerID.ToString(),
+                    Text = s.CustomerName
+                });
+                ViewBag.CurrentDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+
+                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                return View(registerOrderViewModel);
+            }
+
             if (registerOrderViewModel is null || registerOrderViewModel.Items is null)
             {
                 TempData["ErrorMessage"] = $"Order could not be registered.";
@@ -131,6 +147,19 @@ namespace WholesalerManager.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(UpdateOrderWithProductsViewModel updateOrderWithProductsModel)
         {
+            if (!ModelState.IsValid)
+            {
+                var customers = await _customersGetterService.GetAllCustomers();
+                ViewBag.Customers = customers.Select(s => new SelectListItem()
+                {
+                    Value = s.CustomerID.ToString(),
+                    Text = s.CustomerName
+                });
+
+                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                return View(updateOrderWithProductsModel);
+            }
+
             await _ordersUpdaterService.UpdateOrder(updateOrderWithProductsModel.Order);
             await _orderItemsUpdaterService.UpdateMultipleOrderItems(updateOrderWithProductsModel.Items);
             TempData["InfoMessage"] = "Order data have been updated successfully.";
@@ -142,6 +171,12 @@ namespace WholesalerManager.UI.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(Guid orderID)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                return View(orderID);
+            }
+
             if (orderID == Guid.Empty)
             {
                 ViewData["ErrorMessage"] = "Order data could not be deleted.";

@@ -2,11 +2,11 @@
 
 namespace WholesalerManager.UI.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class HomeController : Controller
     {
         [Route("/")]
-        [Route("[action]")]
+        [HttpGet]
         public IActionResult Index()
         {
             return View();

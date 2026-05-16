@@ -9,8 +9,6 @@ namespace WholesalerManager.Core.DTO.OrderItemDTO
 {
     public class OrderItemAddRequest
     {
-        //public Guid OrderItemID { get; set; }
-        [Required(ErrorMessage = "Please select order.")]
         public Guid? OrderID { get; set; }
 
         [Required(ErrorMessage = "Please select product connected to order.")]

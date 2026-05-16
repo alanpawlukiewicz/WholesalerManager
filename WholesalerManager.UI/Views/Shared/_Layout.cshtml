@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@inject UserManager<ApplicationUser> UserManager
+@{
+    var usr = await UserManager.GetUserAsync(User);
+    var fullName = usr?.FirstName + " " + usr?.LastName;
+}
+
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -30,11 +36,23 @@
                     <a asp-controller="Orders" asp-action="Index" class="nav-link">Orders</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-controller="Account" asp-action="Register" class="nav-link">Register New User</a>
+                    <a asp-controller="Account" asp-action="Index" class="nav-link">Manage Accounts</a>
                 </li>
-                <li class="nav-item">
-                    <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
-                </li>
+                @if(User?.Identity?.IsAuthenticated ?? false)
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Account" asp-action="Logout" class="nav-link">Log out</a>
+                    </li>
+                    <li class="nav-item">
+                        @fullName
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Account" asp-action="Login" class="nav-link">Log in</a>
+                    </li>
+                }
             </ul>
         </header>
     </div>
@@ -44,15 +62,9 @@
 </main>
 
 <div id="toast">
-    @if (TempData["ErrorMessage"] is not null)
-    {
-        <partial name="_errorToastPartialView"></partial>
-    }
+    <partial name="_errorToastPartialView"></partial>
+    <partial name="_infoToastPartialView"></partial>
 
-    @if (TempData["InfoMessage"] is not null)
-    {
-        <partial name="_infoToastPartialView"></partial>
-    }
 </div>
 
 

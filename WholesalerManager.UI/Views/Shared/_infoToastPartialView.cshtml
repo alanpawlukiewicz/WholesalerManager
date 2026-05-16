@@ -1,11 +1,14 @@
-﻿<div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
-    <div id="infoToast" class="toast align-items-center text-white bg-info border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
-        <div class="d-flex">
-            <div class="toast-body">
-                <i class="bi bi-info-circle-fill me-2"></i>
-                <span id="infoMessage">@(ViewData["InfoMessage"] ?? TempData["InfoMessage"] ?? "Action has been completed successfully.")</span>
+﻿@if (TempData["InfoMessage"] is not null)
+{
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+        <div id="infoToast" class="toast align-items-center text-white bg-info border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <span id="infoMessage">@(ViewData["InfoMessage"] ?? TempData["InfoMessage"] ?? "Action has been completed successfully.")</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
-</div>
+}

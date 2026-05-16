@@ -9,10 +9,9 @@ namespace WholesalerManager.Core.DTO.OrderItemDTO
 {
     public class OrderItemUpdateRequest
     {
-        [Required]
-        public Guid OrderItemID { get; set; }
+        public Guid? OrderItemID { get; set; }
 
-        [Required(ErrorMessage = "Please select order.")]
+        [Required]
         public Guid? OrderID { get; set; }
 
         [Required(ErrorMessage = "Please select product connected to order.")]
@@ -26,7 +25,7 @@ namespace WholesalerManager.Core.DTO.OrderItemDTO
         {
             return new OrderItem()
             {
-                OrderItemID = OrderItemID,
+                OrderItemID = OrderItemID ?? Guid.Empty,
                 OrderID = OrderID,
                 ProductID = ProductID,
                 Quantity = Quantity,

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.DTO;
+using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.DTO.DeliveryItemDTO;
 using WholesalerManager.Core.DTO.ProductDTO;
@@ -57,6 +58,7 @@ namespace WholesalerManager.UI.Controllers
         }
 
         [Route("[action]")]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var deliveries = await _deliveriesGetterService.GetAllDeliveries();
@@ -92,6 +94,20 @@ namespace WholesalerManager.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(RegisterDeliveryViewModel registerDeliveryViewModel)
         {
+            if (!ModelState.IsValid)
+            {
+                var suppliers = await _suppliersGetterService.GetAllSuppliers();
+                ViewBag.Suppliers = suppliers.Select(s => new SelectListItem()
+                {
+                    Value = s.SupplierID.ToString(),
+                    Text = s.SupplierName
+                });
+                ViewBag.CurrentDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+
+                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                return View(registerDeliveryViewModel);
+            }
+
             if (registerDeliveryViewModel is null || registerDeliveryViewModel.Items is null)
             {
                 TempData["ErrorMessage"] = $"Delivery could not be registered.";
@@ -136,6 +152,19 @@ namespace WholesalerManager.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(UpdateDeliveryWithProductsViewModel updateDeliveryWithProductsModel)
         {
+            if (!ModelState.IsValid)
+            {
+                var suppliers = await _suppliersGetterService.GetAllSuppliers();
+                ViewBag.Suppliers = suppliers.Select(s => new SelectListItem()
+                {
+                    Value = s.SupplierID.ToString(),
+                    Text = s.SupplierName
+                });
+
+                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                return View(updateDeliveryWithProductsModel);
+            }
+
             await _deliveriesUpdaterService.UpdateDelivery(updateDeliveryWithProductsModel.Delivery);
             await _deliveryItemsUpdaterService.UpdateMultipleDeliveryItems(updateDeliveryWithProductsModel.Items);
             TempData["InfoMessage"] = "Delivery data have been updated successfully.";
@@ -147,6 +176,12 @@ namespace WholesalerManager.UI.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(Guid deliveryID)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                return View(deliveryID);
+            }
+
             if (deliveryID == Guid.Empty)
             {
                 ViewData["ErrorMessage"] = "Delivery data could not be deleted.";

@@ -9,8 +9,6 @@ namespace WholesalerManager.Core.DTO.DeliveryItemDTO
 {
     public class DeliveryItemAddRequest
     {
-        
-        [Required(ErrorMessage = "Please select delivery.")]
         public Guid? DeliveryID { get; set; }
         [Required(ErrorMessage = "Please select product connected to delivery.")]
         public Guid? ProductID { get; set; }

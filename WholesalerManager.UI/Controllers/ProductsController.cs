@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.DTO.ProductDTO;
 using WholesalerManager.Core.ServiceContracts.CategoriesServiceContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 
 namespace WholesalerManager.UI.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class ProductsController : Controller
     {
         private readonly IProductsGetterService _productsGetterService;
@@ -25,7 +26,6 @@ namespace WholesalerManager.UI.Controllers
             _categoriesGetterService = categoriesGetterService;
         }
 
-        [Route("[action]")]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -33,7 +33,6 @@ namespace WholesalerManager.UI.Controllers
             return View(products);
         }
 
-        [Route("[action]")]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -46,17 +45,22 @@ namespace WholesalerManager.UI.Controllers
             return View();
         }
 
-        [Route("[action]")]
         [HttpPost]
         public async Task<IActionResult> Create(ProductAddRequest productAddRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                return View(productAddRequest);
+            }
+
             await _productsAdderService.AddProduct(productAddRequest);
             TempData["InfoMessage"] = $"Product has been added successfully.";
 
             return RedirectToAction("Index", "Products");
         }
 
-        [Route("[action]/{id}")]
+        [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
         {
@@ -78,17 +82,23 @@ namespace WholesalerManager.UI.Controllers
             return View(productUpdateRequest);
         }
 
-        [Route("[action]/{id}")]
+        [Route("{id}")]
         [HttpPost]
         public async Task<IActionResult> Update(ProductUpdateRequest productUpdateRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                return View(productUpdateRequest);
+            }
+
             await _productsUpdaterService.UpdateProduct(productUpdateRequest);
             TempData["InfoMessage"] = $"Product has been updated successfully.";
 
             return RedirectToAction("Index", "Products");
         }
 
-        [Route("[action]/{id}")]
+        [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -102,10 +112,16 @@ namespace WholesalerManager.UI.Controllers
             return View(productDeleteRequest);
         }
 
-        [Route("[action]/{id}")]
+        [Route("{id}")]
         [HttpPost]
         public async Task<IActionResult> Delete(ProductDeleteRequest productDeleteRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                return View(productDeleteRequest);
+            }
+
             await _productsDeleterService.DeleteProduct(productDeleteRequest.ProductID);
             TempData["InfoMessage"] = $"Product has been deleted successfully.";
 
