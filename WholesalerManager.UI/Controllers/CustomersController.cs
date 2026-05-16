@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WholesalerManager.Core.DTO;
 using WholesalerManager.Core.DTO.CustomerDTO;
+using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 
 namespace WholesalerManager.UI.Controllers
 {
+    [Authorize(Roles = "Administrator,Manager,Sales")]
     [Route("[controller]/[action]")]
     public class CustomersController : Controller
     {
@@ -39,7 +42,7 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(customerAddRequest);
             }
 
@@ -75,7 +78,7 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(customerUpdateRequest);
             }
 
@@ -110,7 +113,7 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(customerDeleteRequest);
             }
 

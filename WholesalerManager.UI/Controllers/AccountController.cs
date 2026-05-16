@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.DTO;
+using WholesalerManager.Core.Enums;
+using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -12,39 +14,53 @@ namespace WholesalerManager.UI.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
+
         private readonly IUserNameGeneratorService _userNameGeneratorService;
         private readonly IPasswordGeneratorService _passwordGeneratorService;
 
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AccountController(UserManager<ApplicationUser> userManager, IUserNameGeneratorService userNameGeneratorService, IPasswordGeneratorService passwordGeneratorService, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IUserNameGeneratorService userNameGeneratorService, IPasswordGeneratorService passwordGeneratorService, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _userNameGeneratorService = userNameGeneratorService;
             _passwordGeneratorService = passwordGeneratorService;
             _signInManager = signInManager;
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [HttpPost]
         public async Task<IActionResult> Register(RegisterDTO registerData)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(registerData);
             }
+
+            if(registerData.UserType == UserTypeOptions.Administrator && !User.IsInRole(UserTypeOptions.Administrator.ToString()))
+            {
+                ModelState.AddModelError("Register", "Only administrators can create new administrator accounts.");
+                ViewBag.Errors = ModelState.GetErrorMessages();
+                return View(registerData);
+            }
+
             ApplicationUser user = new ApplicationUser()
             {
                 FirstName = registerData.FirstName,
@@ -63,6 +79,15 @@ namespace WholesalerManager.UI.Controllers
 
             if (result.Succeeded)
             {
+                // Add role if it doesn't exist
+                if (_roleManager.FindByNameAsync(registerData.UserType.ToString()).Result == null)
+                {
+                    await _roleManager.CreateAsync(new ApplicationRole() { Name = registerData.UserType.ToString() });
+                }
+
+                // Assign the user to the role
+                await _userManager.AddToRoleAsync(user, registerData.UserType.ToString());
+
                 TempData["InfoMessage"] = "User successfully registered.";
                 return RedirectToAction("Index", "Home");
             }
@@ -71,31 +96,32 @@ namespace WholesalerManager.UI.Controllers
             {
                 ModelState.AddModelError("Register", error.Description);
             }
+            ViewBag.Errors = ModelState.GetErrorMessages();
 
             return View(registerData);
         }
 
-        [AllowAnonymous]
+        [Authorize("RequireNotAuthenticated")]
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        [AllowAnonymous]
+        [Authorize("RequireNotAuthenticated")]
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO loginData, string? ReturnURL)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(loginData);
             }
 
             if (loginData.UserName == null || loginData.Password == null)
             {
                 ModelState.AddModelError("Login", "Username and password are required.");
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(loginData);
             }
 
@@ -112,10 +138,12 @@ namespace WholesalerManager.UI.Controllers
             }
 
             ModelState.AddModelError("Login", "Invalid username or password.");
+            ViewBag.Errors = ModelState.GetErrorMessages();
 
             return View(loginData);
         }
 
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -123,6 +151,7 @@ namespace WholesalerManager.UI.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [AllowAnonymous]
         public IActionResult AccessDenied()
         {
             return Content("Access denied.");

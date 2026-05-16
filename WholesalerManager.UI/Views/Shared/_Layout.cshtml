@@ -23,27 +23,48 @@
                 <li class="nav-item">
                     <a asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a asp-controller="Products" asp-action="Index" class="nav-link">Products</a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Deliveries" asp-action="Index" class="nav-link">Deliveries</a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Customers" asp-action="Index" class="nav-link">Customers</a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Orders" asp-action="Index" class="nav-link">Orders</a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Account" asp-action="Index" class="nav-link">Manage Accounts</a>
-                </li>
+                
+                @if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Sales"))
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Products" asp-action="Index" class="nav-link">Products</a>
+                    </li>
+                }
+                
+                @if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Operator"))
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Deliveries" asp-action="Index" class="nav-link">Deliveries</a>
+                    </li>
+                }
+                
+                @if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Sales"))
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Customers" asp-action="Index" class="nav-link">Customers</a>
+                    </li>
+                }
+
+                @if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Sales"))
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Orders" asp-action="Index" class="nav-link">Orders</a>
+                    </li>
+                }
+
+                @if (User.IsInRole("Administrator") || User.IsInRole("Manager"))
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Account" asp-action="Index" class="nav-link">Manage Accounts</a>
+                    </li>
+                }
+
                 @if(User?.Identity?.IsAuthenticated ?? false)
                 {
                     <li class="nav-item">
                         <a asp-controller="Account" asp-action="Logout" class="nav-link">Log out</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item d-flex align-content-center justify-content-center">
                         @fullName
                     </li>
                 }

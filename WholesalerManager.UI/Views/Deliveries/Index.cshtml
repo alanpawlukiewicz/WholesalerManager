@@ -94,7 +94,7 @@
                 {
                     return;
                 }
-                var response = await fetch(`Delete/${currentDeliveryId}`, {method: "DELETE"});
+                var response = await fetch(`/Deliveries/Delete/${currentDeliveryId}`, {method: "DELETE"});
                 var responseBody = await response.text();
                 const toastContainer = document.getElementById("toast");
                 toastContainer.innerHTML = responseBody;

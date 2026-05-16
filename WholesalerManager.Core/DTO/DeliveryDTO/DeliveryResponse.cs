@@ -20,6 +20,16 @@ namespace WholesalerManager.Core.DTO.DeliveryDTO
 
         public string? Status { get; set; }
 
+        public Delivery ToDelivery()
+        {
+            return new Delivery()
+            {
+                DeliveryID = DeliveryID,
+                SupplierID = SupplierID,
+                OrderDate = OrderDate,
+                Status = Status
+            };
+        }
         public DeliveryUpdateRequest ToDeliveryUpdateRequest()
         {
             return new DeliveryUpdateRequest()

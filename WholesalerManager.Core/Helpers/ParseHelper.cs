@@ -15,7 +15,7 @@ namespace WholesalerManager.Core.Helpers
 
             if (decimal.TryParse(input.Replace(",", "."), style, culture, out var result))
             {
-                return result;
+                return Math.Round(result, 2, MidpointRounding.ToNegativeInfinity);
             }
 
             return 0m;

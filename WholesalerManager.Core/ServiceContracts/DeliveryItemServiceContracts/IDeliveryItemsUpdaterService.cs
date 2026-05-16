@@ -27,6 +27,6 @@ namespace WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts
         /// <returns>A task that represents the asynchronous operation. The task result contains a list of responses for each
         /// updated delivery item. Each element corresponds to the result of updating the respective item in the input
         /// list; elements may be null if an update could not be performed.</returns>
-        Task<List<DeliveryItemResponse>> UpdateMultipleDeliveryItems(List<DeliveryItemUpdateRequest?>? deliveryItemUpdateRequests);
+        Task<List<DeliveryItemResponse>?> UpdateMultipleDeliveryItems(List<DeliveryItemUpdateRequest?>? deliveryItemUpdateRequests);
     }
 }

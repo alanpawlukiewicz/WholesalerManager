@@ -17,6 +17,16 @@ namespace WholesalerManager.Core.DTO.OrderDTO
         public string? CustomerName { get; set; }
         public string? TIN { get; set; }
 
+        public Order ToOrder()
+        {
+            return new Order()
+            {
+                OrderID = OrderID,
+                CustomerID = CustomerID,
+                OrderDate = OrderDate,
+                Status = Status
+            };
+        }
         public OrderUpdateRequest ToOrderUpdateRequest()
         {
             return new OrderUpdateRequest()

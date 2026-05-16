@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.DTO;
@@ -6,6 +7,7 @@ using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.DTO.DeliveryItemDTO;
 using WholesalerManager.Core.DTO.ProductDTO;
+using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
@@ -57,6 +59,7 @@ namespace WholesalerManager.UI.Controllers
             _productsGetterService = productsGetterService;
         }
 
+        [Authorize(Roles = "Administrator,Manager,Operator")]
         [Route("[action]")]
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -76,6 +79,7 @@ namespace WholesalerManager.UI.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("[action]")]
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -90,6 +94,7 @@ namespace WholesalerManager.UI.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("[action]")]
         [HttpPost]
         public async Task<IActionResult> Create(RegisterDeliveryViewModel registerDeliveryViewModel)
@@ -104,7 +109,7 @@ namespace WholesalerManager.UI.Controllers
                 });
                 ViewBag.CurrentDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
 
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(registerDeliveryViewModel);
             }
 
@@ -122,6 +127,7 @@ namespace WholesalerManager.UI.Controllers
             return RedirectToAction("Index", "Deliveries");
         }
 
+        [Authorize(Roles = "Administrator,Manager,Operator")]
         [Route("[action]/{id}")]
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
@@ -148,6 +154,7 @@ namespace WholesalerManager.UI.Controllers
             return View(updateDeliveryWithProductsModel);
         }
 
+        [Authorize(Roles = "Administrator,Manager,Operator")]
         [Route("[action]/{id}")]
         [HttpPost]
         public async Task<IActionResult> Update(UpdateDeliveryWithProductsViewModel updateDeliveryWithProductsModel)
@@ -161,7 +168,7 @@ namespace WholesalerManager.UI.Controllers
                     Text = s.SupplierName
                 });
 
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(updateDeliveryWithProductsModel);
             }
 
@@ -172,13 +179,15 @@ namespace WholesalerManager.UI.Controllers
             return RedirectToAction("Index", "Deliveries");
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("[action]/{deliveryID}")]
         [HttpDelete]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Delete(Guid deliveryID)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(deliveryID);
             }
 
@@ -195,7 +204,7 @@ namespace WholesalerManager.UI.Controllers
         }
 
 
-
+        [Authorize(Roles = "Administrator,Manager,Operator")]
         [Route("get-product/{index}")]
         [HttpGet]
         public IActionResult GetProduct(int index)
@@ -203,6 +212,7 @@ namespace WholesalerManager.UI.Controllers
             return ViewComponent("AddDeliveryItem", new { index = index });
         }
 
+        [Authorize(Roles = "Administrator,Manager,Operator")]
         [Route("Update/get-update-product/{index}/{deliveryID}")]
         [HttpGet]
         public IActionResult GetUpdateProduct(int index, Guid deliveryID)

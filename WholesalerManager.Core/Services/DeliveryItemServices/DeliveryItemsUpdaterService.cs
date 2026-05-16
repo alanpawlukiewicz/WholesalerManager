@@ -49,11 +49,11 @@ namespace WholesalerManager.Core.Services.DeliveryItemServices
 
         }
 
-        public async Task<List<DeliveryItemResponse>> UpdateMultipleDeliveryItems(List<DeliveryItemUpdateRequest?>? deliveryItemUpdateRequests)
+        public async Task<List<DeliveryItemResponse>?> UpdateMultipleDeliveryItems(List<DeliveryItemUpdateRequest?>? deliveryItemUpdateRequests)
         {
             if (deliveryItemUpdateRequests is null)
             {
-                throw new ArgumentNullException(nameof(deliveryItemUpdateRequests));
+                return null;
             }
 
             List<DeliveryItemResponse> updatedItems = new List<DeliveryItemResponse>() { };

@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WholesalerManager.Core.DTO;
 using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.DTO.ProductDTO;
+using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.CategoriesServiceContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
+using WholesalerManager.UI.ViewModels;
 
 namespace WholesalerManager.UI.Controllers
 {
@@ -26,6 +30,7 @@ namespace WholesalerManager.UI.Controllers
             _categoriesGetterService = categoriesGetterService;
         }
 
+        [Authorize(Roles = "Administrator,Manager,Sales")]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -33,6 +38,7 @@ namespace WholesalerManager.UI.Controllers
             return View(products);
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -45,12 +51,13 @@ namespace WholesalerManager.UI.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [HttpPost]
         public async Task<IActionResult> Create(ProductAddRequest productAddRequest)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(productAddRequest);
             }
 
@@ -60,6 +67,7 @@ namespace WholesalerManager.UI.Controllers
             return RedirectToAction("Index", "Products");
         }
 
+        [Authorize(Roles = "Administrator,Manager,Operator")]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
@@ -82,13 +90,14 @@ namespace WholesalerManager.UI.Controllers
             return View(productUpdateRequest);
         }
 
+        [Authorize(Roles = "Administrator,Manager,Operator")]
         [Route("{id}")]
         [HttpPost]
         public async Task<IActionResult> Update(ProductUpdateRequest productUpdateRequest)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(productUpdateRequest);
             }
 
@@ -98,6 +107,7 @@ namespace WholesalerManager.UI.Controllers
             return RedirectToAction("Index", "Products");
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
@@ -112,13 +122,14 @@ namespace WholesalerManager.UI.Controllers
             return View(productDeleteRequest);
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("{id}")]
         [HttpPost]
         public async Task<IActionResult> Delete(ProductDeleteRequest productDeleteRequest)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(productDeleteRequest);
             }
 
@@ -126,6 +137,36 @@ namespace WholesalerManager.UI.Controllers
             TempData["InfoMessage"] = $"Product has been deleted successfully.";
 
             return RedirectToAction("Index", "Products");
+        }
+
+        [Authorize(Roles = "Administrator,Manager,Sales")]
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> EditUnitPrice([FromBody] EditUnitPriceDTO model)
+        {
+            if (model.ProductID == Guid.Empty || model.NewUnitPrice is null)
+            {
+                ViewData["ErrorMessage"] = $"Unit price could not be changed.";
+                return PartialView("_errorToastPartialView");
+            }
+            decimal unitPriceParsed = model.NewUnitPrice.ToDecimalSafe();
+            if (unitPriceParsed <= 0)
+            {
+                ViewData["ErrorMessage"] = $"Unit price must be greater than zero.";
+                return PartialView("_errorToastPartialView");
+            }
+
+            var matchingProduct = await _productsGetterService.GetProductById(model.ProductID);
+            if (matchingProduct is null)
+            {
+                ViewData["ErrorMessage"] = $"Product could not be found";
+                return PartialView("_errorToastPartialView");
+            }
+            matchingProduct.UnitPrice = unitPriceParsed;
+            await _productsUpdaterService.UpdateProduct(matchingProduct.ToProductUpdateRequest());
+
+            ViewData["InfoMessage"] = $"Unit price has been changed successfully.";
+            return PartialView("_infoToastPartialView");
         }
     }
 }

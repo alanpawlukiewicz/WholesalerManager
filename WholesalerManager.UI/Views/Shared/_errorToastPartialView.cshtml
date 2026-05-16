@@ -1,4 +1,4 @@
-﻿@if (TempData["ErrorMessage"] is not null)
+﻿@if (TempData["ErrorMessage"] is not null || ViewData["ErrorMessage"] is not null)
 {
     <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
         <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">

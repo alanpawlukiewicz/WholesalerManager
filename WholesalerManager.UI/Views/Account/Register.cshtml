@@ -28,13 +28,35 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="Phone" class="form-label">Phone</label>
+        <label asp-for="Phone" class="form-label">Phone Number</label>
         <input asp-for="Phone" class="form-control">
         <span asp-validation-for="Phone" class="text-danger"></span>
         @* <div class="form-text"></div> *@
     </div>
 
-    <p><input type="checkbox" id="has-password" checked="checked"/> Automatically generate password</p>
+    <div class="mb-3">
+        <label asp-for="UserType" class="form-label">Account Type</label>
+        <select class="form-select" asp-for="UserType">
+            @foreach (var userType in Enum.GetNames<UserTypeOptions>())
+            {
+                @if (userType == UserTypeOptions.Administrator.ToString() && !User.IsInRole(UserTypeOptions.Administrator.ToString()))
+                {
+                    continue;
+                }
+                @if (userType == UserTypeOptions.Manager.ToString() && 
+                (!User.IsInRole(UserTypeOptions.Administrator.ToString()) && !User.IsInRole(UserTypeOptions.Manager.ToString())))
+                {
+                    continue;
+                }
+                <option value="@userType">@userType</option>
+            }
+        </select>
+        <span asp-validation-for="UserType" class="text-danger"></span>
+        @* <div class="form-text"></div> *@
+    </div>
+
+    <p><input type="checkbox" id="has-password" checked="checked" /> Automatically generate password</p>
+
     <div class="mb-3 d-none" id="password-container">
         <label asp-for="Password" class="form-label">Password</label>
         <input asp-for="Password" class="form-control" type="password" id="password-input">
@@ -45,7 +67,7 @@
     <button type="submit" class="btn btn-primary">Register</button>
 </form>
 
-@* <partial name="_formValidationErrorsPartialView"></partial> *@
+<partial name="_formValidationErrorsPartialView"></partial>
 
 @section Scripts
 {

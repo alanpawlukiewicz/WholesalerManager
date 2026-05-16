@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WholesalerManager.Core.DTO.CustomerDTO;
+using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
@@ -50,6 +52,7 @@ namespace WholesalerManager.UI.Controllers
             _customersGetterService = customersGetterService;
         }
 
+        [Authorize(Roles = "Administrator,Manager,Sales")]
         [Route("[action]")]
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -71,6 +74,7 @@ namespace WholesalerManager.UI.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Administrator,Manager,Sales")]
         [Route("[action]")]
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -85,6 +89,7 @@ namespace WholesalerManager.UI.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Administrator,Manager,Sales")]
         [Route("[action]")]
         [HttpPost]
         public async Task<IActionResult> Create(RegisterOrderViewModel registerOrderViewModel)
@@ -99,7 +104,7 @@ namespace WholesalerManager.UI.Controllers
                 });
                 ViewBag.CurrentDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
 
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(registerOrderViewModel);
             }
 
@@ -117,6 +122,7 @@ namespace WholesalerManager.UI.Controllers
             return RedirectToAction("Index", "Orders");
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("[action]/{id}")]
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
@@ -143,6 +149,7 @@ namespace WholesalerManager.UI.Controllers
             return View(updateOrderWithProductsModel);
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("[action]/{id}")]
         [HttpPost]
         public async Task<IActionResult> Update(UpdateOrderWithProductsViewModel updateOrderWithProductsModel)
@@ -156,7 +163,7 @@ namespace WholesalerManager.UI.Controllers
                     Text = s.CustomerName
                 });
 
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(updateOrderWithProductsModel);
             }
 
@@ -167,13 +174,15 @@ namespace WholesalerManager.UI.Controllers
             return RedirectToAction("Index", "Orders");
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("[action]/{orderID}")]
         [HttpDelete]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Delete(Guid orderID)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage).ToList();
+                ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(orderID);
             }
 
@@ -189,6 +198,7 @@ namespace WholesalerManager.UI.Controllers
             return PartialView("_infoToastPartialView");
         }
 
+        [Authorize(Roles = "Administrator,Manager,Sales")]
         [Route("get-product/{index}")]
         [HttpGet]
         public IActionResult GetProduct(int index)
@@ -196,11 +206,21 @@ namespace WholesalerManager.UI.Controllers
             return ViewComponent("AddOrderItem", new { index = index });
         }
 
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("Update/get-update-product/{index}/{orderID}")]
         [HttpGet]
         public IActionResult GetUpdateProduct(int index, Guid orderID)
         {
             return ViewComponent("UpdateOrderItem", new { index = index, orderID = orderID });
+        }
+
+        [Authorize(Roles = "Administrator,Manager,Sales")]
+        [Route("[action]/{id}")]
+        public async Task<IActionResult> CancelOrder(Guid id)
+        {
+            await _ordersUpdaterService.CancelOrder(id);
+            TempData["InfoMessage"] = $"Order has been cancelled successfully.";
+            return RedirectToAction("Index", "Orders");
         }
     }
 }

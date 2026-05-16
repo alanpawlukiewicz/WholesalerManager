@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using WholesalerManager.Core.Enums;
 
 namespace WholesalerManager.Core.DTO
 {
@@ -22,5 +23,7 @@ namespace WholesalerManager.Core.DTO
 
         [DataType(DataType.Password)]
         public string? Password { get; set; }
+
+        public UserTypeOptions UserType { get; set; } = UserTypeOptions.Operator;
     }
 }

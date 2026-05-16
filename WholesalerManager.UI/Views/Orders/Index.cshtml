@@ -32,8 +32,19 @@
                 <td>@dwp.Order?.TIN</td>
                 <td>@dwp.Order?.OrderDate</td>
                 <td>@dwp.Order?.Status</td>
-                <td><a class="btn btn-primary" asp-controller="Orders" asp-action="Update" asp-route-id="@dwp.Order?.OrderID" role="button">Update</a></td>
-                <td><button class="btn btn-danger delete-btn" data-deliveryID="@dwp.Order?.OrderID">Delete</button></td>
+                @if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
+                {
+                    <td><a class="btn btn-primary" asp-controller="Orders" asp-action="Update" asp-route-id="@dwp.Order?.OrderID" role="button">Update</a></td>
+                    <td><button class="btn btn-danger delete-btn" data-deliveryID="@dwp.Order?.OrderID">Delete</button></td>
+                }
+                @if(User.IsInRole(UserTypeOptions.Sales.ToString()) 
+                && dwp.Order?.Status != OrderStatus.DELIVERED.ToString()
+                && dwp.Order?.Status != OrderStatus.CANCELLED.ToString())
+                {
+                    <td><a class="btn btn-warning" asp-controller="Orders" asp-action="CancelOrder" asp-route-id="@dwp.Order?.OrderID" role="button">Cancel Order</a></td>
+                }
+                
+                
             </tr>
             @if (dwp.Items is not null)
             {
