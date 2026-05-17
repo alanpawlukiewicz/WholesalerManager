@@ -38,6 +38,12 @@ namespace WholesalerManager.Core.Domain.RepositoryContracts
         Task<Order?> UpdateOrder(Order order);
 
         /// <summary>
+        /// Asynchronously saves data to database.
+        /// </summary>
+        /// <returns></returns>
+        Task<int> Save();
+
+        /// <summary>
         /// Asynchronously deletes order data and associated OrderItem records.
         /// </summary>
         /// <param name="orderID"></param>

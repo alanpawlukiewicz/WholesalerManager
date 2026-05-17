@@ -15,13 +15,12 @@ namespace WholesalerManager.UI.Controllers
     public class OrdersController : Controller
     {
         private readonly IOrdersGetterService _ordersGetterService;
-        private readonly IOrdersAdderService _ordersAdderService;
-        private readonly IOrdersUpdaterService _ordersUpdaterService;
         private readonly IOrdersDeleterService _ordersDeleterService;
+        private readonly IOrdersUpdaterService _ordersUpdaterService;
+        private readonly IOrderRegistrationService _orderRegistrationService;
+        private readonly IOrderUpdateCoordinatorService _orderUpdateCoordinatorService;
 
         private readonly IOrderItemsGetterService _orderItemsGetterService;
-        private readonly IOrderItemsAdderService _orderItemsAdderService;
-        private readonly IOrderItemsUpdaterService _orderItemsUpdaterService;
 
         private readonly IProductsGetterService _productsGetterService;
 
@@ -30,22 +29,21 @@ namespace WholesalerManager.UI.Controllers
 
         public OrdersController(IOrdersGetterService ordersGetterService, 
             IOrdersAdderService ordersAdderService, 
-            IOrdersUpdaterService ordersUpdaterService, 
-            IOrdersDeleterService ordersDeleterService, 
+            IOrdersDeleterService ordersDeleterService,
+            IOrdersUpdaterService ordersUpdaterService,
+            IOrderRegistrationService orderRegistrationService,
+            IOrderUpdateCoordinatorService orderUpdateCoordinatorService,
             IOrderItemsGetterService orderItemsGetterService, 
-            IOrderItemsAdderService orderItemsAdderService, 
-            IOrderItemsUpdaterService orderItemsUpdaterService, 
             IProductsGetterService productsGetterService, 
             ICustomersGetterService customersGetterService)
         {
             _ordersGetterService = ordersGetterService;
-            _ordersAdderService = ordersAdderService;
-            _ordersUpdaterService = ordersUpdaterService;
             _ordersDeleterService = ordersDeleterService;
+            _ordersUpdaterService = ordersUpdaterService;
+            _orderRegistrationService = orderRegistrationService;
+            _orderUpdateCoordinatorService = orderUpdateCoordinatorService;
 
             _orderItemsGetterService = orderItemsGetterService;
-            _orderItemsAdderService = orderItemsAdderService;
-            _orderItemsUpdaterService = orderItemsUpdaterService;
 
             _productsGetterService = productsGetterService;
 
@@ -114,12 +112,7 @@ namespace WholesalerManager.UI.Controllers
                 return RedirectToAction("Index", "Orders");
             }
 
-            // TODO: Make it into single transaction
-
-            var order = await _ordersAdderService.AddOrder(registerOrderViewModel.OrderAddRequest);
-
-            registerOrderViewModel.Items.ForEach(i => i.OrderID = order.OrderID);
-            await _orderItemsAdderService.AddMultipleOrderItems(registerOrderViewModel.Items);
+            await _orderRegistrationService.RegisterFullOrder(registerOrderViewModel.OrderAddRequest, registerOrderViewModel.Items);
 
             TempData["InfoMessage"] = $"Order has been registered successfully.";
             return RedirectToAction("Index", "Orders");
@@ -144,7 +137,7 @@ namespace WholesalerManager.UI.Controllers
             var updateOrderWithProductsModel = new UpdateOrderWithProductsViewModel()
             {
                 Order = orderUpdateRequest,
-                Items = orderItems?.Select(i => i?.ToOrderItemUpdateRequest()).ToList()
+                Items = orderItems?.Select(i => i.ToOrderItemUpdateRequest()).ToList()
             };
 
             ViewBag.Products = await _productsGetterService.GetAllProducts();
@@ -170,10 +163,8 @@ namespace WholesalerManager.UI.Controllers
                 return View(updateOrderWithProductsModel);
             }
 
-            // TODO: Make it into single transaction
+            await _orderUpdateCoordinatorService.UpdateFullOrder(updateOrderWithProductsModel.Order, updateOrderWithProductsModel.Items);
 
-            await _ordersUpdaterService.UpdateOrder(updateOrderWithProductsModel.Order);
-            await _orderItemsUpdaterService.UpdateMultipleOrderItems(updateOrderWithProductsModel.Items);
             TempData["InfoMessage"] = "Order data have been updated successfully.";
 
             return RedirectToAction("Index", "Orders");

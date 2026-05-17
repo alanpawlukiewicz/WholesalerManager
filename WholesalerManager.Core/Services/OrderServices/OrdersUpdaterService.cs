@@ -13,13 +13,11 @@ namespace WholesalerManager.Core.Services.OrderServices
     public class OrdersUpdaterService : IOrdersUpdaterService
     {
         private readonly IOrdersRepository _ordersRepository;
-        private readonly IOrdersGetterService _ordersGetterService;
         private readonly IOrdersStockCheckerService _ordersStockCheckerService;
 
-        public OrdersUpdaterService(IOrdersRepository ordersRepository, IOrdersGetterService ordersGetterService, IOrdersStockCheckerService ordersStockCheckerService)
+        public OrdersUpdaterService(IOrdersRepository ordersRepository, IOrdersStockCheckerService ordersStockCheckerService)
         {
             _ordersRepository = ordersRepository;
-            _ordersGetterService = ordersGetterService;
             _ordersStockCheckerService = ordersStockCheckerService;
         }
 
@@ -29,7 +27,7 @@ namespace WholesalerManager.Core.Services.OrderServices
             {
                 throw new ArgumentException(nameof(orderID));
             }
-            var matchingOrder = await _ordersGetterService.GetOrderByID(orderID);
+            var matchingOrder = await _ordersRepository.GetOrderByID(orderID);
             if (matchingOrder is null)
             {
                 return false;
@@ -40,11 +38,8 @@ namespace WholesalerManager.Core.Services.OrderServices
             }
 
             matchingOrder.Status = OrderStatus.CANCELLED.ToString();
-            var response = await _ordersRepository.UpdateOrder(matchingOrder.ToOrder());
-            if (response is null)
-            {
-                return false;
-            }
+
+            await _ordersRepository.Save();
 
             return true;
         }

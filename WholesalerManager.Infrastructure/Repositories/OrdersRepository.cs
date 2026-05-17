@@ -48,7 +48,6 @@ namespace WholesalerManager.Infrastructure.Repositories
             matchingOrder.Status = order.Status;
             matchingOrder.CustomerID = order.CustomerID;
 
-            await _db.SaveChangesAsync();
 
             return matchingOrder;
         }
@@ -56,8 +55,12 @@ namespace WholesalerManager.Infrastructure.Repositories
         public async Task<Order> AddOrder(Order order)
         {
             await _db.Order.AddAsync(order);
-            await _db.SaveChangesAsync();
             return order;
+        }
+
+        public async Task<int> Save()
+        {
+            return await _db.SaveChangesAsync();
         }
     }
 }

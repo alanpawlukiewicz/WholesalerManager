@@ -6,6 +6,6 @@ namespace WholesalerManager.UI.ViewModels
     public class UpdateDeliveryWithProductsViewModel
     {
         public DeliveryUpdateRequest? Delivery { get; set; }
-        public List<DeliveryItemUpdateRequest?>? Items { get; set; }
+        public List<DeliveryItemUpdateRequest>? Items { get; set; }
     }
 }

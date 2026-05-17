@@ -8,6 +8,6 @@ namespace WholesalerManager.UI.ViewModels
     public class UpdateOrderWithProductsViewModel
     {
         public OrderUpdateRequest? Order { get; set; }
-        public List<OrderItemUpdateRequest?>? Items { get; set; }
+        public List<OrderItemUpdateRequest>? Items { get; set; }
     }
 }

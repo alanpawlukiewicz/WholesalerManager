@@ -12,6 +12,7 @@ using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.Core.ServiceContracts.SupplierServiceContracts;
+using WholesalerManager.Core.Services.DeliveryServices;
 using WholesalerManager.Core.Services.ProductServices;
 using WholesalerManager.Core.Services.SupplierServices;
 using WholesalerManager.UI.ViewComponents;
@@ -26,6 +27,8 @@ namespace WholesalerManager.UI.Controllers
         private readonly IDeliveriesAdderService _deliveriesAdderService;
         private readonly IDeliveriesUpdaterService _deliveriesUpdaterService;
         private readonly IDeliveriesDeleterService _deliveryDeleterService;
+        private readonly IDeliveryRegistrationService _deliveryRegistrationService;
+        private readonly IDeliveryUpdateControllerService _deliveryUpdateControllerService;
 
         private readonly IDeliveryItemsAdderService _deliveryItemsAdderService;
         private readonly IDeliveryItemsGetterService _deliveryItemsGetterService;
@@ -39,6 +42,9 @@ namespace WholesalerManager.UI.Controllers
             IDeliveriesAdderService deliveriesAdderService, 
             IDeliveriesUpdaterService deliveriesUpdaterService, 
             IDeliveriesDeleterService deliveriesDeleterService, 
+            IDeliveryRegistrationService deliveryRegistrationService,
+            IDeliveryUpdateControllerService deliveryUpdateControllerService,
+
             IDeliveryItemsAdderService deliveryItemsAdderService, 
             IDeliveryItemsGetterService deliveryItemsGetterService, 
             IDeliveryItemsUpdaterService deliveryItemsUpdaterService, 
@@ -49,6 +55,9 @@ namespace WholesalerManager.UI.Controllers
             _deliveriesAdderService = deliveriesAdderService;
             _deliveryDeleterService = deliveriesDeleterService;
             _deliveriesUpdaterService = deliveriesUpdaterService;
+
+            _deliveryRegistrationService = deliveryRegistrationService;
+            _deliveryUpdateControllerService = deliveryUpdateControllerService;
 
             _deliveryItemsAdderService = deliveryItemsAdderService;
             _deliveryItemsGetterService = deliveryItemsGetterService;
@@ -119,12 +128,7 @@ namespace WholesalerManager.UI.Controllers
                 return RedirectToAction("Index", "Deliveries");
             }
 
-            // TODO: Make it into single transaction
-
-            var delivery = await _deliveriesAdderService.AddDelivery(registerDeliveryViewModel.DeliveryAddRequest);
-
-            registerDeliveryViewModel.Items.ForEach(i => i.DeliveryID = delivery.DeliveryID);
-            await _deliveryItemsAdderService.AddMultipleDeliveryItems(registerDeliveryViewModel.Items);
+            await _deliveryRegistrationService.RegisterFullDelivery(registerDeliveryViewModel.DeliveryAddRequest, registerDeliveryViewModel.Items);
 
             TempData["InfoMessage"] = $"Delivery has been registered successfully.";
             return RedirectToAction("Index", "Deliveries");
@@ -149,7 +153,7 @@ namespace WholesalerManager.UI.Controllers
             var updateDeliveryWithProductsModel = new UpdateDeliveryWithProductsViewModel()
             {
                 Delivery = deliveryUpdateRequest,
-                Items = deliveryItems?.Select(i => i?.ToDeliveryItemUpdateRequest()).ToList()
+                Items = deliveryItems?.Select(i => i.ToDeliveryItemUpdateRequest()).ToList()
             };
 
             ViewBag.Products = await _productsGetterService.GetAllProducts();
@@ -177,8 +181,7 @@ namespace WholesalerManager.UI.Controllers
 
             // TODO: Make it into single transaction
 
-            await _deliveriesUpdaterService.UpdateDelivery(updateDeliveryWithProductsModel.Delivery);
-            await _deliveryItemsUpdaterService.UpdateMultipleDeliveryItems(updateDeliveryWithProductsModel.Items);
+            await _deliveryUpdateControllerService.UpdateFullDelivery(updateDeliveryWithProductsModel.Delivery, updateDeliveryWithProductsModel.Items);
             TempData["InfoMessage"] = "Delivery data have been updated successfully.";
 
             return RedirectToAction("Index", "Deliveries");

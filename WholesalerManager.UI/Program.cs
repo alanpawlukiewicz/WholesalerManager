@@ -1,31 +1,33 @@
-using Microsoft.EntityFrameworkCore;
-using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
-using WholesalerManager.Core.Services.ProductServices;
-using WholesaleManager.Infrastructure.Repositories;
-using WholesalerManager.Core.ServiceContracts.CategoriesServiceContracts;
-using WholesalerManager.Core.Services.CategoriesServices;
-using WholesalerManager.Infrastructure.Repositories;
-using WholesalerManager.Core.ServiceContracts.SupplierServiceContracts;
-using WholesalerManager.Core.Services.SupplierServices;
-using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
-using WholesalerManager.Core.Services.DeliveryServices;
-using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
-using WholesalerManager.Core.Services.DeliveryItemServices;
-using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
-using WholesalerManager.Core.Services.CustomerServices;
-using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
-using WholesalerManager.Core.Services.OrderServices;
-using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
-using WholesalerManager.Core.Services.OrderItemServices;
-using WholesalerManager.Infrastructure.DatabaseContext;
-using WholesalerManager.Core.Domain.RepositoryContracts;
-using Microsoft.AspNetCore.Identity;
-using WholesalerManager.Core.Domain.IdentityEntities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using WholesalerManager.Core.ServiceContracts;
-using WholesalerManager.Core.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WholesaleManager.Infrastructure.Repositories;
+using WholesalerManager.Core.Domain.IdentityEntities;
+using WholesalerManager.Core.Domain.PersistenceContracts;
+using WholesalerManager.Core.Domain.RepositoryContracts;
+using WholesalerManager.Core.ServiceContracts;
+using WholesalerManager.Core.ServiceContracts.CategoriesServiceContracts;
+using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
+using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
+using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
+using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
+using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
+using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
+using WholesalerManager.Core.ServiceContracts.SupplierServiceContracts;
+using WholesalerManager.Core.Services;
+using WholesalerManager.Core.Services.CategoriesServices;
+using WholesalerManager.Core.Services.CustomerServices;
+using WholesalerManager.Core.Services.DeliveryItemServices;
+using WholesalerManager.Core.Services.DeliveryServices;
+using WholesalerManager.Core.Services.OrderItemServices;
+using WholesalerManager.Core.Services.OrderServices;
+using WholesalerManager.Core.Services.ProductServices;
+using WholesalerManager.Core.Services.SupplierServices;
+using WholesalerManager.Infrastructure.DatabaseContext;
+using WholesalerManager.Infrastructure.Persistence;
+using WholesalerManager.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +67,8 @@ builder.Services.AddScoped<IDeliveriesGetterService, DeliveriesGetterService>();
 builder.Services.AddScoped<IDeliveriesAdderService, DeliveriesAdderService>();
 builder.Services.AddScoped<IDeliveriesUpdaterService, DeliveriesUpdaterService>();
 builder.Services.AddScoped<IDeliveriesDeleterService, DeliveriesDeleterService>();
+builder.Services.AddScoped<IDeliveryRegistrationService, DeliveryRegistrationService>();
+builder.Services.AddScoped<IDeliveryUpdateControllerService, DeliveryUpdateControllerService>();
 
 // DeliveryItems
 builder.Services.AddScoped<IDeliveryItemsGetterService, DeliveryItemsGetterService>();
@@ -83,6 +87,8 @@ builder.Services.AddScoped<IOrdersDeleterService, OrdersDeleterService>();
 builder.Services.AddScoped<IOrdersUpdaterService, OrdersUpdaterService>();
 builder.Services.AddScoped<IOrdersAdderService, OrdersAdderService>();
 builder.Services.AddScoped<IOrdersStockCheckerService, OrdersStockCheckerService>();
+builder.Services.AddScoped<IOrderRegistrationService, OrderRegistrationService>();
+builder.Services.AddScoped<IOrderUpdateCoordinatorService, OrderUpdateCoordinatorService>();
 
 // OrderItems
 builder.Services.AddScoped<IOrderItemsGetterService, OrderItemsGetterService>();
@@ -98,6 +104,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+// Unit of Work
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Indetity
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>

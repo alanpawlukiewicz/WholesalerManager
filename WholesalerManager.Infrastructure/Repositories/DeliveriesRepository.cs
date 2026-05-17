@@ -20,7 +20,6 @@ namespace WholesalerManager.Infrastructure.Repositories
         public async Task<Delivery> AddDelivery(Delivery delivery)
         {
             await _db.Delivery.AddAsync(delivery);
-            await _db.SaveChangesAsync();
             return delivery;
         }
 
@@ -53,8 +52,6 @@ namespace WholesalerManager.Infrastructure.Repositories
             matchingDelivery.OrderDate = delivery.OrderDate;
             matchingDelivery.Status = delivery.Status;
             matchingDelivery.SupplierID = delivery.SupplierID;
-
-            await _db.SaveChangesAsync();
 
             return matchingDelivery;
         }

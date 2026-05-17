@@ -20,16 +20,12 @@ namespace WholesalerManager.Infrastructure.Repositories
         public async Task<OrderItem> AddOrderItem(OrderItem item)
         {
             await _db.OrderItem.AddAsync(item);
-            await _db.SaveChangesAsync();
-
             return item;
         }
 
         public async Task<List<OrderItem>> AddMultipleOrderItems(List<OrderItem> items)
         {
             await _db.OrderItem.AddRangeAsync(items);
-            await _db.SaveChangesAsync();
-
             return items;
         }
 
@@ -63,8 +59,6 @@ namespace WholesalerManager.Infrastructure.Repositories
             matchingItem.ProductID = item.ProductID;
             matchingItem.Quantity = item.Quantity;
             matchingItem.PriceAtSale = item.PriceAtSale;
-
-            await _db.SaveChangesAsync();
 
             return matchingItem;
         }
