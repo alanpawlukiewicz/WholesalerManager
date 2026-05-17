@@ -12,11 +12,11 @@ namespace WholesalerManager.Core.Domain.Entities
         [Key]
         public Guid ProductID { get; set; }
 
-        [StringLength(50)]
+        [StringLength(200)]
         public string? ProductName { get; set; }
 
 
-        [StringLength(50)]
+        [StringLength(200)]
         public string SKU { get; set; } = "";
 
         [StringLength(200)]

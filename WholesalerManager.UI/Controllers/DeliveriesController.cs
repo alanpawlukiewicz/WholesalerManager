@@ -118,6 +118,9 @@ namespace WholesalerManager.UI.Controllers
                 TempData["ErrorMessage"] = $"Delivery could not be registered.";
                 return RedirectToAction("Index", "Deliveries");
             }
+
+            // TODO: Make it into single transaction
+
             var delivery = await _deliveriesAdderService.AddDelivery(registerDeliveryViewModel.DeliveryAddRequest);
 
             registerDeliveryViewModel.Items.ForEach(i => i.DeliveryID = delivery.DeliveryID);
@@ -171,6 +174,8 @@ namespace WholesalerManager.UI.Controllers
                 ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(updateDeliveryWithProductsModel);
             }
+
+            // TODO: Make it into single transaction
 
             await _deliveriesUpdaterService.UpdateDelivery(updateDeliveryWithProductsModel.Delivery);
             await _deliveryItemsUpdaterService.UpdateMultipleDeliveryItems(updateDeliveryWithProductsModel.Items);

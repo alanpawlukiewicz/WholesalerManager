@@ -113,6 +113,9 @@ namespace WholesalerManager.UI.Controllers
                 TempData["ErrorMessage"] = $"Order could not be registered.";
                 return RedirectToAction("Index", "Orders");
             }
+
+            // TODO: Make it into single transaction
+
             var order = await _ordersAdderService.AddOrder(registerOrderViewModel.OrderAddRequest);
 
             registerOrderViewModel.Items.ForEach(i => i.OrderID = order.OrderID);
@@ -166,6 +169,8 @@ namespace WholesalerManager.UI.Controllers
                 ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(updateOrderWithProductsModel);
             }
+
+            // TODO: Make it into single transaction
 
             await _ordersUpdaterService.UpdateOrder(updateOrderWithProductsModel.Order);
             await _orderItemsUpdaterService.UpdateMultipleOrderItems(updateOrderWithProductsModel.Items);

@@ -82,6 +82,7 @@ builder.Services.AddScoped<IOrdersGetterService, OrdersGetterService>();
 builder.Services.AddScoped<IOrdersDeleterService, OrdersDeleterService>();
 builder.Services.AddScoped<IOrdersUpdaterService, OrdersUpdaterService>();
 builder.Services.AddScoped<IOrdersAdderService, OrdersAdderService>();
+builder.Services.AddScoped<IOrdersStockCheckerService, OrdersStockCheckerService>();
 
 // OrderItems
 builder.Services.AddScoped<IOrderItemsGetterService, OrderItemsGetterService>();

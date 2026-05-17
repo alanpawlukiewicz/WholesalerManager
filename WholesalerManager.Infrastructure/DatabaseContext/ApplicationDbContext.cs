@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.IdentityEntities;
 
@@ -20,9 +21,15 @@ namespace WholesalerManager.Infrastructure.DatabaseContext
         public virtual DbSet<Order> Order { get; set; }
         public virtual DbSet<OrderItem> OrderItem { get; set; }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<DeliveryItem>().HasKey(di => new { di.DeliveryID, di.ProductID });
-        //}
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Allows to use triggers in the database without EF Core trying to get the inserted/updated entity back from the database, which can cause issues if the trigger modifies the data.
+            modelBuilder.Entity<Delivery>()
+                .ToTable(tb => tb.UseSqlOutputClause(false));
+            modelBuilder.Entity<Order>()
+                .ToTable(tb => tb.UseSqlOutputClause(false));
+        }
     }
 }

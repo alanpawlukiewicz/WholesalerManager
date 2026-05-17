@@ -14,11 +14,13 @@ namespace WholesalerManager.Core.Services.OrderServices
     {
         private readonly IOrdersRepository _ordersRepository;
         private readonly IOrdersGetterService _ordersGetterService;
+        private readonly IOrdersStockCheckerService _ordersStockCheckerService;
 
-        public OrdersUpdaterService(IOrdersRepository ordersRepository, IOrdersGetterService ordersGetterService)
+        public OrdersUpdaterService(IOrdersRepository ordersRepository, IOrdersGetterService ordersGetterService, IOrdersStockCheckerService ordersStockCheckerService)
         {
             _ordersRepository = ordersRepository;
             _ordersGetterService = ordersGetterService;
+            _ordersStockCheckerService = ordersStockCheckerService;
         }
 
         public async Task<bool> CancelOrder(Guid orderID)
@@ -56,7 +58,18 @@ namespace WholesalerManager.Core.Services.OrderServices
 
             ValidationHelper.ModelValidation(orderUpdateRequest);
 
+            // Check stock availability for the order items if order status changed to "PAID" or "PROCESSING" 
+            if (orderUpdateRequest.Status == OrderStatus.PAID || orderUpdateRequest.Status == OrderStatus.PROCESSING)
+            {
+                bool isStockAvailable = await _ordersStockCheckerService.CheckStockAvailabilityForOrder(orderUpdateRequest.OrderID);
+                if (!isStockAvailable)
+                {
+                    throw new InvalidOperationException("Insufficient stock for one or more items in the order.");
+                }
+            }
+
             Order order = orderUpdateRequest.ToOrder();
+
             Order? updatedOrder = await _ordersRepository.UpdateOrder(order);
             
             if (updatedOrder is null)

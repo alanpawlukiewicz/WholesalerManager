@@ -11,11 +11,11 @@ namespace WholesalerManager.Core.DTO.ProductDTO
     public class ProductAddRequest
     {
         [Required(ErrorMessage = "Product name is required.")]
-        [MaxLength(50)]
+        [MaxLength(200)]
         public string? ProductName { get; set; }
 
         [Required(ErrorMessage = "SKU is required.")]
-        [MaxLength(50)]
+        [MaxLength(200)]
         public string SKU { get; set; } = "";
 
         [MaxLength(200)]
