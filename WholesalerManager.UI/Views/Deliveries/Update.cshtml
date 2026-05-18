@@ -1,38 +1,38 @@
 ﻿@model UpdateDeliveryWithProductsViewModel
 @{
-    ViewBag.Title = "Update delivery status";
+    ViewBag.Title = "Update Delivery";
 }
 
-<h1>Update Delivery</h1>
+<div class="card shadow-sm max-width-800 mx-auto my-4">
+    <div class="card-header bg-light py-3">
+        <h1 class="h3 mb-0 text-primary">Update Delivery</h1>
+    </div>
+    <div class="card-body p-4">
+        <form id="deliveryUpdateForm" asp-controller="Deliveries" asp-action="Update" method="post">
+            <input asp-for="Delivery.DeliveryID" type="hidden" />
 
-<form id="deliveryUpdateForm" asp-controller="Deliveries" asp-action="Update" method="post">
-    <div class="form-group">
-        <input asp-for="Delivery.DeliveryID" type="hidden">
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label asp-for="Delivery.SupplierID" class="form-label fw-medium">Supplier</label>
+                    <select class="form-select" asp-for="Delivery.SupplierID" asp-items="@ViewBag.Suppliers">
+                        <option value="">Select Supplier</option>
+                    </select>
+                    <span asp-validation-for="Delivery.SupplierID" class="text-danger small"></span>
+                </div>
 
-        <div class="mb-3">
-            <label asp-for="Delivery.SupplierID" class="form-label">Supplier</label>
-            <select class="form-select" asp-for="Delivery.SupplierID" asp-items="@ViewBag.Suppliers">
-                <option value="">Select Supplier</option>
-            </select>
-            <span asp-validation-for="Delivery.SupplierID" class="text-danger"></span>
-            @* <div class="form-text"></div> *@
-        </div>
+                <div class="col-md-6">
+                    <label asp-for="Delivery.OrderDate" class="form-label fw-medium">Order Date</label>
+                    <input asp-for="Delivery.OrderDate" class="form-control" />
+                    <span asp-validation-for="Delivery.OrderDate" class="text-danger small"></span>
+                </div>
+            </div>
 
-        <div class="mb-3">
-            <label asp-for="Delivery.OrderDate" class="form-label">Order Date</label>
-            <input asp-for="Delivery.OrderDate" class="form-control" />
-            <span asp-validation-for="Delivery.OrderDate" class="text-danger"></span>
-            @* <div class="form-text"></div> *@
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Delivery.Status" class="form-label">Status</label>
-            <select class="form-select" asp-for="Delivery.Status">
-                @foreach (var status in Enum.GetNames<DeliveryStatus>())
-                {
-                    if (Model.Delivery?.Status is not null)
+            <div class="mb-4">
+                <label asp-for="Delivery.Status" class="form-label fw-medium">Delivery Status</label>
+                <select class="form-select" asp-for="Delivery.Status">
+                    @foreach (var status in Enum.GetNames<DeliveryStatus>())
                     {
-                        if (status == Model.Delivery?.Status.ToString())
+                        if (Model.Delivery?.Status is not null && status == Model.Delivery.Status.ToString())
                         {
                             <option selected="selected" value="@status">@status</option>
                         }
@@ -41,42 +41,40 @@
                             <option value="@status">@status</option>
                         }
                     }
-                    else
+                </select>
+                <span asp-validation-for="Delivery.Status" class="text-danger small"></span>
+            </div>
+
+            <div class="border-top pt-4 mb-3">
+                <h5 class="text-secondary fw-bold mb-3">Delivery Items</h5>
+                <div id="products">
+                    @if (Model.Items is not null)
                     {
-                        <option value="@status">@status</option>
+                        @for (int i = 0; i < Model.Items.Count(); i++)
+                        {
+                            @await Component.InvokeAsync("UpdateDeliveryItem", new
+                            {
+                                index = i,
+                                deliveryID = Model.Delivery!.DeliveryID
+                            })
+                        }
                     }
+                </div>
+            </div>
 
-                }
-            </select>
-            <span asp-validation-for="Delivery.Status" class="text-danger"></span>
-            @* <div class="form-text"></div> *@
-        </div>
+            <div class="mb-4">
+                <button type="button" class="btn btn-outline-primary d-inline-flex align-items-center gap-2" id="addProductBtn">
+                    Add New Product
+                </button>
+            </div>
 
-        <div id="products">
-            @if (Model.Items is not null)
-            {
-                @for (int i = 0; i < Model.Items.Count(); i++)
-                {
-                    @await Component.InvokeAsync("UpdateDeliveryItem", new
-                    {
-                        index = @i,
-                        deliveryID = Model.Delivery!.DeliveryID
-                    })
-                }
-                
-            }
-                
-        </div>
-        
-        <div class="mb-3">
-            <button type="button" class="btn btn-secondary" id="addProductBtn">Add New Product</button>
-        </div>
-
-        <div class="mb-3">
-            <button type="submit" class="btn btn-primary">Update</button>
-        </div>
+            <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary px-4">Update Delivery</button>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
 @section Scripts
 {

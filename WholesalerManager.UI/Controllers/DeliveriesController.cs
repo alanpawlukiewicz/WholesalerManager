@@ -7,6 +7,7 @@ using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.DTO.DeliveryItemDTO;
 using WholesalerManager.Core.DTO.ProductDTO;
+using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
@@ -71,12 +72,28 @@ namespace WholesalerManager.UI.Controllers
         [Authorize(Roles = "Administrator,Manager,Operator")]
         [Route("[action]")]
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] string? propertyName, [FromQuery] string? filter, [FromQuery] bool? ignoreCase, [FromQuery] SortOrderOptions? sortOrder)
         {
-            var deliveries = await _deliveriesGetterService.GetAllDeliveries();
+            List<DeliveryResponse> deliveries;
+
+            if (filter is not null && propertyName is not null)
+            {
+                deliveries = await _deliveriesGetterService.GetFilteredDeliveries(propertyName, filter, ignoreCase ?? true);
+            }
+
+            else if (sortOrder is not null && propertyName is not null)
+            {
+                deliveries = await _deliveriesGetterService.GetSortedDeliveries(propertyName, sortOrder ?? SortOrderOptions.ASC);
+            }
+            else
+            {
+                deliveries = await _deliveriesGetterService.GetAllDeliveries();
+            }
+
             var items = await _deliveryItemsGetterService.GetAllDeliveryItems();
+
             List<DeliveryWithProductsViewModel> model = new List<DeliveryWithProductsViewModel>();
-            foreach(var delivery in deliveries)
+            foreach (var delivery in deliveries)
             {
                 DeliveryWithProductsViewModel c = new DeliveryWithProductsViewModel()
                 {
@@ -85,6 +102,8 @@ namespace WholesalerManager.UI.Controllers
                 };
                 model.Add(c);
             }
+
+            ViewBag.FieldNames = new List<string>() { nameof(DeliveryResponse.SupplierName), nameof(DeliveryResponse.Status), nameof(DeliveryResponse.OrderDate) };
             return View(model);
         }
 

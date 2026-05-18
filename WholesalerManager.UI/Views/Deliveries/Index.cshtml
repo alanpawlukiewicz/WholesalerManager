@@ -3,67 +3,109 @@
     ViewBag.Title = "Deliveries";
 }
 
-@if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
-{
-    <div class="container">
-        <header class="d-flex justify-content-center py-3">
-            <ul class="nav nav-pills">
-                <li class="nav-item"><a asp-controller="Deliveries" asp-action="Create" class="nav-link">Register New Delivery</a></li>
-            </ul>
-        </header>
+<div class="container-fluid px-4 my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Deliveries</h1>
+        @if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
+        {
+            <a asp-controller="Deliveries" asp-action="Create" class="btn btn-success d-inline-flex align-items-center gap-2">
+                Register New Delivery
+            </a>
+        }
     </div>
-}
 
+    @await Component.InvokeAsync("FilterSearchBar", new { controllerName = "Deliveries", actionName = "Index" })
 
-<h1>Deliveries</h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Supplier Name</th>
-            <th>Delivery Date</th>
-            <th>Status</th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
+    <div class="table-responsive shadow-sm rounded border">
+        <table class="table align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(DeliveryResponse.SupplierName) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(DeliveryResponse.OrderDate) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(DeliveryResponse.Status) })
+                    <th colspan="2" class="text-end px-4" style="width: 200px;">Actions</th>
+                </tr>
+            </thead>
 
-    @foreach (var dwp in Model)
-    {
-        <tbody class="delivery-record">
-            <tr>
-                <td>@dwp.Delivery?.SupplierName</td>
-                <td>@dwp.Delivery?.OrderDate</td>
-                <td class="delivery-status">@dwp.Delivery?.Status</td>
-                @if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
-                {
-                    <td><a class="btn btn-primary" asp-controller="Deliveries" asp-action="Update" asp-route-id="@dwp.Delivery?.DeliveryID" role="button">Update</a></td>
-                    <td><button class="btn btn-danger delete-btn" data-deliveryID="@dwp.Delivery?.DeliveryID">Delete</button></td>
-                }
-                @if (User.IsInRole(UserTypeOptions.Operator.ToString())
-                && dwp.Delivery?.Status == DeliveryStatus.IN_TRANSIT.ToString())
-                {
-                    <td><button class="btn btn-primary update-status-button" data-deliveryID="@dwp.Delivery?.DeliveryID">Set as received</button></td>
-                }
-            </tr>
-            @if (dwp.Items is not null)
+            @foreach (var dwp in Model)
             {
-                @foreach (DeliveryItemResponse item in dwp.Items)
-                {
-                    <tr>
-                        <td>@item.ProductName</td>
-                        <td>@item.SKU</td>
-                        <td>@item.Quantity</td>
-                        <td>@item.PriceAtSale</td>
-                        <td>@item.ProductUnitPrice</td>
+                <tbody class="delivery-record border-bottom border-light-subtle">
+                    <tr class="table-group-divider border-light-subtle">
+                        <td class="fw-bold text-primary">
+                            @dwp.Delivery?.SupplierName
+                        </td>
+                        <td>
+                            @dwp.Delivery?.OrderDate
+                        </td>
+                        <td>
+                            @if (dwp.Delivery?.Status == DeliveryStatus.IN_TRANSIT.ToString())
+                            {
+                                <span class="badge bg-warning text-dark px-2.5 py-1.5 fs-7">IN TRANSIT</span>
+                            }
+                            else if (dwp.Delivery?.Status == DeliveryStatus.REJECTED.ToString())
+                            {
+                                <span class="badge bg-danger px-2.5 py-1.5 fs-7">REJECTED</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success px-2.5 py-1.5 fs-7">@dwp.Delivery?.Status</span>
+                            }
+                        </td>
+                        <td colspan="2" class="text-end px-4">
+                            <div class="d-inline-flex gap-2">
+                                @if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
+                                {
+                                    <a class="btn btn-sm btn-outline-primary" asp-controller="Deliveries" asp-action="Update" asp-route-id="@dwp.Delivery?.DeliveryID" role="button">Update</a>
+                                    <button class="btn btn-sm btn-outline-danger delete-btn" data-deliveryID="@dwp.Delivery?.DeliveryID">Delete</button>
+                                }
+                                @if (User.IsInRole(UserTypeOptions.Operator.ToString()) && dwp.Delivery?.Status == DeliveryStatus.IN_TRANSIT.ToString())
+                                {
+                                    <button class="btn btn-sm btn-primary update-status-button" data-deliveryID="@dwp.Delivery?.DeliveryID">Set as received</button>
+                                }
+                            </div>
+                        </td>
                     </tr>
-                }
+
+                    @if (dwp.Items is not null && dwp.Items.Any())
+                    {
+                        <tr class="bg-light-subtle">
+                            <td colspan="5" class="p-0 border-0">
+                                <div class="px-4 py-2 bg-light text-muted small fw-semibold border-bottom d-flex gap-4">
+                                    <span>Included Products:</span>
+                                </div>
+                                <div class="table-responsive px-4 py-2 bg-light-subtle">
+                                    <table class="table table-sm table-borderless align-middle mb-0 small" style="table-layout: fixed; width: 100%;">
+                                        <thead>
+                                            <tr class="text-secondary border-bottom">
+                                                <th class="py-2" style="width: 35%;">Product Name</th>
+                                                <th class="py-2" style="width: 20%;">SKU</th>
+                                                <th class="py-2 text-center" style="width: 15%;">Quantity</th>
+                                                <th class="py-2 text-end" style="width: 15%;">Price at Sale</th>
+                                                <th class="py-2 text-end" style="width: 15%;">Unit Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (DeliveryItemResponse item in dwp.Items)
+                                            {
+                                                <tr class="border-bottom-dashed text-dark">
+                                                    <td class="py-2 fw-medium text-truncate">@item.ProductName</td>
+                                                    <td class="py-2 text-monospace text-truncate">@item.SKU</td>
+                                                    <td class="py-2 text-center fw-bold">@item.Quantity</td>
+                                                    <td class="py-2 text-end text-success fw-medium">@item.PriceAtSale</td>
+                                                    <td class="py-2 text-end text-muted">@item.ProductUnitPrice</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
             }
-        </tbody>
-
-            
-    }
-
-</table>
+        </table>
+    </div>
+</div>
 
 @if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
 {
