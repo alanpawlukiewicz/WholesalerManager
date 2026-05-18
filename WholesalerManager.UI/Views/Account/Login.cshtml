@@ -3,32 +3,56 @@
     ViewBag.Title = "Login";
 }
 
-<h1>Login</h1>
-
-<form asp-controller="Account" asp-action="Login" asp-route-ReturnURL="@Context.Request.Query["ReturnURL"]" method="post">
-    <div class="mb-3">
-        <label asp-for="UserName" class="form-label">Username</label>
-        <input asp-for="UserName" class="form-control">
-        <span asp-validation-for="UserName" class="text-danger"></span>
-        @* <div class="form-text"></div> *@
+<div class="card shadow-sm max-width-300 mx-auto my-5">
+    <div class="card-header bg-light py-3 text-center border-bottom-0">
+        <h1 class="h3 mb-0 text-dark fw-bold">Sign In</h1>
+        <p class="text-muted small mb-0 mt-1">Please enter your credentials to access the system</p>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="Password" class="form-label">Password</label>
-        <input asp-for="Password" class="form-control" type="password">
-        <span asp-validation-for="Password" class="text-danger"></span>
-        @* <div class="form-text"></div> *@
-    </div>
-    
-    <div class="mb-3 form-check">
-        <input asp-for="KeepSignedIn" class="form-check-input" type="checkbox">
-        <label asp-for="KeepSignedIn" class="form-check-label">Keep me signed in</label>
-    </div>
+    <div class="card-body p-4 pt-2">
+        <partial name="_formValidationErrorsPartialView" />
 
-    <button type="submit" class="btn btn-primary">Log in</button>
-</form>
+        <form asp-controller="Account" asp-action="Login" asp-route-ReturnURL="@Context.Request.Query["ReturnURL"]" method="post">
 
-<partial name="_formValidationErrorsPartialView"></partial>
+            <div class="mb-3">
+                <label asp-for="UserName" class="form-label fw-medium text-muted">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light text-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                        </svg>
+                    </span>
+                    <input asp-for="UserName" class="form-control" placeholder="Enter username" autocomplete="username" />
+                </div>
+                <span asp-validation-for="UserName" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label fw-medium text-muted">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light text-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
+                        </svg>
+                    </span>
+                    <input asp-for="Password" class="form-control" type="password" placeholder="Enter password" autocomplete="current-password" />
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="form-check mb-4">
+                <input asp-for="KeepSignedIn" class="form-check-input" type="checkbox" id="keepSignedInCheck" />
+                <label asp-for="KeepSignedIn" class="form-check-label text-secondary small" for="keepSignedInCheck">
+                    Keep me signed in on this device
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-medium">
+                Log In
+            </button>
+        </form>
+    </div>
+</div>
 
 @section Scripts
 {
