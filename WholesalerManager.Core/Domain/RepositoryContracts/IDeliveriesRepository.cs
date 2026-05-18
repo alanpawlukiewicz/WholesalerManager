@@ -44,5 +44,7 @@ namespace WholesalerManager.Core.Domain.RepositoryContracts
         /// <returns>True if deleted, false if not.</returns>
         Task<bool> DeleteDeliveryById(Guid deliveryID);
 
+        Task<int> Save();
+
     }
 }

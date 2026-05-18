@@ -39,7 +39,7 @@
                 <td>@product.ProductDescription</td>
                 <td>@product.CategoryName</td>
                 <td class="unit-price">@product.FormattedUnitPrice</td>
-                <td>@product.StockQuantity</td>
+                <td class="stock-quantity">@product.StockQuantity</td>
                 <td>@product.ReorderLevel</td>
                 @if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
                 {
@@ -50,94 +50,188 @@
                 {
                     <td><a data-productID="@product.ProductID" class="btn btn-primary edit-unit-price-button" role="button">Edit Unit Price</a></td>
                 }
+                @if (User.IsInRole(UserTypeOptions.Operator.ToString()))
+                {
+                    <td><a data-productID="@product.ProductID" class="btn btn-primary edit-stock-quantity-button" role="button">Edit Stock Quantity</a></td>
+                }
             </tr>
         }
     </tbody>
 </table>
 
-<div class="modal fade" id="update-modal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Update unit price</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Enter the new unit price:</p>
-                <input id="new-unit-price" type="number" step="0.01" placeholder="0,00" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="modal-update-btn">Update</button>
+@if (User.IsInRole(UserTypeOptions.Sales.ToString()))
+{
+    <div class="modal fade" id="update-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update unit price</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Enter the new unit price:</p>
+                    <input id="new-unit-price" type="number" step="0.01" placeholder="0,00" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="modal-update-btn">Update</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
-@section Scripts
-{
-    <script>
-        const newUnitPriceInput = document.getElementById("new-unit-price");
-        const editUnitPriceButtons = document.querySelectorAll(".edit-unit-price-button");
-        let currentProductID = '';
-        const modalUpdateBtn = document.getElementById('modal-update-btn');
+    @section Scripts
+    {
+        <script>
+            const newUnitPriceInput = document.getElementById("new-unit-price");
+            const editUnitPriceButtons = document.querySelectorAll(".edit-unit-price-button");
+            let currentProductID = '';
+            const modalUpdateBtn = document.getElementById('modal-update-btn');
 
-        const updateModal = new bootstrap.Modal(document.getElementById('update-modal'));
+            const updateModal = new bootstrap.Modal(document.getElementById('update-modal'));
 
-        editUnitPriceButtons.forEach(button => {
-            button.addEventListener("click", async () => {
-                currentProductID = button.getAttribute("data-productID");
-                newUnitPriceInput.value = "";
-                updateModal.show();
+            editUnitPriceButtons.forEach(button => {
+                button.addEventListener("click", async () => {
+                    currentProductID = button.getAttribute("data-productID");
+                    newUnitPriceInput.value = "";
+                    updateModal.show();
+                });
             });
-        });
 
-        modalUpdateBtn.addEventListener("click", async () => {
-                if (newUnitPriceInput.value.trim() === "")
-                {
-                    alert("Please enter a new unit price.");
-                    return;
-                }
-                try{
-                   var response = await fetch('/Products/EditUnitPrice', {
-                                                method: "POST",
-                                                headers: {
-                                                    "Content-Type": "application/json"
-                                                },
-                                                body: JSON.stringify({
-                                                    productID: currentProductID,
-                                                    newUnitPrice: newUnitPriceInput.value
-                                                })
-                                            });
-                    var responseBody = await response.text();
-                    const toastContainer = document.getElementById("toast");
-                    toastContainer.innerHTML = responseBody;
-
-                        const row = document.querySelector(`[data-productID="${currentProductID}"]`).closest("tr");
-    
-                        const unitPriceCell = row.querySelector('.unit-price');
-
-                        if (unitPriceCell) {
-                            let numericValue = parseFloat(newUnitPriceInput.value);
-                            if (!isNaN(numericValue)) {
-                                let roundedWithDot = (Math.floor(numericValue * 100) / 100).toFixed(2);
-                                unitPriceCell.textContent = roundedWithDot.replace('.', ',');
-                            }
-                        }
-
-                    const toastElement = document.querySelector(".toast");
-                    if (toastElement) {
-                        const bootstrapToast = new bootstrap.Toast(toastElement);
-                        bootstrapToast.show();
+            modalUpdateBtn.addEventListener("click", async () => {
+                    if (newUnitPriceInput.value.trim() === "" || parseFloat(newUnitPriceInput.value) <= 0)
+                    {
+                        alert("Please enter a valid unit price value.");
+                        return;
                     }
-                }
-                catch (error)
-                {
-                    console.error(error);
-                }
+                    try{
+                       var response = await fetch('/Products/EditUnitPrice', {
+                                                    method: "POST",
+                                                    headers: {
+                                                        "Content-Type": "application/json"
+                                                    },
+                                                    body: JSON.stringify({
+                                                        productID: currentProductID,
+                                                        newUnitPrice: newUnitPriceInput.value
+                                                    })
+                                                });
+                        var responseBody = await response.text();
+                        const toastContainer = document.getElementById("toast");
+                        toastContainer.innerHTML = responseBody;
+
+                            const row = document.querySelector(`[data-productID="${currentProductID}"]`).closest("tr");
+
+                            const unitPriceCell = row.querySelector('.unit-price');
+
+                            if (unitPriceCell) {
+                                let numericValue = parseFloat(newUnitPriceInput.value);
+                                if (!isNaN(numericValue)) {
+                                    let roundedWithDot = (Math.floor(numericValue * 100) / 100).toFixed(2);
+                                    unitPriceCell.textContent = roundedWithDot.replace('.', ',');
+                                }
+                            }
+
+                        const toastElement = document.querySelector(".toast");
+                        if (toastElement) {
+                            const bootstrapToast = new bootstrap.Toast(toastElement);
+                            bootstrapToast.show();
+                        }
+                    }
+                    catch (error)
+                    {
+                        console.error(error);
+                    }
 
                
-        });
-    </script>
+            });
+        </script>
+    }
+}
+
+
+@if (User.IsInRole(UserTypeOptions.Operator.ToString()))
+{
+    <div class="modal fade" id="update-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update stock quantity</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Enter the new stock quantity:</p>
+                    <input id="new-stock-quantity" type="number" step="1" placeholder="0" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="modal-update-btn">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @section Scripts
+    {
+        <script>
+            const newStockQuantityInput = document.getElementById("new-stock-quantity");
+            const editStockQuantityButtons = document.querySelectorAll(".edit-stock-quantity-button");
+            let currentProductID = '';
+            const modalUpdateBtn = document.getElementById('modal-update-btn');
+
+            const updateModal = new bootstrap.Modal(document.getElementById('update-modal'));
+
+            editStockQuantityButtons.forEach(button => {
+                button.addEventListener("click", async () => {
+                    currentProductID = button.getAttribute("data-productID");
+                    newStockQuantityInput.value = "";
+                    updateModal.show();
+                });
+            });
+
+            modalUpdateBtn.addEventListener("click", async () => {
+                    if (newStockQuantityInput.value.trim() === "" || newStockQuantityInput.value < 0)
+                    {
+                        alert("Please enter a valid stock quantity value.");
+                        return;
+                    }
+                    try{
+                       var response = await fetch('/Products/EditStockQuantity', {
+                                                    method: "POST",
+                                                    headers: {
+                                                        "Content-Type": "application/json"
+                                                    },
+                                                    body: JSON.stringify({
+                                                        productID: currentProductID,
+                                                        newStockQuantity: newStockQuantityInput.value
+                                                    })
+                                                });
+                        var responseBody = await response.text();
+                        const toastContainer = document.getElementById("toast");
+                        toastContainer.innerHTML = responseBody;
+
+                            const row = document.querySelector(`[data-productID="${currentProductID}"]`).closest("tr");
+
+                            const stockQuantityCell = row.querySelector('.stock-quantity');
+
+                            if (stockQuantityCell) {
+                                stockQuantityCell.textContent = newStockQuantityInput.value;
+                            }
+
+                        const toastElement = document.querySelector(".toast");
+                        if (toastElement) {
+                            const bootstrapToast = new bootstrap.Toast(toastElement);
+                            bootstrapToast.show();
+                        }
+                    }
+                    catch (error)
+                    {
+                        console.error(error);
+                    }
+
+               
+            });
+        </script>
+    }
 }

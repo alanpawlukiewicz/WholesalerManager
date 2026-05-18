@@ -74,5 +74,45 @@ namespace WholesalerManager.Core.Services.OrderServices
 
             return updatedOrder.ToOrderResponse();
         }
+
+        public async Task<bool> UpdateOrderStatus(Guid orderID, OrderStatus status)
+        {
+            if (orderID == Guid.Empty)
+            {
+                throw new ArgumentException(nameof(orderID));
+            }
+            var matchingOrder = await _ordersRepository.GetOrderByID(orderID);
+            if (matchingOrder is null)
+            {
+                return false;
+            }
+
+            if (status == OrderStatus.PENDING ||
+                status == OrderStatus.DELIVERED ||
+                status == OrderStatus.CANCELLED ||
+                status == OrderStatus.RETURNED)
+            {
+                return false;
+            }
+
+            if (matchingOrder.Status == OrderStatus.PENDING.ToString() && status != OrderStatus.PAID)
+            {
+                return false;
+            }
+            if (matchingOrder.Status == OrderStatus.PAID.ToString() && status != OrderStatus.PROCESSING)
+            {
+                return false;
+            }
+            if (matchingOrder.Status == OrderStatus.PROCESSING.ToString() && status != OrderStatus.SHIPPED)
+            {
+                return false;
+            }
+
+            matchingOrder.Status = status.ToString();
+
+            await _ordersRepository.Save();
+
+            return true;
+        }
     }
 }

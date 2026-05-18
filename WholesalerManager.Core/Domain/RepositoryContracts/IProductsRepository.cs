@@ -28,7 +28,7 @@ namespace WholesalerManager.Core.Domain.RepositoryContracts
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
-        Task<Product> UpdateProduct(Product product);
+        Task<Product?> UpdateProduct(Product product);
 
 
         /// <summary>
@@ -44,5 +44,8 @@ namespace WholesalerManager.Core.Domain.RepositoryContracts
         /// <param name="productID">The unique identifier of the product to be deleted.</param>
         /// <returns>True if the product was successfully deleted; otherwise, false.</returns>
         Task<bool> DeleteProduct(Guid productID);
+
+
+        Task<int> Save();
     }
 }

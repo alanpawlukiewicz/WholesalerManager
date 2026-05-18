@@ -4,6 +4,7 @@ using System.Text;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.DeliveryDTO;
+using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
 
@@ -16,6 +17,27 @@ namespace WholesalerManager.Core.Services.DeliveryServices
         public DeliveriesUpdaterService(IDeliveriesRepository deliveriesRepository)
         {
             _deliveriesRepository = deliveriesRepository;
+        }
+
+        public async Task<bool> SetDeliveryAsReceived(Guid orderID)
+        {
+            if (orderID == Guid.Empty)
+            {
+                return false;
+            }
+            var matchingDelivery = await _deliveriesRepository.GetDeliveryById(orderID);
+
+            if (matchingDelivery == null || matchingDelivery.Status != DeliveryStatus.IN_TRANSIT.ToString())
+            {
+                return false;
+            }
+
+            matchingDelivery.Status = DeliveryStatus.RECEIVED.ToString();
+
+            await _deliveriesRepository.Save();
+
+            return true;
+
         }
 
         public async Task<DeliveryResponse> UpdateDelivery(DeliveryUpdateRequest? deliveryUpdateRequest)

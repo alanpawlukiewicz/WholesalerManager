@@ -30,7 +30,7 @@ namespace WholesalerManager.UI.Controllers
             _categoriesGetterService = categoriesGetterService;
         }
 
-        [Authorize(Roles = "Administrator,Manager,Sales")]
+        [Authorize(Roles = "Administrator,Manager,Sales,Operator")]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -67,7 +67,7 @@ namespace WholesalerManager.UI.Controllers
             return RedirectToAction("Index", "Products");
         }
 
-        [Authorize(Roles = "Administrator,Manager,Operator")]
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
@@ -90,7 +90,7 @@ namespace WholesalerManager.UI.Controllers
             return View(productUpdateRequest);
         }
 
-        [Authorize(Roles = "Administrator,Manager,Operator")]
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("{id}")]
         [HttpPost]
         public async Task<IActionResult> Update(ProductUpdateRequest productUpdateRequest)
@@ -139,33 +139,50 @@ namespace WholesalerManager.UI.Controllers
             return RedirectToAction("Index", "Products");
         }
 
-        [Authorize(Roles = "Administrator,Manager,Sales")]
+        [Authorize(Roles = "Administrator,Sales")]
         [HttpPost]
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> EditUnitPrice([FromBody] EditUnitPriceDTO model)
         {
-            if (model.ProductID == Guid.Empty || model.NewUnitPrice is null)
+            if (model.NewUnitPrice.ToDecimalSafe() <= 0)
+            {
+                ViewData["ErrorMessage"] = $"Unit price must be greater than zero.";
+                return PartialView("_errorToastPartialView");
+
+            }
+
+            bool result = await _productsUpdaterService.UpdateUnitPrice(model);
+
+            if(!result)
             {
                 ViewData["ErrorMessage"] = $"Unit price could not be changed.";
                 return PartialView("_errorToastPartialView");
             }
-            decimal unitPriceParsed = model.NewUnitPrice.ToDecimalSafe();
-            if (unitPriceParsed <= 0)
-            {
-                ViewData["ErrorMessage"] = $"Unit price must be greater than zero.";
-                return PartialView("_errorToastPartialView");
-            }
-
-            var matchingProduct = await _productsGetterService.GetProductById(model.ProductID);
-            if (matchingProduct is null)
-            {
-                ViewData["ErrorMessage"] = $"Product could not be found";
-                return PartialView("_errorToastPartialView");
-            }
-            matchingProduct.UnitPrice = unitPriceParsed;
-            await _productsUpdaterService.UpdateProduct(matchingProduct.ToProductUpdateRequest());
 
             ViewData["InfoMessage"] = $"Unit price has been changed successfully.";
+            return PartialView("_infoToastPartialView");
+        }
+
+        [Authorize(Roles = "Administrator,Operator")]
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> EditStockQuantity([FromBody] EditStockQuantityDTO model)
+        {
+            if (model.NewStockQuantity < 0)
+            {
+                ViewData["ErrorMessage"] = $"Stock quantity must be a positive number.";
+                return PartialView("_errorToastPartialView");
+            }
+
+            bool result = await _productsUpdaterService.UpdateStockQuantity(model);
+
+            if(!result)
+            {
+                ViewData["ErrorMessage"] = $"Stock quantity could not be changed.";
+                return PartialView("_errorToastPartialView");
+            }
+
+            ViewData["InfoMessage"] = $"Stock quantity has been changed successfully.";
             return PartialView("_infoToastPartialView");
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using WholesalerManager.Core.DTO.OrderDTO;
+using WholesalerManager.Core.Enums;
 
 namespace WholesalerManager.Core.ServiceContracts.OrderServiceContracts
 {
@@ -22,7 +23,15 @@ namespace WholesalerManager.Core.ServiceContracts.OrderServiceContracts
         /// </summary>
         /// <param name="orderID">The unique identifier of the order to cancel.</param>
         /// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if the order
-        /// was successfully canceled; otherwise, <see langword="false"/>.</returns>
+        /// was successfully updated; otherwise, <see langword="false"/>.</returns>
         Task<bool> CancelOrder(Guid orderID);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orderID"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        Task<bool> UpdateOrderStatus(Guid orderID, OrderStatus status);
     }
 }

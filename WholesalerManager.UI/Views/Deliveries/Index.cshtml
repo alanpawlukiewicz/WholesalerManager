@@ -3,13 +3,17 @@
     ViewBag.Title = "Deliveries";
 }
 
-<div class="container">
-    <header class="d-flex justify-content-center py-3">
-        <ul class="nav nav-pills">
-            <li class="nav-item"><a asp-controller="Deliveries" asp-action="Create" class="nav-link">Register New Delivery</a></li>
-        </ul>
-    </header>
-</div>
+@if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
+{
+    <div class="container">
+        <header class="d-flex justify-content-center py-3">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a asp-controller="Deliveries" asp-action="Create" class="nav-link">Register New Delivery</a></li>
+            </ul>
+        </header>
+    </div>
+}
+
 
 <h1>Deliveries</h1>
 <table class="table">
@@ -22,16 +26,24 @@
             <th></th>
         </tr>
     </thead>
-    
+
     @foreach (var dwp in Model)
     {
         <tbody class="delivery-record">
             <tr>
                 <td>@dwp.Delivery?.SupplierName</td>
                 <td>@dwp.Delivery?.OrderDate</td>
-                <td>@dwp.Delivery?.Status</td>
-                <td><a class="btn btn-primary" asp-controller="Deliveries" asp-action="Update" asp-route-id="@dwp.Delivery?.DeliveryID" role="button">Update</a></td>
-                <td><button class="btn btn-danger delete-btn" data-deliveryID="@dwp.Delivery?.DeliveryID">Delete</button></td>
+                <td class="delivery-status">@dwp.Delivery?.Status</td>
+                @if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
+                {
+                    <td><a class="btn btn-primary" asp-controller="Deliveries" asp-action="Update" asp-route-id="@dwp.Delivery?.DeliveryID" role="button">Update</a></td>
+                    <td><button class="btn btn-danger delete-btn" data-deliveryID="@dwp.Delivery?.DeliveryID">Delete</button></td>
+                }
+                @if (User.IsInRole(UserTypeOptions.Operator.ToString())
+                && dwp.Delivery?.Status == DeliveryStatus.IN_TRANSIT.ToString())
+                {
+                    <td><button class="btn btn-primary update-status-button" data-deliveryID="@dwp.Delivery?.DeliveryID">Set as received</button></td>
+                }
             </tr>
             @if (dwp.Items is not null)
             {
@@ -50,72 +62,154 @@
 
             
     }
-    
+
 </table>
 
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Delete delivery information</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this delivery entry?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="modal-delete-btn">Delete</button>
+@if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
+{
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete delivery information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this delivery entry?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="modal-delete-btn">Delete</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-@section Scripts
-{
-    <script>
-        const modalElement = document.getElementById('deleteModal');
-        const deleteBtns = document.querySelectorAll(".delete-btn");
-        const modalDeleteBtn = document.getElementById('modal-delete-btn');
-        let currentDeliveryId = '';
-        const myModal = new bootstrap.Modal(modalElement);
+    @section Scripts
+    {
+        <script>
+            const modalElement = document.getElementById('deleteModal');
+            const deleteBtns = document.querySelectorAll(".delete-btn");
+            const modalDeleteBtn = document.getElementById('modal-delete-btn');
+            let currentDeliveryId = '';
+            const myModal = new bootstrap.Modal(modalElement);
 
-        deleteBtns.forEach((btn) => {
-            btn.addEventListener('click', () => {
-                currentDeliveryId = btn.getAttribute('data-deliveryID');
-                myModal.show();
+            deleteBtns.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    currentDeliveryId = btn.getAttribute('data-deliveryID');
+                    myModal.show();
+                });
             });
-        });
 
-        modalDeleteBtn.addEventListener('click', async () => {
-            try
-            {
-                if (currentDeliveryId == "")
+            modalDeleteBtn.addEventListener('click', async () => {
+                try
                 {
-                    return;
-                }
-                var response = await fetch(`/Deliveries/Delete/${currentDeliveryId}`, {method: "DELETE"});
-                var responseBody = await response.text();
-                const toastContainer = document.getElementById("toast");
-                toastContainer.innerHTML = responseBody;
+                    if (currentDeliveryId == "")
+                    {
+                        return;
+                    }
+                    var response = await fetch(`/Deliveries/Delete/${currentDeliveryId}`, {method: "DELETE"});
+                    var responseBody = await response.text();
+                    const toastContainer = document.getElementById("toast");
+                    toastContainer.innerHTML = responseBody;
 
-                const deliveryToDelete = document.querySelector(`button[data-deliveryID="${currentDeliveryId}"]`).closest(".delivery-record");
-                if(deliveryToDelete)
+                    const deliveryToDelete = document.querySelector(`button[data-deliveryID="${currentDeliveryId}"]`).closest(".delivery-record");
+                    if(deliveryToDelete)
+                    {
+                        deliveryToDelete.remove();
+                    }
+
+                    const toastElement = document.querySelector(".toast");
+                    if (toastElement) {
+                        const bootstrapToast = new bootstrap.Toast(toastElement);
+                        bootstrapToast.show();
+                    }
+                }
+                catch (error)
                 {
-                    deliveryToDelete.remove();
+                    console.error(error);
                 }
+            });
 
-                const toastElement = document.querySelector(".toast");
-                if (toastElement) {
-                    const bootstrapToast = new bootstrap.Toast(toastElement);
-                    bootstrapToast.show();
-                }
-            }
-            catch (error)
-            {
-                console.error(error);
-            }
-        });
-        
-    </script>
+        </script>
+    }
+}
+
+
+
+@if (User.IsInRole(UserTypeOptions.Operator.ToString()))
+{
+    <div class="modal fade" id="update-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Set delivery as received</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to set this delivery as received?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="modal-update-btn">Set as Received</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @section Scripts
+    {
+        <script>
+            const updateStatusButtons = document.querySelectorAll(".update-status-button");
+            let currentDeliveryID = '';
+            const modalUpdateBtn = document.getElementById('modal-update-btn');
+
+            const updateModal = new bootstrap.Modal(document.getElementById('update-modal'));
+
+            updateStatusButtons.forEach(button => {
+                button.addEventListener("click", () => {
+                    currentDeliveryID = button.getAttribute("data-deliveryID");
+                    updateModal.show();
+                });
+            });
+
+            modalUpdateBtn.addEventListener("click", async () => {
+                    try{
+                       var response = await fetch('/Deliveries/SetAsReceived', {
+                                                    method: "POST",
+                                                    headers: {
+                                                        "Content-Type": "application/json"
+                                                    },
+                                                    body: JSON.stringify(currentDeliveryID)
+                                                });
+                        var responseBody = await response.text();
+                        const toastContainer = document.getElementById("toast");
+                        toastContainer.innerHTML = responseBody;
+
+                        const updateBtn = document.querySelector(`[data-deliveryID="${currentDeliveryID}"]`);
+                        const row = updateBtn?.closest("tr");
+
+                        const deliveryStatusCell = row.querySelector('.delivery-status');
+
+                        if (deliveryStatusCell && updateBtn) {
+                            deliveryStatusCell.textContent = "RECEIVED";
+                            updateBtn.remove();
+                        }
+
+                        const toastElement = document.querySelector(".toast");
+                        if (toastElement) {
+                            const bootstrapToast = new bootstrap.Toast(toastElement);
+                            bootstrapToast.show();
+                        }
+                    }
+                    catch (error)
+                    {
+                        console.error(error);
+                    }
+
+               
+            });
+        </script>
+    }
 }

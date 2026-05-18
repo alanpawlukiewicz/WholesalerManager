@@ -24,7 +24,7 @@
                     <a asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
                 </li>
                 
-                @if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Sales"))
+                @if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Sales") || User.IsInRole("Operator"))
                 {
                     <li class="nav-item">
                         <a asp-controller="Products" asp-action="Index" class="nav-link">Products</a>
@@ -45,7 +45,7 @@
                     </li>
                 }
 
-                @if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Sales"))
+                @if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Sales") || User.IsInRole("Operator"))
                 {
                     <li class="nav-item">
                         <a asp-controller="Orders" asp-action="Index" class="nav-link">Orders</a>

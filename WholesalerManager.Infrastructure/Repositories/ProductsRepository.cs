@@ -21,14 +21,14 @@ namespace WholesaleManager.Infrastructure.Repositories
         public async Task<Product> AddProduct(Product product)
         {
             await _db.Product.AddAsync(product);
-            await _db.SaveChangesAsync();
+            await Save();
             return product;
         }
 
         public async Task<bool> DeleteProduct(Guid productID)
         {
             _db.Product.RemoveRange(_db.Product.Where(product => product.ProductID == productID));
-            int rowsAffected = await _db.SaveChangesAsync();
+            int rowsAffected = await Save();
             return rowsAffected > 0;
         }
 
@@ -42,13 +42,18 @@ namespace WholesaleManager.Infrastructure.Repositories
             return await _db.Product.Include("Category").FirstOrDefaultAsync(p => p.ProductID == productID);
         }
 
-        public async Task<Product> UpdateProduct(Product product)
+        public async Task<int> Save()
+        {
+            return await _db.SaveChangesAsync();
+        }
+
+        public async Task<Product?> UpdateProduct(Product product)
         {
             Product? matchingProduct = await _db.Product.FirstOrDefaultAsync(temp => temp.ProductID == product.ProductID);
 
             if (matchingProduct is null)
             {
-                return product;
+                return null;
             }
 
             matchingProduct.ProductName = product.ProductName;
@@ -59,7 +64,7 @@ namespace WholesaleManager.Infrastructure.Repositories
             matchingProduct.StockQuantity = product.StockQuantity;
             matchingProduct.ReorderLevel = product.ReorderLevel;
 
-            await _db.SaveChangesAsync();
+            await Save();
 
             return matchingProduct;
         }

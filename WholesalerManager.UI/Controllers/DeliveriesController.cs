@@ -134,7 +134,7 @@ namespace WholesalerManager.UI.Controllers
             return RedirectToAction("Index", "Deliveries");
         }
 
-        [Authorize(Roles = "Administrator,Manager,Operator")]
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("[action]/{id}")]
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
@@ -161,7 +161,7 @@ namespace WholesalerManager.UI.Controllers
             return View(updateDeliveryWithProductsModel);
         }
 
-        [Authorize(Roles = "Administrator,Manager,Operator")]
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("[action]/{id}")]
         [HttpPost]
         public async Task<IActionResult> Update(UpdateDeliveryWithProductsViewModel updateDeliveryWithProductsModel)
@@ -212,7 +212,7 @@ namespace WholesalerManager.UI.Controllers
         }
 
 
-        [Authorize(Roles = "Administrator,Manager,Operator")]
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("get-product/{index}")]
         [HttpGet]
         public IActionResult GetProduct(int index)
@@ -220,12 +220,29 @@ namespace WholesalerManager.UI.Controllers
             return ViewComponent("AddDeliveryItem", new { index = index });
         }
 
-        [Authorize(Roles = "Administrator,Manager,Operator")]
+        [Authorize(Roles = "Administrator,Manager")]
         [Route("Update/get-update-product/{index}/{deliveryID}")]
         [HttpGet]
         public IActionResult GetUpdateProduct(int index, Guid deliveryID)
         {
             return ViewComponent("UpdateDeliveryItem", new { index = index, deliveryID = deliveryID });
+        }
+
+        [Authorize(Roles = "Administrator,Operator")]
+        [Route("[action]")]
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> SetAsReceived([FromBody] Guid deliveryID)
+        {
+            var result = await _deliveriesUpdaterService.SetDeliveryAsReceived(deliveryID);
+            if (!result)
+            {
+                ViewData["ErrorMessage"] = "Delivery data could not be updated.";
+                return PartialView("_errorToastPartialView");
+            }
+
+            ViewData["InfoMessage"] = "Delivery data have been updated successfully.";
+            return PartialView("_infoToastPartialView");
         }
     }
 }

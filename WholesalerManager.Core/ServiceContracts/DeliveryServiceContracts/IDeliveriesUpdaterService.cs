@@ -16,5 +16,12 @@ namespace WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts
         /// <param name="deliveryUpdateRequest"></param>
         /// <returns></returns>
         Task<DeliveryResponse> UpdateDelivery(DeliveryUpdateRequest? deliveryUpdateRequest);
+
+        /// <summary>
+        /// Sets the status of a delivery as delivered.
+        /// </summary>
+        /// <param name="orderID"></param>
+        /// <returns></returns>
+        Task<bool> SetDeliveryAsReceived(Guid orderID);
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WholesalerManager.Core.DTO.CustomerDTO;
+using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
@@ -50,7 +51,7 @@ namespace WholesalerManager.UI.Controllers
             _customersGetterService = customersGetterService;
         }
 
-        [Authorize(Roles = "Administrator,Manager,Sales")]
+        [Authorize(Roles = "Administrator,Manager,Sales,Operator")]
         [Route("[action]")]
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -179,7 +180,7 @@ namespace WholesalerManager.UI.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.Errors = ModelState.GetErrorMessages();
-                return View(orderID);
+                return RedirectToAction("Index", "Orders");
             }
 
             if (orderID == Guid.Empty)
@@ -205,18 +206,40 @@ namespace WholesalerManager.UI.Controllers
         [Authorize(Roles = "Administrator,Manager")]
         [Route("Update/get-update-product/{index}/{orderID}")]
         [HttpGet]
-        public IActionResult GetUpdateProduct(int index, Guid orderID)
+        public IActionResult GetUpdateProduct([FromRoute] int index, [FromRoute] Guid orderID)
         {
             return ViewComponent("UpdateOrderItem", new { index = index, orderID = orderID });
         }
 
-        [Authorize(Roles = "Administrator,Manager,Sales")]
+        [Authorize(Roles = "Administrator,Sales")]
         [Route("[action]/{id}")]
+        [HttpPost]
         public async Task<IActionResult> CancelOrder(Guid id)
         {
-            await _ordersUpdaterService.CancelOrder(id);
+            bool result = await _ordersUpdaterService.CancelOrder(id);
+            if (!result)
+            {
+                TempData["ErrorMessage"] = $"Order could not be cancelled.";
+                return RedirectToAction("Index", "Orders");
+            }
             TempData["InfoMessage"] = $"Order has been cancelled successfully.";
             return RedirectToAction("Index", "Orders");
+        }
+
+        [Authorize(Roles = "Administrator,Manager,Operator")]
+        [Route("[action]/{orderID}/{status}")]
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> UpdateOrderStatus([FromRoute] Guid orderID, [FromRoute] OrderStatus status)
+        {
+            bool result = await _ordersUpdaterService.UpdateOrderStatus(orderID, status);
+            if (!result)
+            {
+                TempData["ErrorMessage"] = $"Order status could not be updated.";
+                return PartialView("_errorToastPartialView");
+            }
+            TempData["InfoMessage"] = $"Order status has been updated successfully.";
+            return PartialView("_infoToastPartialView");
         }
     }
 }

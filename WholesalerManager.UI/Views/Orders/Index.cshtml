@@ -3,13 +3,17 @@
     ViewBag.Title = "Orders";
 }
 
-<div class="container">
-    <header class="d-flex justify-content-center py-3">
-        <ul class="nav nav-pills">
-            <li class="nav-item"><a asp-controller="Orders" asp-action="Create" class="nav-link">Register New Order</a></li>
-        </ul>
-    </header>
-</div>
+@if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Sales"))
+{
+    <div class="container">
+        <header class="d-flex justify-content-center py-3">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a asp-controller="Orders" asp-action="Create" class="nav-link">Register New Order</a></li>
+            </ul>
+        </header>
+    </div>
+}
+
 
 <h1>Deliveries</h1>
 <table class="table">
@@ -23,7 +27,7 @@
             <th></th>
         </tr>
     </thead>
-    
+
     @foreach (var dwp in Model)
     {
         <tbody class="delivery-record">
@@ -31,20 +35,29 @@
                 <td>@dwp.Order?.CustomerName</td>
                 <td>@dwp.Order?.TIN</td>
                 <td>@dwp.Order?.OrderDate</td>
-                <td>@dwp.Order?.Status</td>
+                <td class="order-status">@dwp.Order?.Status</td>
                 @if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
                 {
                     <td><a class="btn btn-primary" asp-controller="Orders" asp-action="Update" asp-route-id="@dwp.Order?.OrderID" role="button">Update</a></td>
                     <td><button class="btn btn-danger delete-btn" data-deliveryID="@dwp.Order?.OrderID">Delete</button></td>
                 }
-                @if(User.IsInRole(UserTypeOptions.Sales.ToString()) 
+                @if (User.IsInRole(UserTypeOptions.Sales.ToString())
                 && dwp.Order?.Status != OrderStatus.DELIVERED.ToString()
                 && dwp.Order?.Status != OrderStatus.CANCELLED.ToString())
                 {
-                    <td><a class="btn btn-warning" asp-controller="Orders" asp-action="CancelOrder" asp-route-id="@dwp.Order?.OrderID" role="button">Cancel Order</a></td>
+                    <td>
+                        <form asp-controller="Orders" asp-action="CancelOrder" asp-route-id="@dwp.Order?.OrderID" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-warning" role="button">Cancel Order</button>
+                        </form>
+                    </td>
                 }
-                
-                
+                @if (User.IsInRole(UserTypeOptions.Operator.ToString())
+                && (dwp.Order?.Status == OrderStatus.PENDING.ToString()
+                || dwp.Order?.Status == OrderStatus.PAID.ToString()
+                || dwp.Order?.Status == OrderStatus.PROCESSING.ToString()))
+                {
+                    <td><button class="btn btn-primary update-status-btn" data-deliveryID="@dwp.Order?.OrderID">Update Order Status</button></td>
+                }
             </tr>
             @if (dwp.Items is not null)
             {
@@ -64,72 +77,176 @@
 
             
     }
-    
+
 </table>
 
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Delete order information</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this order entry?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="modal-delete-btn">Delete</button>
+@if (User.IsInRole("Administrator") || User.IsInRole("Manager"))
+{
+    <div class="modal fade" id="delete-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete order information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this order entry?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="modal-delete-btn">Delete</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-@section Scripts
-{
-    <script>
-        const modalElement = document.getElementById('deleteModal');
-        const deleteBtns = document.querySelectorAll(".delete-btn");
-        const modalDeleteBtn = document.getElementById('modal-delete-btn');
-        let currentOrderId = '';
-        const myModal = new bootstrap.Modal(modalElement);
+    @section Scripts
+    {
+        <script>
+            const modalElement = document.getElementById('delete-modal');
+            const deleteBtns = document.querySelectorAll(".delete-btn");
+            const modalDeleteBtn = document.getElementById('modal-delete-btn');
+            let currentOrderId = '';
+            const myModal = new bootstrap.Modal(modalElement);
 
-        deleteBtns.forEach((btn) => {
-            btn.addEventListener('click', () => {
-                currentOrderId = btn.getAttribute('data-deliveryID');
-                myModal.show();
+            deleteBtns.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    currentOrderId = btn.getAttribute('data-deliveryID');
+                    myModal.show();
+                });
             });
-        });
 
-        modalDeleteBtn.addEventListener('click', async () => {
-            try
-            {
-                if (currentOrderId == "")
+            modalDeleteBtn.addEventListener('click', async () => {
+                try
                 {
-                    return;
-                }
-                var response = await fetch(`Delete/${currentOrderId}`, {method: "DELETE"});
-                var responseBody = await response.text();
-                const toastContainer = document.getElementById("toast");
-                toastContainer.innerHTML = responseBody;
+                    if (currentOrderId == "")
+                    {
+                        return;
+                    }
+                    var response = await fetch(`Delete/${currentOrderId}`, {method: "DELETE"});
+                    var responseBody = await response.text();
+                    const toastContainer = document.getElementById("toast");
+                    toastContainer.innerHTML = responseBody;
 
-                const deliveryToDelete = document.querySelector(`button[data-deliveryID="${currentOrderId}"]`).closest(".delivery-record");
-                if(deliveryToDelete)
+                    const orderToDelete = document.querySelector(`button[data-deliveryID="${currentOrderId}"]`).closest(".delivery-record");
+                    if(orderToDelete)
+                    {
+                        orderToDelete.remove();
+                    }
+
+                    const toastElement = document.querySelector(".toast");
+                    if (toastElement) {
+                        const bootstrapToast = new bootstrap.Toast(toastElement);
+                        bootstrapToast.show();
+                    }
+                }
+                catch (error)
                 {
-                    deliveryToDelete.remove();
+                    console.error(error);
                 }
+            });
 
-                const toastElement = document.querySelector(".toast");
-                if (toastElement) {
-                    const bootstrapToast = new bootstrap.Toast(toastElement);
-                    bootstrapToast.show();
+        </script>
+    }
+
+}
+
+
+@if (User.IsInRole("Operator"))
+{
+    <div class="modal fade" id="change-status-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update order status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to change the status of this order to <span id="new-status"></span>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="modal-update-status-btn">Update Status</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    @section Scripts
+    {
+        <script>
+            const modalElement = document.getElementById('change-status-modal');
+            const updateBtns = document.querySelectorAll(".update-status-btn");
+            const modalUpdateStatusBtn = document.getElementById('modal-update-status-btn');
+            let currentOrderId = '';
+            let newStatus = '';
+            let statusSpan = document.getElementById("new-status");
+            const myModal = new bootstrap.Modal(modalElement);
+
+            updateBtns.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    currentOrderId = btn.getAttribute('data-deliveryID');
+
+                    newStatus = btn.closest("tr").querySelector(".order-status").textContent.trim();
+
+                    if (newStatus == "PENDING")
+                    {
+                        newStatus = "PAID";
+                    }
+                    else if (newStatus == "PAID")
+                    {
+                        newStatus = "PROCESSING";
+                    }
+                    else if (newStatus == "PROCESSING")
+                    {
+                        newStatus = "SHIPPED";
+                    }
+
+                    statusSpan.innerText = newStatus;
+                    myModal.show();
+                });
+            });
+
+            modalUpdateStatusBtn.addEventListener('click', async () => {
+                try
+                {
+                    if (currentOrderId == "")
+                    {
+                        return;
+                    }
+                    var response = await fetch(`UpdateOrderStatus/${currentOrderId}/${newStatus}`, {method: "POST"});
+                    var responseBody = await response.text();
+                    const toastContainer = document.getElementById("toast");
+                    toastContainer.innerHTML = responseBody;
+
+                    const updateBtn = document.querySelector(`button[data-deliveryID="${currentOrderId}"]`);
+                    const orderToUpdate = updateBtn?.closest("tr").querySelector(".order-status");
+
+                    if(orderToUpdate)
+                    {
+                        orderToUpdate.innerText = newStatus;
+                    }
+                    if (updateBtn)
+                    {
+                        if (newStatus == "SHIPPED")
+                        {
+                            updateBtn.remove();
+                        }
+                    }
+
+                    const toastElement = document.querySelector(".toast");
+                    if (toastElement) {
+                        const bootstrapToast = new bootstrap.Toast(toastElement);
+                        bootstrapToast.show();
+                    }
                 }
-            }
-            catch (error)
-            {
-                console.error(error);
-            }
-        });
-        
-    </script>
+                catch (error)
+                {
+                    console.error(error);
+                }
+            });
+
+        </script>
+    }
 }
