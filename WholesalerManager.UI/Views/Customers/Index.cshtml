@@ -3,149 +3,70 @@
     ViewBag.Title = "Customers";
 }
 
-<div class="container">
-    <header class="d-flex justify-content-center py-3">
-        <ul class="nav nav-pills">
-            <li class="nav-item"><a asp-controller="Customers" asp-action="Create" class="nav-link">Register New Customer</a></li>
-        </ul>
-    </header>
-</div>
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Customers</h1>
+        <a asp-controller="Customers" asp-action="Create" class="btn btn-success d-inline-flex align-items-center gap-2">
+            Register New Customer
+        </a>
+    </div>
 
-<h1>Products</h1>
-
-<form asp-controller="Customers" asp-action="Index" method="get" class="row g-2 align-items-center my-2">
-    <div class="col-md-3">
-        <select name="propertyName" class="form-select">
-            @foreach (var fieldName in ViewBag.FieldNames)
-            {
-                if (Context.Request.Query["propertyName"] == fieldName)
+    <form asp-controller="Customers" asp-action="Index" method="get" class="row g-2 align-items-center mb-4">
+        <div class="col-md-3">
+            <select name="propertyName" class="form-select">
+                @foreach (var fieldName in ViewBag.FieldNames)
+                {
+                    if (Context.Request.Query["propertyName"] == fieldName)
                     {
-                    <option value="@fieldName" selected>@fieldName</option>
+                        <option value="@fieldName" selected>@fieldName</option>
                     }
                     else
                     {
-                    <option value="@fieldName">@fieldName</option>
+                        <option value="@fieldName">@fieldName</option>
                     }
-            }
-        </select>
-    </div>
-
-    <div class="col-md-6">
-        <div class="input-group">
-            <input name="filter" class="form-control" placeholder="Filter..." />
-            <button class="btn btn-primary" type="submit">
-                <img src="~/images/search.svg" alt="search" /> Search
-            </button>
+                }
+            </select>
         </div>
+
+        <div class="col-md-6">
+            <div class="input-group">
+                <input name="filter" class="form-control" placeholder="Filter..." value="@Context.Request.Query["filter"]" />
+                <button class="btn btn-primary d-inline-flex align-items-center gap-2" type="submit">
+                    <img src="~/images/search.svg" alt="search" /> Search
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(CustomerResponse.CustomerName) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(CustomerResponse.TIN) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(CustomerResponse.ContactEmail) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(CustomerResponse.Address) })
+                    <th style="width: 1%;"></th>
+                    <th style="width: 1%;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var customer in Model)
+                {
+                    <tr>
+                        <td>@customer.CustomerName</td>
+                        <td>@customer.TIN</td>
+                        <td>@customer.ContactEmail</td>
+                        <td>@customer.Address</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-primary" asp-controller="Customers" asp-action="Update" asp-route-id="@customer.CustomerID" role="button">Update</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-danger" asp-controller="Customers" asp-action="Delete" asp-route-id="@customer.CustomerID" role="button">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-</form>
-
-
-<table class="table">
-    <thead>
-        <tr>
-            @if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.CustomerName) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.ASC))
-            {
-                <th>
-                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.CustomerName)" asp-route-sortOrder="@nameof(SortOrderOptions.DESC)">
-                        Customer Name <img src="~/images/arrow_drop_down.svg" alt="Alternate Text" />
-                    </a>
-                </th>
-            }
-            else if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.CustomerName) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.DESC))
-            {
-                <th>
-                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.CustomerName)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">
-                        Customer Name <img src="~/images/arrow_drop_up.svg" alt="Alternate Text" />
-                    </a>
-                </th>
-            }
-            else
-            {
-                <th><a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.CustomerName)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">Customer Name</a></th>
-            }
-
-            @if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.TIN) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.ASC))
-            {
-                <th>
-                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.TIN)" asp-route-sortOrder="@nameof(SortOrderOptions.DESC)">
-                        TIN <img src="~/images/arrow_drop_down.svg" alt="Alternate Text" />
-                    </a>
-                </th>
-            }
-            else if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.TIN) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.DESC))
-            {
-                <th>
-                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.TIN)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">
-                        TIN <img src="~/images/arrow_drop_up.svg" alt="Alternate Text" />
-                    </a>
-                </th>
-            }
-            else
-            {
-                <th><a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.TIN)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">TIN</a></th>
-            }
-            
-
-            @if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.ContactEmail) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.ASC))
-            {
-                <th>
-                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.ContactEmail)" asp-route-sortOrder="@nameof(SortOrderOptions.DESC)">
-                        Contact Email <img src="~/images/arrow_drop_down.svg" alt="Alternate Text" />
-                    </a>
-                </th>
-            }
-            else if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.ContactEmail) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.DESC))
-            {
-                <th>
-                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.ContactEmail)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">
-                        Contact Email <img src="~/images/arrow_drop_up.svg" alt="Alternate Text" />
-                    </a>
-                </th>
-            }
-            else
-            {
-                <th><a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.ContactEmail)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">Contact Email</a></th>
-            }
-            
-
-            @if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.Address) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.ASC))
-            {
-                <th>
-                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.Address)" asp-route-sortOrder="@nameof(SortOrderOptions.DESC)">
-                        Address <img src="~/images/arrow_drop_down.svg" alt="Alternate Text" />
-                    </a>
-                </th>
-            }
-            else if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.Address) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.DESC))
-            {
-                <th>
-                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.Address)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">
-                        Address <img src="~/images/arrow_drop_up.svg" alt="Alternate Text" />
-                    </a>
-                </th>
-            }
-            else
-            {
-                <th><a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.Address)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">Address</a></th>
-            }
-            
-
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var customer in Model)
-        {
-            <tr>
-                <td>@customer.CustomerName</td>
-                <td>@customer.TIN</td>
-                <td>@customer.ContactEmail</td>
-                <td>@customer.Address</td>
-                <td><a class="btn btn-primary" asp-controller="Customers" asp-action="Update" asp-route-id="@customer.CustomerID" role="button">Update</a></td>
-                <td><a class="btn btn-danger" asp-controller="Customers" asp-action="Delete" asp-route-id="@customer.CustomerID" role="button">Delete</a></td>
-            </tr>
-        }
-    </tbody>
-</table>
+</div>

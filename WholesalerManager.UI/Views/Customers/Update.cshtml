@@ -4,51 +4,68 @@
     bool hasTin = Model.TIN is not null ? true : false;
 }
 
-<h1>Update Customer Credentials</h1>
-
-<form asp-controller="Customers" asp-action="Update" method="post">
-    <input asp-for="CustomerID" type="hidden">
-    <div class="mb-3">
-        <label asp-for="CustomerName" class="form-label">Customer Name</label>
-        <input asp-for="CustomerName" class="form-control">
-        <span asp-validation-for="CustomerName" class="text-danger"></span>
-        @* <div class="form-text"></div> *@
+<div class="card shadow-sm max-width-600 mx-auto my-4">
+    <div class="card-header bg-light py-3">
+        <h1 class="h3 mb-0 text-primary">Update Customer Credentials</h1>
     </div>
+    <div class="card-body p-4">
+        <form asp-controller="Customers" asp-action="Update" method="post">
+            <input asp-for="CustomerID" type="hidden" />
 
-    @if (hasTin)
-    {
-        <p><input type="checkbox" id="has-tin" checked /> The customer has a TIN</p>
-        <div class="mb-3" id="tin-container">
-            <label asp-for="TIN" class="form-label">Taxpayer Identification Number (TIN)</label>
-            <input asp-for="TIN" class="form-control" id="tin-input">
-            <span asp-validation-for="TIN" class="text-danger"></span>
-        </div>
-    }
-    else
-    {
-        <p><input type="checkbox" id="has-tin" /> The customer has a TIN</p> 
-        <div class="mb-3 d-none" id="tin-container">
-            <label asp-for="TIN" class="form-label">Taxpayer Identification Number (TIN)</label>
-            <input asp-for="TIN" class="form-control" id="tin-input">
-            <span asp-validation-for="TIN" class="text-danger"></span>
-        </div>
-    }
+            <div class="mb-3">
+                <label asp-for="CustomerName" class="form-label fw-medium">Customer Name</label>
+                <input asp-for="CustomerName" class="form-control" />
+                <span asp-validation-for="CustomerName" class="text-danger small"></span>
+            </div>
 
-    <div class="mb-3">
-        <label asp-for="ContactEmail" class="form-label">Contact Email</label>
-        <input asp-for="ContactEmail" class="form-control">
-        <span asp-validation-for="ContactEmail" class="text-danger"></span>
-        @* <div class="form-text"></div> *@
+            @if (hasTin)
+            {
+                <div class="form-check mb-3">
+                    <input type="checkbox" id="has-tin" checked class="form-check-input" />
+                    <label class="form-check-label fw-medium" for="has-tin">
+                        The customer has a TIN
+                    </label>
+                </div>
+                <div class="mb-3" id="tin-container">
+                    <label asp-for="TIN" class="form-label fw-medium">Taxpayer Identification Number (TIN)</label>
+                    <input asp-for="TIN" class="form-control" id="tin-input" />
+                    <span asp-validation-for="TIN" class="text-danger small"></span>
+                </div>
+            }
+            else
+            {
+                <div class="form-check mb-3">
+                    <input type="checkbox" id="has-tin" class="form-check-input" />
+                    <label class="form-check-label fw-medium" for="has-tin">
+                        The customer has a TIN
+                    </label>
+                </div>
+                <div class="mb-3 d-none" id="tin-container">
+                    <label asp-for="TIN" class="form-label fw-medium">Taxpayer Identification Number (TIN)</label>
+                    <input asp-for="TIN" class="form-control" id="tin-input" />
+                    <span asp-validation-for="TIN" class="text-danger small"></span>
+                </div>
+            }
+
+            <div class="mb-3">
+                <label asp-for="ContactEmail" class="form-label fw-medium">Contact Email</label>
+                <input asp-for="ContactEmail" class="form-control" />
+                <span asp-validation-for="ContactEmail" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Address" class="form-label fw-medium">Address</label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary px-4">Update</button>
+            </div>
+        </form>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="Address" class="form-label">Address</label>
-        <input asp-for="Address" class="form-control">
-        <span asp-validation-for="Address" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Update</button>
-</form>
+</div>
 
 @section Scripts
 {
