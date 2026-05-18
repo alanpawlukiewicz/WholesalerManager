@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using WholesalerManager.Core.DTO;
 using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.DTO.ProductDTO;
+using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.CategoriesServiceContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
@@ -32,9 +33,26 @@ namespace WholesalerManager.UI.Controllers
 
         [Authorize(Roles = "Administrator,Manager,Sales,Operator")]
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] string? propertyName, [FromQuery] string? filter, [FromQuery] bool? ignoreCase, [FromQuery] SortOrderOptions? sortOrder)
         {
-            var products = await _productsGetterService.GetAllProducts();
+            List<ProductResponse> products;
+
+            if (filter is not null && propertyName is not null)
+            {
+                products = await _productsGetterService.GetFilteredProducts(propertyName, filter, ignoreCase ?? true);
+            }
+
+            else if (sortOrder is not null && propertyName is not null)
+            {
+                products = await _productsGetterService.GetSortedProducts(propertyName, sortOrder ?? SortOrderOptions.ASC);
+            }
+            else
+            {
+                products = await _productsGetterService.GetAllProducts();
+            }
+
+            ViewBag.FieldNames = new List<string>() { nameof(ProductResponse.ProductName), nameof(ProductResponse.SKU), nameof(ProductResponse.CategoryName), nameof(ProductResponse.ProductDescription) };
+
             return View(products);
         }
 

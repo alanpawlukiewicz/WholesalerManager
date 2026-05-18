@@ -4,6 +4,7 @@ using System.Text;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.ProductDTO;
+using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 
 namespace WholesalerManager.Core.Services.ProductServices
@@ -23,6 +24,35 @@ namespace WholesalerManager.Core.Services.ProductServices
             return products.Select(product => product.ToProductResponse()).ToList();
         }
 
+        public async Task<List<ProductResponse>> GetFilteredProducts(string? propertyName, string? filter, bool ignoreCase = true)
+        {
+            var allProducts = await _productsRepository.GetAllProducts();
+            var productResponses = allProducts.Select(p => p.ToProductResponse()).ToList();
+
+            if (string.IsNullOrWhiteSpace(propertyName) || string.IsNullOrWhiteSpace(filter))
+            {
+                return productResponses;
+            }
+
+            StringComparison stringComparisonType = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+            switch (propertyName)
+            { 
+                case nameof(ProductResponse.ProductName):
+                    return productResponses.Where(p => p.ProductName != null && p.ProductName.Contains(filter, stringComparisonType)).ToList();
+                case nameof(ProductResponse.SKU):
+                    return productResponses.Where(p => p.SKU != null && p.SKU.Contains(filter, stringComparisonType)).ToList();
+                case nameof(ProductResponse.ProductDescription):
+                    return productResponses.Where(p => p.ProductDescription != null && p.ProductDescription.Contains(filter, stringComparisonType)).ToList();
+                case nameof(ProductResponse.CategoryName):
+                    return productResponses.Where(p => p.CategoryName != null && p.CategoryName.Contains(filter, stringComparisonType)).ToList();
+                default:
+                    throw new ArgumentException($"Invalid property name: {propertyName}");
+            }
+
+
+        }
+
         public async Task<ProductResponse?> GetProductById(Guid? productID)
         {
             if (productID is null)
@@ -38,6 +68,51 @@ namespace WholesalerManager.Core.Services.ProductServices
             }
 
             return foundProduct.ToProductResponse();
+        }
+
+        public async Task<List<ProductResponse>> GetSortedProducts(string? propertyName, SortOrderOptions sortOrder = SortOrderOptions.ASC)
+        {
+            var allProducts = await _productsRepository.GetAllProducts();
+            var productResponses = allProducts.Select(p => p.ToProductResponse()).ToList();
+
+            if (string.IsNullOrWhiteSpace(propertyName))
+            {
+                return productResponses;
+            }
+
+            switch (propertyName)
+            {
+                case nameof(ProductResponse.ProductName):
+                    return sortOrder == SortOrderOptions.ASC
+                        ? productResponses.OrderBy(p => p.ProductName).ToList()
+                        : productResponses.OrderByDescending(p => p.ProductName).ToList();
+                case nameof(ProductResponse.SKU):
+                    return sortOrder == SortOrderOptions.ASC
+                        ? productResponses.OrderBy(p => p.SKU).ToList()
+                        : productResponses.OrderByDescending(p => p.SKU).ToList();
+                case nameof(ProductResponse.ProductDescription):
+                    return sortOrder == SortOrderOptions.ASC
+                        ? productResponses.OrderBy(p => p.ProductDescription).ToList()
+                        : productResponses.OrderByDescending(p => p.ProductDescription).ToList();
+                case nameof(ProductResponse.CategoryName):
+                    return sortOrder == SortOrderOptions.ASC
+                        ? productResponses.OrderBy(p => p.CategoryName).ToList()
+                        : productResponses.OrderByDescending(p => p.CategoryName).ToList();
+                case nameof(ProductResponse.UnitPrice):
+                    return sortOrder == SortOrderOptions.ASC
+                        ? productResponses.OrderBy(p => p.UnitPrice).ToList()
+                        : productResponses.OrderByDescending(p => p.UnitPrice).ToList();
+                case nameof(ProductResponse.StockQuantity):
+                    return sortOrder == SortOrderOptions.ASC
+                        ? productResponses.OrderBy(p => p.StockQuantity).ToList()
+                        : productResponses.OrderByDescending(p => p.StockQuantity).ToList();
+                case nameof(ProductResponse.ReorderLevel):
+                    return sortOrder == SortOrderOptions.ASC
+                        ? productResponses.OrderBy(p => p.ReorderLevel).ToList()
+                        : productResponses.OrderByDescending(p => p.ReorderLevel).ToList();
+                default:
+                    throw new ArgumentException($"Invalid property name: {propertyName}");
+            }
         }
     }
 }

@@ -49,7 +49,7 @@ namespace WholesalerManager.Core.Services.CustomerServices
             var allCustomers = await _customersRepository.GetAllCustomers();
             var customerResponses =  allCustomers.Select(c => c.ToCustomerResponse()).ToList();
 
-            if(propertyName is null || filter is null)
+            if(string.IsNullOrWhiteSpace(propertyName) || string.IsNullOrWhiteSpace(filter))
             {
                 return customerResponses;
             }
@@ -77,7 +77,7 @@ namespace WholesalerManager.Core.Services.CustomerServices
             var allCustomers = await _customersRepository.GetAllCustomers();
             var customerResponses = allCustomers.Select(c => c.ToCustomerResponse()).ToList();
 
-            if (propertyName is null)
+            if (string.IsNullOrWhiteSpace(propertyName))
             {
                 return customerResponses;
             }

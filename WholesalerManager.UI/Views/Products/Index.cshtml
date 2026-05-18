@@ -3,61 +3,66 @@
     ViewBag.Title = "Products";
 }
 
-@if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
-{
-    <div class="container">
-        <header class="d-flex justify-content-center py-3">
-            <ul class="nav nav-pills">
-                <li class="nav-item"><a asp-controller="Products" asp-action="Create" class="nav-link">Add Product</a></li>
-            </ul>
-        </header>
-    </div>
-}
 
-
-<h1>Products</h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Product Name</th>
-            <th>SKU</th>
-            <th>Description</th>
-            <th>Category</th>
-            <th>Unit Price</th>
-            <th>Stock Quantity</th>
-            <th>Reorder Level</th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var product in Model)
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Products</h1>
+        @if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
         {
-            <tr>
-                <td>@product.ProductName</td>
-                <td>@product.SKU</td>
-                <td>@product.ProductDescription</td>
-                <td>@product.CategoryName</td>
-                <td class="unit-price">@product.FormattedUnitPrice</td>
-                <td class="stock-quantity">@product.StockQuantity</td>
-                <td>@product.ReorderLevel</td>
-                @if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
-                {
-                    <td><a class="btn btn-primary" asp-controller="Products" asp-action="Update" asp-route-id="@product.ProductID" role="button">Update</a></td>
-                    <td><a class="btn btn-danger" asp-controller="Products" asp-action="Delete" asp-route-id="@product.ProductID" role="button">Delete</a></td>
-                }
-                @if (User.IsInRole(UserTypeOptions.Sales.ToString()))
-                {
-                    <td><a data-productID="@product.ProductID" class="btn btn-primary edit-unit-price-button" role="button">Edit Unit Price</a></td>
-                }
-                @if (User.IsInRole(UserTypeOptions.Operator.ToString()))
-                {
-                    <td><a data-productID="@product.ProductID" class="btn btn-primary edit-stock-quantity-button" role="button">Edit Stock Quantity</a></td>
-                }
-            </tr>
+            <a asp-controller="Products" asp-action="Create" class="btn btn-success d-inline-flex align-items-center gap-2">
+                Register New Product
+            </a>
         }
-    </tbody>
-</table>
+
+    </div>
+
+    @await Component.InvokeAsync("FilterSearchBar", new { controllerName = "Products", actionName = "Index" })
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.ProductName) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.SKU) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.ProductDescription) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.CategoryName) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.UnitPrice) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.StockQuantity) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.ReorderLevel) })
+                    <th style="width: 1%;"></th>
+                    <th style="width: 1%;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <td>@product.ProductName</td>
+                        <td>@product.SKU</td>
+                        <td>@product.ProductDescription</td>
+                        <td>@product.CategoryName</td>
+                        <td class="unit-price">@product.FormattedUnitPrice</td>
+                        <td class="stock-quantity">@product.StockQuantity</td>
+                        <td>@product.ReorderLevel</td>
+                        @if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
+                        {
+                            <td><a class="btn btn-sm btn-outline-primary" asp-controller="Products" asp-action="Update" asp-route-id="@product.ProductID" role="button">Update</a></td>
+                            <td><a class="btn btn-sm btn-outline-danger" asp-controller="Products" asp-action="Delete" asp-route-id="@product.ProductID" role="button">Delete</a></td>
+                        }
+                        @if (User.IsInRole(UserTypeOptions.Sales.ToString()))
+                        {
+                            <td><a data-productID="@product.ProductID" class="btn btn-sm btn-outline-primary edit-unit-price-button" role="button">Edit Unit Price</a></td>
+                        }
+                        @if (User.IsInRole(UserTypeOptions.Operator.ToString()))
+                        {
+                            <td><a data-productID="@product.ProductID" class="btn btn-sm btn-outline-primary edit-stock-quantity-button" role="button">Edit Stock Quantity</a></td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 @if (User.IsInRole(UserTypeOptions.Sales.ToString()))
 {
