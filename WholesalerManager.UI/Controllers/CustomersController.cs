@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WholesalerManager.Core.DTO;
 using WholesalerManager.Core.DTO.CustomerDTO;
+using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 
@@ -25,9 +26,25 @@ namespace WholesalerManager.UI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] string? propertyName, [FromQuery] string? filter, [FromQuery] bool? ignoreCase, [FromQuery] SortOrderOptions? sortOrder)
         {
-            var customers = await _customersGetterService.GetAllCustomers();
+            List<CustomerResponse> customers;
+
+            if(filter is not null && propertyName is not null)
+            {
+                customers = await _customersGetterService.GetFilteredCustomers(propertyName, filter, ignoreCase ?? true);
+            } 
+            else if (sortOrder is  not null && propertyName is not null)
+            {
+                customers = await _customersGetterService.GetSortedCustomers(propertyName, sortOrder ?? SortOrderOptions.ASC);
+            }
+            else
+            {
+                customers = await _customersGetterService.GetAllCustomers();
+            }
+
+            ViewBag.FieldNames = typeof(CustomerResponse).GetProperties().Select(p => p.Name).Where(p => p != nameof(CustomerResponse.CustomerID)).ToList();
+
             return View(customers);
         }
 

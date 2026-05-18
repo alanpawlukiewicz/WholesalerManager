@@ -12,13 +12,125 @@
 </div>
 
 <h1>Products</h1>
+
+<form asp-controller="Customers" asp-action="Index" method="get" class="row g-2 align-items-center my-2">
+    <div class="col-md-3">
+        <select name="propertyName" class="form-select">
+            @foreach (var fieldName in ViewBag.FieldNames)
+            {
+                if (Context.Request.Query["propertyName"] == fieldName)
+                    {
+                    <option value="@fieldName" selected>@fieldName</option>
+                    }
+                    else
+                    {
+                    <option value="@fieldName">@fieldName</option>
+                    }
+            }
+        </select>
+    </div>
+
+    <div class="col-md-6">
+        <div class="input-group">
+            <input name="filter" class="form-control" placeholder="Filter..." />
+            <button class="btn btn-primary" type="submit">
+                <img src="~/images/search.svg" alt="search" /> Search
+            </button>
+        </div>
+    </div>
+</form>
+
+
 <table class="table">
     <thead>
         <tr>
-            <th>Customer Name</th>
-            <th>TIN</th>
-            <th>Contact Email</th>
-            <th>Address</th>
+            @if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.CustomerName) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.ASC))
+            {
+                <th>
+                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.CustomerName)" asp-route-sortOrder="@nameof(SortOrderOptions.DESC)">
+                        Customer Name <img src="~/images/arrow_drop_down.svg" alt="Alternate Text" />
+                    </a>
+                </th>
+            }
+            else if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.CustomerName) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.DESC))
+            {
+                <th>
+                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.CustomerName)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">
+                        Customer Name <img src="~/images/arrow_drop_up.svg" alt="Alternate Text" />
+                    </a>
+                </th>
+            }
+            else
+            {
+                <th><a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.CustomerName)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">Customer Name</a></th>
+            }
+
+            @if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.TIN) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.ASC))
+            {
+                <th>
+                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.TIN)" asp-route-sortOrder="@nameof(SortOrderOptions.DESC)">
+                        TIN <img src="~/images/arrow_drop_down.svg" alt="Alternate Text" />
+                    </a>
+                </th>
+            }
+            else if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.TIN) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.DESC))
+            {
+                <th>
+                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.TIN)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">
+                        TIN <img src="~/images/arrow_drop_up.svg" alt="Alternate Text" />
+                    </a>
+                </th>
+            }
+            else
+            {
+                <th><a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.TIN)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">TIN</a></th>
+            }
+            
+
+            @if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.ContactEmail) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.ASC))
+            {
+                <th>
+                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.ContactEmail)" asp-route-sortOrder="@nameof(SortOrderOptions.DESC)">
+                        Contact Email <img src="~/images/arrow_drop_down.svg" alt="Alternate Text" />
+                    </a>
+                </th>
+            }
+            else if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.ContactEmail) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.DESC))
+            {
+                <th>
+                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.ContactEmail)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">
+                        Contact Email <img src="~/images/arrow_drop_up.svg" alt="Alternate Text" />
+                    </a>
+                </th>
+            }
+            else
+            {
+                <th><a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.ContactEmail)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">Contact Email</a></th>
+            }
+            
+
+            @if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.Address) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.ASC))
+            {
+                <th>
+                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.Address)" asp-route-sortOrder="@nameof(SortOrderOptions.DESC)">
+                        Address <img src="~/images/arrow_drop_down.svg" alt="Alternate Text" />
+                    </a>
+                </th>
+            }
+            else if (Context.Request.Query["propertyName"] == nameof(CustomerResponse.Address) && Context.Request.Query["sortOrder"] == nameof(SortOrderOptions.DESC))
+            {
+                <th>
+                    <a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.Address)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">
+                        Address <img src="~/images/arrow_drop_up.svg" alt="Alternate Text" />
+                    </a>
+                </th>
+            }
+            else
+            {
+                <th><a asp-action="Index" asp-route-propertyName="@nameof(CustomerResponse.Address)" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)">Address</a></th>
+            }
+            
+
             <th></th>
             <th></th>
         </tr>
