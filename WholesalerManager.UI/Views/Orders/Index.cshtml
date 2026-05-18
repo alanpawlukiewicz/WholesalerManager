@@ -3,82 +3,124 @@
     ViewBag.Title = "Orders";
 }
 
-@if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Sales"))
-{
-    <div class="container">
-        <header class="d-flex justify-content-center py-3">
-            <ul class="nav nav-pills">
-                <li class="nav-item"><a asp-controller="Orders" asp-action="Create" class="nav-link">Register New Order</a></li>
-            </ul>
-        </header>
+<div class="container-fluid px-4 my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Orders</h1>
+        @if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Sales"))
+        {
+            <a asp-controller="Orders" asp-action="Create" class="btn btn-success d-inline-flex align-items-center gap-2">
+                Register New Order
+            </a>
+        }
     </div>
-}
+
+    @await Component.InvokeAsync("FilterSearchBar", new { controllerName = "Orders", actionName = "Index" })
 
 
-<h1>Deliveries</h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Customer Name</th>
-            <th>Customer's TIN</th>
-            <th>Order Date</th>
-            <th>Status</th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
+    <div class="table-responsive shadow-sm rounded border">
+        <table class="table align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(OrderResponse.CustomerName) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(OrderResponse.TIN) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(OrderResponse.OrderDate) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(OrderResponse.Status) })
+                    <th colspan="2" class="text-end px-4" style="width: 250px;">Actions</th>
+                </tr>
+            </thead>
 
-    @foreach (var dwp in Model)
-    {
-        <tbody class="delivery-record">
-            <tr>
-                <td>@dwp.Order?.CustomerName</td>
-                <td>@dwp.Order?.TIN</td>
-                <td>@dwp.Order?.OrderDate</td>
-                <td class="order-status">@dwp.Order?.Status</td>
-                @if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
-                {
-                    <td><a class="btn btn-primary" asp-controller="Orders" asp-action="Update" asp-route-id="@dwp.Order?.OrderID" role="button">Update</a></td>
-                    <td><button class="btn btn-danger delete-btn" data-deliveryID="@dwp.Order?.OrderID">Delete</button></td>
-                }
-                @if (User.IsInRole(UserTypeOptions.Sales.ToString())
-                && dwp.Order?.Status != OrderStatus.DELIVERED.ToString()
-                && dwp.Order?.Status != OrderStatus.CANCELLED.ToString())
-                {
-                    <td>
-                        <form asp-controller="Orders" asp-action="CancelOrder" asp-route-id="@dwp.Order?.OrderID" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-warning" role="button">Cancel Order</button>
-                        </form>
-                    </td>
-                }
-                @if (User.IsInRole(UserTypeOptions.Operator.ToString())
-                && (dwp.Order?.Status == OrderStatus.PENDING.ToString()
-                || dwp.Order?.Status == OrderStatus.PAID.ToString()
-                || dwp.Order?.Status == OrderStatus.PROCESSING.ToString()))
-                {
-                    <td><button class="btn btn-primary update-status-btn" data-deliveryID="@dwp.Order?.OrderID">Update Order Status</button></td>
-                }
-            </tr>
-            @if (dwp.Items is not null)
+            @foreach (var dwp in Model)
             {
-                @foreach (OrderItemResponse? item in dwp.Items)
-                {
-                    <tr>
-                        <td>@item?.ProductName</td>
-                        <td>@item?.SKU</td>
-                        <td>@item?.Quantity</td>
-                        <td>@item?.PriceAtSale</td>
-                        <td>@item?.ProductUnitPrice</td>
-                        <td></td>
+                <tbody class="delivery-record border-bottom border-light-subtle">
+                    <tr class="table-group-divider border-light-subtle">
+                        <td class="fw-bold text-primary">
+                            @dwp.Order?.CustomerName
+                        </td>
+                        <td class="text-monospace">
+                            @dwp.Order?.TIN
+                        </td>
+                        <td>
+                            @dwp.Order?.OrderDate
+                        </td>
+                        <td class="order-status">
+                            @if (dwp.Order?.Status == OrderStatus.DELIVERED.ToString())
+                            {
+                                <span class="badge bg-success px-2.5 py-1.5 fs-7">DELIVERED</span>
+                            }
+                            else if (dwp.Order?.Status == OrderStatus.CANCELLED.ToString())
+                            {
+                                <span class="badge bg-danger px-2.5 py-1.5 fs-7">CANCELLED</span>
+                            }
+                            else if (dwp.Order?.Status == OrderStatus.PENDING.ToString())
+                            {
+                                <span class="badge bg-warning text-dark px-2.5 py-1.5 fs-7">PENDING</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info text-dark px-2.5 py-1.5 fs-7">@dwp.Order?.Status</span>
+                            }
+                        </td>
+                        <td colspan="2" class="text-end px-4">
+                            <div class="d-inline-flex gap-2">
+                                @if (User.IsInRole(UserTypeOptions.Administrator.ToString()) || User.IsInRole(UserTypeOptions.Manager.ToString()))
+                                {
+                                    <a class="btn btn-sm btn-outline-primary" asp-controller="Orders" asp-action="Update" asp-route-id="@dwp.Order?.OrderID" role="button">Update</a>
+                                    <button class="btn btn-sm btn-outline-danger delete-btn" data-deliveryID="@dwp.Order?.OrderID">Delete</button>
+                                }
+                                @if (User.IsInRole(UserTypeOptions.Sales.ToString()) && dwp.Order?.Status != OrderStatus.DELIVERED.ToString() && dwp.Order?.Status != OrderStatus.CANCELLED.ToString())
+                                {
+                                    <form asp-controller="Orders" asp-action="CancelOrder" asp-route-id="@dwp.Order?.OrderID" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-warning">Cancel Order</button>
+                                    </form>
+                                }
+                                @if (User.IsInRole(UserTypeOptions.Operator.ToString()) && (dwp.Order?.Status == OrderStatus.PENDING.ToString() || dwp.Order?.Status == OrderStatus.PAID.ToString() || dwp.Order?.Status == OrderStatus.PROCESSING.ToString()))
+                                {
+                                    <button class="btn btn-sm btn-primary update-status-btn" data-deliveryID="@dwp.Order?.OrderID">Update Status</button>
+                                }
+                            </div>
+                        </td>
                     </tr>
-                }
+
+                    @if (dwp.Items is not null && dwp.Items.Any())
+                    {
+                        <tr class="bg-light-subtle">
+                            <td colspan="5" class="p-0 border-0">
+                                <div class="px-4 py-2 bg-light text-muted small fw-semibold border-bottom border-light-subtle d-flex gap-4">
+                                    <span>Ordered Products:</span>
+                                </div>
+                                <div class="table-responsive px-4 py-2 bg-light-subtle">
+                                    <table class="table table-sm table-borderless align-middle mb-0 small" style="table-layout: fixed; width: 100%;">
+                                        <thead>
+                                            <tr class="text-secondary border-bottom border-light-subtle">
+                                                <th class="py-2" style="width: 35%;">Product Name</th>
+                                                <th class="py-2" style="width: 20%;">SKU</th>
+                                                <th class="py-2 text-center" style="width: 15%;">Quantity</th>
+                                                <th class="py-2 text-end" style="width: 15%;">Price at Sale</th>
+                                                <th class="py-2 text-end" style="width: 15%;">Unit Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (OrderItemResponse? item in dwp.Items)
+                                            {
+                                                <tr class="text-dark border-bottom" style="border-color: rgba(0, 0, 0, 0.05) !important;">
+                                                    <td class="py-2 fw-medium text-truncate">@item?.ProductName</td>
+                                                    <td class="py-2 text-monospace text-truncate">@item?.SKU</td>
+                                                    <td class="py-2 text-center fw-bold">@item?.Quantity</td>
+                                                    <td class="py-2 text-end text-success fw-medium">@item?.PriceAtSale</td>
+                                                    <td class="py-2 text-end text-muted">@item?.ProductUnitPrice</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
             }
-        </tbody>
-
-            
-    }
-
-</table>
+        </table>
+    </div>
+</div>
 
 @if (User.IsInRole("Administrator") || User.IsInRole("Manager"))
 {

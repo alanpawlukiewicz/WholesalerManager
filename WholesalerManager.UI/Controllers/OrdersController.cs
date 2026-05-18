@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using WholesalerManager.Core.DTO.CustomerDTO;
+using WholesalerManager.Core.DTO.DeliveryDTO;
+using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
@@ -54,9 +55,24 @@ namespace WholesalerManager.UI.Controllers
         [Authorize(Roles = "Administrator,Manager,Sales,Operator")]
         [Route("[action]")]
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] string? propertyName, [FromQuery] string? filter, [FromQuery] bool? ignoreCase, [FromQuery] SortOrderOptions? sortOrder)
         {
-            var orders = await _ordersGetterService.GetAllOrders();
+            List<OrderResponse> orders;
+
+            if (filter is not null && propertyName is not null)
+            {
+                orders = await _ordersGetterService.GetFilteredOrders(propertyName, filter, ignoreCase ?? true);
+            }
+
+            else if (sortOrder is not null && propertyName is not null)
+            {
+                orders = await _ordersGetterService.GetSortedOrders(propertyName, sortOrder ?? SortOrderOptions.ASC);
+            }
+            else
+            {
+                orders = await _ordersGetterService.GetAllOrders();
+            }
+
             var orderItems = await _orderItemsGetterService.GetAllOrderItems();
 
             List<OrderWithProductsViewModel> model = new List<OrderWithProductsViewModel>();
@@ -69,6 +85,8 @@ namespace WholesalerManager.UI.Controllers
                 };
                 model.Add(c);
             }
+
+            ViewBag.FieldNames = new List<string>() { nameof(OrderResponse.CustomerName), nameof(OrderResponse.OrderDate), nameof(OrderResponse.Status), nameof(OrderResponse.TIN) };
 
             return View(model);
         }

@@ -2,29 +2,36 @@
 @{
     int i = ViewBag.Index;
 }
-<hr />
-<div class="mb-3">
-    <label asp-for="Items[@i].ProductID" class="form-label">Add Product</label>
-    <select asp-for="Items[@i].ProductID" class="form-select product-select">
-        <option value="">Select Product</option>
-        @foreach (ProductResponse product in ViewBag.Products)
-        {
-            <option value="@product.ProductID" data-price="@product.UnitPrice">@product.ProductName</option>
-        }
-    </select>
-    <span asp-validation-for="Items[@i].ProductID" class="text-danger"></span>
+<div class="card bg-light-subtle mb-3 shadow-sm border-light-subtle rounded-3">
+    <div class="card-body p-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="text-secondary fw-bold mb-0">Item #@(i + 1)</h6>
+        </div>
 
-    <div class="mb-2">
-        <label asp-for="Items[@i].Quantity" class="form-label">Quantity</label>
-        <input class="form-control" asp-for="Items[@i].Quantity">
-        <span asp-validation-for="Items[@i].Quantity" class="text-danger"></span>
-    </div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Items[@i].ProductID" class="form-label fw-medium text-muted">Add Product</label>
+                <select asp-for="Items[@i].ProductID" class="form-select product-select">
+                    <option value="">Select Product</option>
+                    @foreach (ProductResponse product in ViewBag.Products)
+                    {
+                        <option value="@product.ProductID" data-price="@product.UnitPrice">@product.ProductName</option>
+                    }
+                </select>
+                <span asp-validation-for="Items[@i].ProductID" class="text-danger small"></span>
+            </div>
 
-    <div class="mb-2">
-        <label asp-for="Items[@i].PriceAtSale" class="form-label">Current Price</label>
-        <input class="form-control price-input" asp-for="Items[@i].PriceAtSale">
-        <span asp-validation-for="Items[@i].PriceAtSale" class="text-danger"></span>
+            <div class="col-md-3">
+                <label asp-for="Items[@i].Quantity" class="form-label fw-medium text-muted">Quantity</label>
+                <input class="form-control text-center fw-bold" asp-for="Items[@i].Quantity" />
+                <span asp-validation-for="Items[@i].Quantity" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="Items[@i].PriceAtSale" class="form-label fw-medium text-muted">Current Price</label>
+                <input class="form-control price-input text-end fw-medium text-success" asp-for="Items[@i].PriceAtSale" />
+                <span asp-validation-for="Items[@i].PriceAtSale" class="text-danger small"></span>
+            </div>
+        </div>
     </div>
-    
 </div>
-<hr />

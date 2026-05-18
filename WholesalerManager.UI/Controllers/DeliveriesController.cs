@@ -104,6 +104,7 @@ namespace WholesalerManager.UI.Controllers
             }
 
             ViewBag.FieldNames = new List<string>() { nameof(DeliveryResponse.SupplierName), nameof(DeliveryResponse.Status), nameof(DeliveryResponse.OrderDate) };
+
             return View(model);
         }
 

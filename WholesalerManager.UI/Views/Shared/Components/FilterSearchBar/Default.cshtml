@@ -1,26 +1,30 @@
-﻿<form asp-controller="@ViewBag.ControllerName" asp-action="@ViewBag.ActionName" method="get" class="row g-2 align-items-center mb-4">
-    <div class="col-md-3">
-        <select name="propertyName" class="form-select">
-            @foreach (var fieldName in ViewBag.FieldNames)
-            {
-                if (Context.Request.Query["propertyName"] == fieldName)
+﻿@if (ViewBag.FieldNames is not null)
+{
+    <form asp-controller="@ViewBag.ControllerName" asp-action="@ViewBag.ActionName" method="get" class="row g-2 align-items-center mb-4">
+        <div class="col-md-3">
+            <select name="propertyName" class="form-select">
+                @foreach (var fieldName in ViewBag.FieldNames)
                 {
-                    <option value="@fieldName" selected>@fieldName</option>
+                    if (Context.Request.Query["propertyName"] == fieldName)
+                    {
+                        <option value="@fieldName" selected>@fieldName</option>
+                    }
+                    else
+                    {
+                        <option value="@fieldName">@fieldName</option>
+                    }
                 }
-                else
-                {
-                    <option value="@fieldName">@fieldName</option>
-                }
-            }
-        </select>
-    </div>
-
-    <div class="col-md-6">
-        <div class="input-group">
-            <input name="filter" class="form-control" placeholder="Filter..." value="@Context.Request.Query["filter"]" />
-            <button class="btn btn-primary d-inline-flex align-items-center gap-2" type="submit">
-                <img src="~/images/search.svg" alt="search" /> Search
-            </button>
+            </select>
         </div>
-    </div>
-</form>
+
+        <div class="col-md-6">
+            <div class="input-group">
+                <input name="filter" class="form-control" placeholder="Filter..." value="@Context.Request.Query["filter"]" />
+                <button class="btn btn-primary d-inline-flex align-items-center gap-2" type="submit">
+                    <img src="~/images/search.svg" alt="search" /> Search
+                </button>
+            </div>
+        </div>
+    </form>
+}
+

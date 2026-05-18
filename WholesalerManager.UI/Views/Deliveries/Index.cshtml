@@ -46,9 +46,13 @@
                             {
                                 <span class="badge bg-danger px-2.5 py-1.5 fs-7">REJECTED</span>
                             }
+                            else if (dwp.Delivery?.Status == DeliveryStatus.RECEIVED.ToString())
+                            {
+                                <span class="badge bg-success px-2.5 py-1.5 fs-7">RECEIVED</span>
+                            }
                             else
                             {
-                                <span class="badge bg-success px-2.5 py-1.5 fs-7">@dwp.Delivery?.Status</span>
+                                <span class="badge bg-info px-2.5 py-1.5 fs-7">@dwp.Delivery?.Status</span>
                             }
                         </td>
                         <td colspan="2" class="text-end px-4">
