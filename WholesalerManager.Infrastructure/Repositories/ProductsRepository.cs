@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,14 +13,18 @@ namespace WholesaleManager.Infrastructure.Repositories
     public class ProductsRepository : IProductsRepository
     {
         private readonly ApplicationDbContext _db;
+        private readonly ILogger<ProductsRepository> _logger;
 
-        public ProductsRepository(ApplicationDbContext db)
+        public ProductsRepository(ApplicationDbContext db, ILogger<ProductsRepository> logger)
         {
             _db = db;
+            _logger = logger;
         }
 
         public async Task<Product> AddProduct(Product product)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(AddProduct), nameof(ProductsRepository));
+
             await _db.Product.AddAsync(product);
             await Save();
             return product;
@@ -27,6 +32,8 @@ namespace WholesaleManager.Infrastructure.Repositories
 
         public async Task<bool> DeleteProduct(Guid productID)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked with productID: {productID}.", nameof(DeleteProduct), nameof(ProductsRepository), productID);
+
             _db.Product.RemoveRange(_db.Product.Where(product => product.ProductID == productID));
             int rowsAffected = await Save();
             return rowsAffected > 0;
@@ -34,11 +41,15 @@ namespace WholesaleManager.Infrastructure.Repositories
 
         public async Task<List<Product>> GetAllProducts()
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(GetAllProducts), nameof(ProductsRepository));
+
             return await _db.Product.Include("Category").ToListAsync();
         }
 
         public async Task<Product?> GetProductById(Guid productID)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked with productID: {productID}.", nameof(GetProductById), nameof(ProductsRepository), productID);
+
             return await _db.Product.Include("Category").FirstOrDefaultAsync(p => p.ProductID == productID);
         }
 
@@ -49,6 +60,8 @@ namespace WholesaleManager.Infrastructure.Repositories
 
         public async Task<Product?> UpdateProduct(Product product)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked with productID: {productID}.", nameof(UpdateProduct), nameof(ProductsRepository), product.ProductID);
+
             Product? matchingProduct = await _db.Product.FirstOrDefaultAsync(temp => temp.ProductID == product.ProductID);
 
             if (matchingProduct is null)

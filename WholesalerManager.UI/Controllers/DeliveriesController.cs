@@ -39,6 +39,8 @@ namespace WholesalerManager.UI.Controllers
 
         private readonly IProductsGetterService _productsGetterService;
 
+        private readonly ILogger<DeliveriesController> _logger;
+
         public DeliveriesController(IDeliveriesGetterService deliveriesGetterService, 
             IDeliveriesAdderService deliveriesAdderService, 
             IDeliveriesUpdaterService deliveriesUpdaterService, 
@@ -50,7 +52,8 @@ namespace WholesalerManager.UI.Controllers
             IDeliveryItemsGetterService deliveryItemsGetterService, 
             IDeliveryItemsUpdaterService deliveryItemsUpdaterService, 
             ISuppliersGetterService suppliersGetterService, 
-            IProductsGetterService productsGetterService)
+            IProductsGetterService productsGetterService,
+            ILogger<DeliveriesController> logger)
         {
             _deliveriesGetterService = deliveriesGetterService;
             _deliveriesAdderService = deliveriesAdderService;
@@ -67,6 +70,7 @@ namespace WholesalerManager.UI.Controllers
             _suppliersGetterService = suppliersGetterService;
 
             _productsGetterService = productsGetterService;
+            _logger = logger;
         }
 
         [Authorize(Roles = "Administrator,Manager,Operator")]
@@ -130,6 +134,7 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Model state is invalid while trying to create delivery. Errors: {Errors}", ModelState.GetErrorMessages());
                 var suppliers = await _suppliersGetterService.GetAllSuppliers();
                 ViewBag.Suppliers = suppliers.Select(s => new SelectListItem()
                 {
@@ -144,12 +149,14 @@ namespace WholesalerManager.UI.Controllers
 
             if (registerDeliveryViewModel is null || registerDeliveryViewModel.Items is null)
             {
+                _logger.LogError("RegisterDeliveryViewModel or its Items property is null while trying to create delivery.");
                 TempData["ErrorMessage"] = $"Delivery could not be registered.";
                 return RedirectToAction("Index", "Deliveries");
             }
 
             await _deliveryRegistrationService.RegisterFullDelivery(registerDeliveryViewModel.DeliveryAddRequest, registerDeliveryViewModel.Items);
 
+            _logger.LogInformation("Delivery has been registered successfully with SupplierID {SupplierID} and OrderDate {OrderDate}.", registerDeliveryViewModel.DeliveryAddRequest?.SupplierID, registerDeliveryViewModel.DeliveryAddRequest?.OrderDate);
             TempData["InfoMessage"] = $"Delivery has been registered successfully.";
             return RedirectToAction("Index", "Deliveries");
         }
@@ -188,6 +195,7 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Model state is invalid while trying to update delivery. Errors: {Errors}", ModelState.GetErrorMessages());
                 var suppliers = await _suppliersGetterService.GetAllSuppliers();
                 ViewBag.Suppliers = suppliers.Select(s => new SelectListItem()
                 {
@@ -199,9 +207,9 @@ namespace WholesalerManager.UI.Controllers
                 return View(updateDeliveryWithProductsModel);
             }
 
-            // TODO: Make it into single transaction
-
             await _deliveryUpdateControllerService.UpdateFullDelivery(updateDeliveryWithProductsModel.Delivery, updateDeliveryWithProductsModel.Items);
+
+            _logger.LogInformation("Delivery with ID {DeliveryID} has been updated successfully.", updateDeliveryWithProductsModel.Delivery?.DeliveryID);
             TempData["InfoMessage"] = "Delivery data have been updated successfully.";
 
             return RedirectToAction("Index", "Deliveries");
@@ -215,18 +223,21 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Model state is invalid while trying to delete delivery. Errors: {Errors}", ModelState.GetErrorMessages());
                 ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(deliveryID);
             }
 
             if (deliveryID == Guid.Empty)
             {
+                _logger.LogError("DeliveryID is empty while trying to delete delivery.");
                 ViewData["ErrorMessage"] = "Delivery data could not be deleted.";
                 return PartialView("_errorToastPartialView");
             }
 
             await _deliveryDeleterService.DeleteDeliveryByID(deliveryID);
 
+            _logger.LogInformation("Delivery with ID {DeliveryID} has been deleted successfully.", deliveryID);
             ViewData["InfoMessage"] = "Delivery data have been deleted successfully.";
             return PartialView("_infoToastPartialView");
         }
@@ -257,10 +268,12 @@ namespace WholesalerManager.UI.Controllers
             var result = await _deliveriesUpdaterService.SetDeliveryAsReceived(deliveryID);
             if (!result)
             {
+                _logger.LogError("Failed to set delivery with ID {DeliveryID} as received.", deliveryID);
                 ViewData["ErrorMessage"] = "Delivery data could not be updated.";
                 return PartialView("_errorToastPartialView");
             }
 
+            _logger.LogInformation("Delivery with ID {DeliveryID} has been set as received successfully.", deliveryID);
             ViewData["InfoMessage"] = "Delivery data have been updated successfully.";
             return PartialView("_infoToastPartialView");
         }

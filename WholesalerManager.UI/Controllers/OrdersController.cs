@@ -28,6 +28,8 @@ namespace WholesalerManager.UI.Controllers
 
         private readonly ICustomersGetterService _customersGetterService;
 
+        private readonly ILogger<OrdersController> _logger;
+
 
         public OrdersController(IOrdersGetterService ordersGetterService, 
             IOrdersAdderService ordersAdderService, 
@@ -37,7 +39,8 @@ namespace WholesalerManager.UI.Controllers
             IOrderUpdateCoordinatorService orderUpdateCoordinatorService,
             IOrderItemsGetterService orderItemsGetterService, 
             IProductsGetterService productsGetterService, 
-            ICustomersGetterService customersGetterService)
+            ICustomersGetterService customersGetterService,
+            ILogger<OrdersController> logger)
         {
             _ordersGetterService = ordersGetterService;
             _ordersDeleterService = ordersDeleterService;
@@ -50,6 +53,8 @@ namespace WholesalerManager.UI.Controllers
             _productsGetterService = productsGetterService;
 
             _customersGetterService = customersGetterService;
+
+            _logger = logger;
         }
 
         [Authorize(Roles = "Administrator,Manager,Sales,Operator")]
@@ -113,6 +118,7 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Invalid model state: {Errors}", ModelState.GetErrorMessages());
                 var customers = await _customersGetterService.GetAllCustomers();
                 ViewBag.Customers = customers.Select(s => new SelectListItem()
                 {
@@ -127,12 +133,14 @@ namespace WholesalerManager.UI.Controllers
 
             if (registerOrderViewModel is null || registerOrderViewModel.Items is null)
             {
+                _logger.LogError("RegisterOrderViewModel or its Items property is null.");
                 TempData["ErrorMessage"] = $"Order could not be registered.";
                 return RedirectToAction("Index", "Orders");
             }
 
             await _orderRegistrationService.RegisterFullOrder(registerOrderViewModel.OrderAddRequest, registerOrderViewModel.Items);
 
+            _logger.LogInformation("Order registered successfully with CustomerID: {CustomerID}", registerOrderViewModel.OrderAddRequest?.CustomerID);
             TempData["InfoMessage"] = $"Order has been registered successfully.";
             return RedirectToAction("Index", "Orders");
         }
@@ -171,6 +179,7 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Invalid model state: {Errors}", ModelState.GetErrorMessages());
                 var customers = await _customersGetterService.GetAllCustomers();
                 ViewBag.Customers = customers.Select(s => new SelectListItem()
                 {
@@ -184,6 +193,7 @@ namespace WholesalerManager.UI.Controllers
 
             await _orderUpdateCoordinatorService.UpdateFullOrder(updateOrderWithProductsModel.Order, updateOrderWithProductsModel.Items);
 
+            _logger.LogInformation("Order updated successfully with OrderID: {OrderID}", updateOrderWithProductsModel.Order?.OrderID);
             TempData["InfoMessage"] = "Order data have been updated successfully.";
 
             return RedirectToAction("Index", "Orders");
@@ -197,18 +207,21 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Invalid model state: {Errors}", ModelState.GetErrorMessages());
                 ViewBag.Errors = ModelState.GetErrorMessages();
                 return RedirectToAction("Index", "Orders");
             }
 
             if (orderID == Guid.Empty)
             {
+                _logger.LogWarning("Invalid order ID: {OrderID}", orderID);
                 ViewData["ErrorMessage"] = "Order data could not be deleted.";
                 return PartialView("_errorToastPartialView");
             }
 
             await _ordersDeleterService.DeleteOrderByID(orderID);
 
+            _logger.LogInformation("Order deleted successfully with OrderID: {OrderID}", orderID);
             ViewData["InfoMessage"] = "Order data have been deleted successfully.";
             return PartialView("_infoToastPartialView");
         }
@@ -237,9 +250,12 @@ namespace WholesalerManager.UI.Controllers
             bool result = await _ordersUpdaterService.CancelOrder(id);
             if (!result)
             {
+                _logger.LogWarning("Failed to cancel order with ID: {OrderID}", id);
                 TempData["ErrorMessage"] = $"Order could not be cancelled.";
                 return RedirectToAction("Index", "Orders");
             }
+
+            _logger.LogInformation("Order cancelled successfully with OrderID: {OrderID}", id);
             TempData["InfoMessage"] = $"Order has been cancelled successfully.";
             return RedirectToAction("Index", "Orders");
         }
@@ -253,9 +269,12 @@ namespace WholesalerManager.UI.Controllers
             bool result = await _ordersUpdaterService.UpdateOrderStatus(orderID, status);
             if (!result)
             {
+                _logger.LogWarning("Failed to update order status for order with ID: {OrderID}", orderID);
                 TempData["ErrorMessage"] = $"Order status could not be updated.";
                 return PartialView("_errorToastPartialView");
             }
+
+            _logger.LogInformation("Order status updated successfully for order with ID: {OrderID}", orderID);
             TempData["InfoMessage"] = $"Order status has been updated successfully.";
             return PartialView("_infoToastPartialView");
         }

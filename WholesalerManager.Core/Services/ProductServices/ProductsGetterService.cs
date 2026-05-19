@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.Extensions.Logging;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.ProductDTO;
@@ -12,25 +10,31 @@ namespace WholesalerManager.Core.Services.ProductServices
     public class ProductsGetterService : IProductsGetterService
     {
         private readonly IProductsRepository _productsRepository;
-
-        public ProductsGetterService(IProductsRepository productsRepository)
+        private readonly ILogger<ProductsGetterService> _logger;
+        public ProductsGetterService(IProductsRepository productsRepository, ILogger<ProductsGetterService> logger)
         {
             _productsRepository = productsRepository;
+            _logger = logger;
         }
 
         public async Task<List<ProductResponse>> GetAllProducts()
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(GetAllProducts), nameof(ProductsGetterService));
+
             var products = await _productsRepository.GetAllProducts();
             return products.Select(product => product.ToProductResponse()).ToList();
         }
 
         public async Task<List<ProductResponse>> GetFilteredProducts(string? propertyName, string? filter, bool ignoreCase = true)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(GetFilteredProducts), nameof(ProductsGetterService));
+
             var allProducts = await _productsRepository.GetAllProducts();
             var productResponses = allProducts.Select(p => p.ToProductResponse()).ToList();
 
             if (string.IsNullOrWhiteSpace(propertyName) || string.IsNullOrWhiteSpace(filter))
             {
+                _logger.LogInformation("{methodName} from {serviceName} returning all products.", nameof(GetFilteredProducts), nameof(ProductsGetterService));
                 return productResponses;
             }
 
@@ -55,6 +59,8 @@ namespace WholesalerManager.Core.Services.ProductServices
 
         public async Task<ProductResponse?> GetProductById(Guid? productID)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked with productID: {productID}.", nameof(GetProductById), nameof(ProductsGetterService), productID);
+
             if (productID is null)
             {
                 return null;
@@ -64,6 +70,7 @@ namespace WholesalerManager.Core.Services.ProductServices
 
             if (foundProduct is null)
             {
+                _logger.LogInformation("{methodName} from {serviceName} did not find a product with ID: {productID}.", nameof(GetProductById), nameof(ProductsGetterService), productID);
                 return null;
             }
 
@@ -72,6 +79,8 @@ namespace WholesalerManager.Core.Services.ProductServices
 
         public async Task<List<ProductResponse>> GetSortedProducts(string? propertyName, SortOrderOptions sortOrder = SortOrderOptions.ASC)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(GetSortedProducts), nameof(ProductsGetterService));
+
             var allProducts = await _productsRepository.GetAllProducts();
             var productResponses = allProducts.Select(p => p.ToProductResponse()).ToList();
 

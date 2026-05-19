@@ -17,12 +17,16 @@ namespace WholesalerManager.UI.Controllers
         private readonly ICustomersUpdaterService _customersUpdaterService;
         private readonly ICustomersDeleterService _customersDeleterService;
 
-        public CustomersController(ICustomersGetterService customersGetterService, ICustomersAdderService customersAdderService, ICustomersUpdaterService customersUpdaterService, ICustomersDeleterService customersDeleterService)
+        private readonly ILogger<CustomersController> _logger;
+
+        public CustomersController(ICustomersGetterService customersGetterService, ICustomersAdderService customersAdderService, ICustomersUpdaterService customersUpdaterService, ICustomersDeleterService customersDeleterService, ILogger<CustomersController> logger)
         {
             _customersGetterService = customersGetterService;
             _customersAdderService = customersAdderService;
             _customersUpdaterService = customersUpdaterService;
             _customersDeleterService = customersDeleterService;
+
+            _logger = logger;
         }
 
         [HttpGet]
@@ -59,6 +63,7 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Customer creation failed due to invalid model state. Errors: {Errors}", ModelState.GetErrorMessages());
                 ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(customerAddRequest);
             }
@@ -66,10 +71,12 @@ namespace WholesalerManager.UI.Controllers
             bool isAdded = await _customersAdderService.AddCustomer(customerAddRequest);
             if (!isAdded) 
             {
+                _logger.LogError("Failed to add customer.");
                 TempData["ErrorMessage"] = "Customer could not be registered.";
             }
             else
             {
+                _logger.LogInformation("Customer has been successfully registered.");
                 TempData["InfoMessage"] = "Customer has been successfully registered.";
             }
             return RedirectToAction("Index", "Customers");
@@ -82,6 +89,7 @@ namespace WholesalerManager.UI.Controllers
             var foundCustomer = await _customersGetterService.GetCustomerByID(id);
             if (foundCustomer is null)
             {
+                _logger.LogWarning("Customer with ID {CustomerID} could not be found for update.", id);
                 TempData["ErrorMessage"] = "Customer could not be found.";
                 return RedirectToAction("Index", "Customers");
             }
@@ -95,6 +103,7 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Customer update failed due to invalid model state. Errors: {Errors}", ModelState.GetErrorMessages());
                 ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(customerUpdateRequest);
             }
@@ -102,10 +111,12 @@ namespace WholesalerManager.UI.Controllers
             bool isUpdated = await _customersUpdaterService.UpdateCustomer(customerUpdateRequest);
             if (!isUpdated)
             {
+                _logger.LogError("Failed to update customer with ID {CustomerID}.", customerUpdateRequest.CustomerID);
                 TempData["ErrorMessage"] = "Customer could not be updated.";
             }
             else
             {
+                _logger.LogInformation("Customer with ID {CustomerID} has been successfully updated.", customerUpdateRequest.CustomerID);
                 TempData["InfoMessage"] = "Customer has been successfully updated.";
             }
             return RedirectToAction("Index", "Customers");
@@ -118,6 +129,7 @@ namespace WholesalerManager.UI.Controllers
             var foundCustomer = await _customersGetterService.GetCustomerByID(id);
             if (foundCustomer is null)
             {
+                _logger.LogError("Customer with ID {CustomerID} could not be found for deletion.", id);
                 TempData["ErrorMessage"] = "Customer could not be found.";
                 return RedirectToAction("Index", "Customers");
             }
@@ -130,6 +142,7 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Customer deletion failed due to invalid model state. Errors: {Errors}", ModelState.GetErrorMessages());
                 ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(customerDeleteRequest);
             }
@@ -137,10 +150,12 @@ namespace WholesalerManager.UI.Controllers
             bool isDeleted = await _customersDeleterService.DeleteCustomer(customerDeleteRequest);
             if (!isDeleted)
             {
+                _logger.LogError("Failed to delete customer with ID {CustomerID}.", customerDeleteRequest.CustomerID);
                 TempData["ErrorMessage"] = "Customer could not be deleted.";
             }
             else
             {
+                _logger.LogInformation("Customer with ID {CustomerID} has been successfully deleted.", customerDeleteRequest.CustomerID);
                 TempData["InfoMessage"] = "Customer has been successfully deleted.";
             }
             return RedirectToAction("Index", "Customers");

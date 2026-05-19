@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Events;
 using WholesaleManager.Infrastructure.Repositories;
 using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.Domain.PersistenceContracts;
@@ -28,8 +30,16 @@ using WholesalerManager.Core.Services.SupplierServices;
 using WholesalerManager.Infrastructure.DatabaseContext;
 using WholesalerManager.Infrastructure.Persistence;
 using WholesalerManager.Infrastructure.Repositories;
+using WholesalerManager.UI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Serilog
+builder.Host.UseSerilog((hostingContext, services, configuration) =>
+{
+    configuration.ReadFrom.Configuration(hostingContext.Configuration).ReadFrom.Services(services);
+
+});
 
 builder.Services.AddControllersWithViews(options =>
 {
@@ -135,22 +145,34 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
+// Logging
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestProperties |
+    Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponsePropertiesAndHeaders;
+});
+
 #endregion
+
 
 
 var app = builder.Build();
 
-app.UseHsts();
-app.UseHttpsRedirection();
 
-if (builder.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
 else
 {
     app.UseExceptionHandler("/Error");
+    app.UseHsts();
 }
+
+app.UseHttpsRedirection();
+
+
+app.UseHttpLogging();
 
 app.UseStaticFiles();
 
@@ -158,6 +180,19 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<RequestLoggingMiddleware>();
+
+app.UseSerilogRequestLogging(options =>
+{
+    options.GetLevel = (httpContext, elapsed, ex) =>
+    {
+        if (httpContext.Request.Method == "GET" && elapsed < 500)
+            return LogEventLevel.Debug;
+
+        return LogEventLevel.Information;
+    };
+});
 
 app.MapControllers();
 

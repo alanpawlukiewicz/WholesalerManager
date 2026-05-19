@@ -22,13 +22,16 @@ namespace WholesalerManager.UI.Controllers
 
         private readonly ICategoriesGetterService _categoriesGetterService;
 
-        public ProductsController(IProductsGetterService productsGetterService, IProductsAdderService productsAdderService, IProductsUpdaterService productsUpdaterService, IProductsDeleterService productsDeleterService, ICategoriesGetterService categoriesGetterService)
+        private readonly ILogger<ProductsController> _logger;
+
+        public ProductsController(IProductsGetterService productsGetterService, IProductsAdderService productsAdderService, IProductsUpdaterService productsUpdaterService, IProductsDeleterService productsDeleterService, ICategoriesGetterService categoriesGetterService, ILogger<ProductsController> logger)
         {
             _productsGetterService = productsGetterService;
             _productsAdderService = productsAdderService;
             _productsUpdaterService = productsUpdaterService;
             _productsDeleterService = productsDeleterService;
             _categoriesGetterService = categoriesGetterService;
+            _logger = logger;
         }
 
         [Authorize(Roles = "Administrator,Manager,Sales,Operator")]
@@ -75,11 +78,13 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Invalid model state: {Errors}", ModelState.GetErrorMessages());
                 ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(productAddRequest);
             }
 
             await _productsAdderService.AddProduct(productAddRequest);
+            _logger.LogInformation("Product with name {ProductName} has been added successfully.", productAddRequest.ProductName);
             TempData["InfoMessage"] = $"Product has been added successfully.";
 
             return RedirectToAction("Index", "Products");
@@ -93,6 +98,7 @@ namespace WholesalerManager.UI.Controllers
             var product = await _productsGetterService.GetProductById(id);
             if (product is null)
             {
+                _logger.LogWarning("Product with ID {ProductID} could not be found.", id);
                 TempData["ErrorMessage"] = $"Product could not be found.";
                 return RedirectToAction("Index", "Products");
             }
@@ -115,11 +121,14 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Invalid model state: {Errors}", ModelState.GetErrorMessages());
+
                 ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(productUpdateRequest);
             }
 
             await _productsUpdaterService.UpdateProduct(productUpdateRequest);
+            _logger.LogInformation("Product with ID {ProductID} has been updated successfully.", productUpdateRequest.ProductID);
             TempData["InfoMessage"] = $"Product has been updated successfully.";
 
             return RedirectToAction("Index", "Products");
@@ -133,6 +142,7 @@ namespace WholesalerManager.UI.Controllers
             var product = await _productsGetterService.GetProductById(id);
             if (product is null)
             {
+                _logger.LogWarning("Product with ID {ProductID} could not be found.", id);
                 TempData["ErrorMessage"] = $"Product could not be found.";
                 return RedirectToAction("Index", "Products");
             }
@@ -147,11 +157,15 @@ namespace WholesalerManager.UI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Invalid model state: {Errors}", ModelState.GetErrorMessages());
+
+
                 ViewBag.Errors = ModelState.GetErrorMessages();
                 return View(productDeleteRequest);
             }
 
             await _productsDeleterService.DeleteProduct(productDeleteRequest.ProductID);
+            _logger.LogInformation("Product with ID {ProductID} has been deleted successfully.", productDeleteRequest.ProductID);
             TempData["InfoMessage"] = $"Product has been deleted successfully.";
 
             return RedirectToAction("Index", "Products");
@@ -171,12 +185,15 @@ namespace WholesalerManager.UI.Controllers
 
             bool result = await _productsUpdaterService.UpdateUnitPrice(model);
 
-            if(!result)
+            if (!result)
             {
+                _logger.LogError("Failed to update unit price for product with ID {ProductID}", model.ProductID);
+
                 ViewData["ErrorMessage"] = $"Unit price could not be changed.";
                 return PartialView("_errorToastPartialView");
             }
 
+            _logger.LogInformation("Unit price for product with ID {ProductID} has been updated successfully.", model.ProductID);
             ViewData["InfoMessage"] = $"Unit price has been changed successfully.";
             return PartialView("_infoToastPartialView");
         }
@@ -194,12 +211,14 @@ namespace WholesalerManager.UI.Controllers
 
             bool result = await _productsUpdaterService.UpdateStockQuantity(model);
 
-            if(!result)
+            if (!result)
             {
+                _logger.LogError("Failed to update stock quantity for product with ID {ProductID}", model.ProductID);
                 ViewData["ErrorMessage"] = $"Stock quantity could not be changed.";
                 return PartialView("_errorToastPartialView");
             }
 
+            _logger.LogInformation("Stock quantity for product with ID {ProductID} has been updated successfully.", model.ProductID);
             ViewData["InfoMessage"] = $"Stock quantity has been changed successfully.";
             return PartialView("_infoToastPartialView");
         }
