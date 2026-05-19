@@ -9,5 +9,6 @@ namespace WholesalerManager.Core.Domain.IdentityEntities
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public bool MustChangePassword { get; set; } = true;
     }
 }

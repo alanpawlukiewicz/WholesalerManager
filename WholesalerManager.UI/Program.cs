@@ -109,6 +109,9 @@ builder.Services.AddScoped<IOrderItemsUpdaterService, OrderItemsUpdaterService>(
 builder.Services.AddScoped<IUserNameGeneratorService, UserNameGeneratorService>();
 builder.Services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
 
+// Email sending
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 // Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
