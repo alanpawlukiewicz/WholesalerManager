@@ -20,9 +20,9 @@
         <table class="table align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(DeliveryResponse.SupplierName) })
-                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(DeliveryResponse.OrderDate) })
-                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(DeliveryResponse.Status) })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(DeliveryResponse.SupplierName), displayName = "Supplier Name" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(DeliveryResponse.OrderDate), displayName = "Order Date" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(DeliveryResponse.Status), displayName = "Status" })
                     <th colspan="2" class="text-end px-4" style="width: 200px;">Actions</th>
                 </tr>
             </thead>

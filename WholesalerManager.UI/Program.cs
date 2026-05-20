@@ -177,6 +177,9 @@ app.UseHttpsRedirection();
 
 app.UseHttpLogging();
 
+// Rotativa configuration for making PDF files from views
+Rotativa.AspNetCore.RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePath: "Rotativa");
+
 app.UseStaticFiles();
 
 app.UseRouting();

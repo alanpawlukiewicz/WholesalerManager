@@ -5,10 +5,10 @@ namespace WholesalerManager.UI.ViewComponents
 {
     public class TableHeaderViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(string propertyName)
+        public async Task<IViewComponentResult> InvokeAsync(string propertyName, string? displayName)
         {
             ViewBag.PropertyName = propertyName;
-            //ViewBag.SortOrder = sortOrder;
+            ViewBag.DisplayName = displayName ?? propertyName;
             return View();
         }
     }

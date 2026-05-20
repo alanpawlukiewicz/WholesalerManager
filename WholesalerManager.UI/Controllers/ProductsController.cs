@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Rotativa.AspNetCore;
 using WholesalerManager.Core.DTO;
 using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.DTO.ProductDTO;
@@ -91,8 +92,7 @@ namespace WholesalerManager.UI.Controllers
         }
 
         [Authorize(Roles = "Administrator,Manager")]
-        [Route("{id}")]
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Update(Guid id)
         {
             var product = await _productsGetterService.GetProductById(id);
@@ -115,8 +115,7 @@ namespace WholesalerManager.UI.Controllers
         }
 
         [Authorize(Roles = "Administrator,Manager")]
-        [Route("{id}")]
-        [HttpPost]
+        [HttpPost("{id}")]
         public async Task<IActionResult> Update(ProductUpdateRequest productUpdateRequest)
         {
             if (!ModelState.IsValid)
@@ -135,8 +134,7 @@ namespace WholesalerManager.UI.Controllers
         }
 
         [Authorize(Roles = "Administrator,Manager")]
-        [Route("{id}")]
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var product = await _productsGetterService.GetProductById(id);
@@ -151,8 +149,7 @@ namespace WholesalerManager.UI.Controllers
         }
 
         [Authorize(Roles = "Administrator,Manager")]
-        [Route("{id}")]
-        [HttpPost]
+        [HttpPost("{id}")]
         public async Task<IActionResult> Delete(ProductDeleteRequest productDeleteRequest)
         {
             if (!ModelState.IsValid)
@@ -169,6 +166,18 @@ namespace WholesalerManager.UI.Controllers
             TempData["InfoMessage"] = $"Product has been deleted successfully.";
 
             return RedirectToAction("Index", "Products");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ProductsPDF()
+        {
+            var products = await _productsGetterService.GetAllProducts();
+            ViewBag.CurrentDateTime = DateTime.Now.ToString("g");
+            return new ViewAsPdf("ProductsPDF", products, ViewData)
+            {
+                PageMargins = new Rotativa.AspNetCore.Options.Margins(20, 20, 20, 20),
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape
+            };
         }
 
         [Authorize(Roles = "Administrator,Sales")]

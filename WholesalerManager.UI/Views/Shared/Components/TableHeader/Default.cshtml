@@ -2,7 +2,7 @@
 {
     <th class="align-middle">
         <a asp-action="Index" asp-route-propertyName="@ViewBag.PropertyName" asp-route-sortOrder="@nameof(SortOrderOptions.DESC)" class="text-decoration-none d-inline-flex align-items-center gap-1 link-dark">
-            @ViewBag.PropertyName <img src="~/images/arrow_drop_down.svg" alt="arrow down" />
+            @ViewBag.DisplayName <img src="~/images/arrow_drop_down.svg" alt="arrow down" />
         </a>
     </th>
 }
@@ -10,7 +10,7 @@ else if (Context.Request.Query["propertyName"].ToString() == ViewBag.PropertyNam
 {
     <th class="align-middle">
         <a asp-action="Index" asp-route-propertyName="@ViewBag.PropertyName" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)" class="text-decoration-none d-inline-flex align-items-center gap-1 link-dark">
-            @ViewBag.PropertyName <img src="~/images/arrow_drop_up.svg" alt="arrow up" />
+            @ViewBag.DisplayName <img src="~/images/arrow_drop_up.svg" alt="arrow up" />
         </a>
     </th>
 }
@@ -18,7 +18,7 @@ else
 {
     <th class="align-middle">
         <a asp-action="Index" asp-route-propertyName="@ViewBag.PropertyName" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)" class="text-decoration-none d-inline-flex align-items-center gap-1 link-secondary">
-            @ViewBag.PropertyName
+            @ViewBag.DisplayName
         </a>
     </th>
 }
