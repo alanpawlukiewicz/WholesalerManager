@@ -42,15 +42,6 @@
                 <select class="form-select" asp-for="UserType">
                     @foreach (var userType in Enum.GetNames<UserTypeOptions>())
                     {
-                        @if (userType == UserTypeOptions.Administrator.ToString() && !User.IsInRole(UserTypeOptions.Administrator.ToString()))
-                        {
-                            continue;
-                        }
-                        @if (userType == UserTypeOptions.Manager.ToString() &&
-                        (!User.IsInRole(UserTypeOptions.Administrator.ToString()) && !User.IsInRole(UserTypeOptions.Manager.ToString())))
-                        {
-                            continue;
-                        }
                         <option value="@userType">@userType</option>
                     }
                 </select>

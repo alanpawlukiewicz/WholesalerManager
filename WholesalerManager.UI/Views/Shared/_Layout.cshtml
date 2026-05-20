@@ -1,10 +1,4 @@
-﻿@inject UserManager<ApplicationUser> UserManager
-@{
-    var usr = await UserManager.GetUserAsync(User);
-    var fullName = usr?.FirstName + " " + usr?.LastName;
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html>
 <head>
@@ -16,109 +10,40 @@
 </head>
 <body>
     <main>
-        <div class="container-fluid px-0">
-            <header class="navbar navbar-expand-lg navbar-light bg-light border-bottom px-4 py-3 mb-4">
-                <div class="container-fluid d-flex flex-wrap justify-content-between align-items-center">
-                    <a href="/" class="d-flex align-items-center mb-2 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                        <span class="fs-4 fw-semibold text-primary">Wholesaler Panel</span>
-                    </a>
-
-                    <ul class="nav nav-pills align-items-center gap-1">
-                        @if (User?.Identity?.IsAuthenticated ?? false)
-                        {
-                            <li class="nav-item">
-                                <a asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
-                            </li>
-                        }
-                        
-                        @if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Sales") || User.IsInRole("Operator"))
-                        {
-                            <li class="nav-item">
-                                <a asp-controller="Products" asp-action="Index" class="nav-link">Products</a>
-                            </li>
-                        }
-
-                        @if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Operator"))
-                        {
-                            <li class="nav-item">
-                                <a asp-controller="Deliveries" asp-action="Index" class="nav-link">Deliveries</a>
-                            </li>
-                        }
-
-                        @if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Sales"))
-                        {
-                            <li class="nav-item">
-                                <a asp-controller="Customers" asp-action="Index" class="nav-link">Customers</a>
-                            </li>
-                        }
-
-                        @if (User.IsInRole("Administrator") || User.IsInRole("Manager") || User.IsInRole("Sales") || User.IsInRole("Operator"))
-                        {
-                            <li class="nav-item">
-                                <a asp-controller="Orders" asp-action="Index" class="nav-link">Orders</a>
-                            </li>
-                        }
-
-                        @if (User.IsInRole("Administrator") || User.IsInRole("Manager"))
-                        {
-                            <li class="nav-item">
-                                <a asp-controller="Account" asp-action="Index" class="nav-link">Manage Accounts</a>
-                            </li>
-                        }
-
-                        @if (User?.Identity?.IsAuthenticated ?? false)
-                        {
-                            <li class="nav-item ms-2 align-self-center">
-                                <span class="navbar-text fw-medium me-2 text-secondary">@fullName</span>
-                            </li>
-                            <li class="nav-item">
-                                <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger btn-sm">Log out</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-sm">Log in</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </header>
-        </div>
+        <partial name="_mainHeaderPartialView" />
 
         <div class="container-fluid px-4">
             @RenderBody()
         </div>
     </main>
 
-<div id="toast">
-    <partial name="_errorToastPartialView"></partial>
-    <partial name="_infoToastPartialView"></partial>
-
-</div>
-
+    <div id="toast">
+        <partial name="_errorToastPartialView" />
+        <partial name="_infoToastPartialView" />
+    </div>
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-    const infoToast = document.getElementById('infoToast');
-    if(infoToast)
-    {
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const infoToast = document.getElementById('infoToast');
+        if(infoToast)
+        {
         const itoast = new bootstrap.Toast(infoToast);
         itoast.show();
-    }
-    
+        }
 
-    const errorToast = document.getElementById('errorToast');
-    if (errorToast)
-    {
+    
+        const errorToast = document.getElementById('errorToast');
+        if (errorToast)
+        {
         const etoast = new bootstrap.Toast(errorToast);
         etoast.show();
-    }
-    
-    });
-</script>
-        
-@RenderSection("Scripts", required: false)
+        }
+
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

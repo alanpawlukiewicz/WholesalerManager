@@ -30,4 +30,9 @@
     <ProjectReference Include="..\WholesalerManager.Core\WholesalerManager.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Administrator\Models\" />
+    <Folder Include="Areas\Administrator\Views\Shared\" />
+  </ItemGroup>
+
 </Project>
