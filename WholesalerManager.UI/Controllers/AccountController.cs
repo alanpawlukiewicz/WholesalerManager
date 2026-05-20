@@ -11,6 +11,7 @@ using WholesalerManager.Core.DTO.UserDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts;
+using WholesalerManager.Core.ServiceContracts.UserServiceContracts;
 
 namespace WholesalerManager.UI.Controllers
 {
@@ -20,12 +21,15 @@ namespace WholesalerManager.UI.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
+        private readonly IUsersGetterService _usersGetterService;
+
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IUsersGetterService usersGetterService, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _usersGetterService = usersGetterService;
             _logger = logger;
         }
 
@@ -56,7 +60,18 @@ namespace WholesalerManager.UI.Controllers
                 return View(loginData);
             }
 
+            var matchingUser = await _usersGetterService.GetUserByNameAsync(loginData.UserName);
+
+            if (matchingUser is not null && matchingUser?.IsEnabled == false)
+            {
+                _logger.LogWarning("Login attempt for disabled user {UserName}.", loginData.UserName);
+                ModelState.AddModelError("Login", "User account is currently disabled.");
+                ViewBag.Errors = ModelState.GetErrorMessages();
+                return View(loginData);
+            }   
+
             var result = await _signInManager.PasswordSignInAsync(loginData.UserName, loginData.Password, isPersistent: loginData.KeepSignedIn, lockoutOnFailure: false);
+
 
             if (!result.Succeeded)
             {

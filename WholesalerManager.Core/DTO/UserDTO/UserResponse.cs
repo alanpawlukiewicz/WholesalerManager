@@ -22,6 +22,19 @@ namespace WholesalerManager.Core.DTO.UserDTO
         public string? Email { get; set; }
 
         public string? PhoneNumber { get; set; }
+
+        public UserEditRequest ToUserEditRequest()
+        {
+            return new UserEditRequest
+            {
+                Id = Id,
+                FirstName = FirstName,
+                LastName = LastName,
+                UserName = UserName,
+                Email = Email,
+                PhoneNumber = PhoneNumber
+            };
+        }
     }
 
     public static class UserExtensions

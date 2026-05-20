@@ -17,6 +17,19 @@ namespace WholesalerManager.Core.Services.UserServices
             _usersRepository = usersRepository;
         }
 
+        public async Task<bool> ChangeEnabledStatus(Guid userID)
+        {
+            var matchingUser = await _usersRepository.GetUserByIdAsync(userID);
+            if (matchingUser == null)
+            {
+                return false;
+            }
+
+            matchingUser.IsEnabled = !matchingUser.IsEnabled;
+            var result = await _usersRepository.UpdateUser(matchingUser);
+            return result.Succeeded;
+        }
+
         public async Task<IdentityResult> UpdateUserAsync(UserEditRequest userEditRequest)
         {
             return await _usersRepository.UpdateUser(userEditRequest.ToApplicationUser());

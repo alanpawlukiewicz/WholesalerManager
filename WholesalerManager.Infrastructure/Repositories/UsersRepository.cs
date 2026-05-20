@@ -58,6 +58,11 @@ namespace WholesalerManager.Infrastructure.Repositories
             return await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
 
+        public async Task<ApplicationUser?> GetUserByNameAsync(string name)
+        {
+            return await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == name);
+        }
+
         public async Task<IdentityResult> UpdateUser(ApplicationUser user)
         {
             ApplicationUser? matchingUser = await _userManager.FindByIdAsync(user.Id.ToString());

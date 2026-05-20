@@ -23,18 +23,20 @@ namespace WholesalerManager.UI.Areas.Administrator.Controllers
         private readonly IUsersGetterService _usersGetterService;
         private readonly IUsersUpdaterService _usersUpdaterService;
         private readonly IUsersRegistrationService _usersRegistrationService;
+        private readonly IUsersDeleterService _usersDeleterService;
 
         private readonly IEmailService _emailService;
 
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IUsersGetterService usersGetterService, IUsersUpdaterService usersUpdaterService, IUsersRegistrationService usersRegistrationService, IEmailService emailService, ILogger<AccountController> logger)
+        public AccountController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IUsersGetterService usersGetterService, IUsersUpdaterService usersUpdaterService, IUsersRegistrationService usersRegistrationService, IUsersDeleterService usersDeleterService, IEmailService emailService, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _usersGetterService = usersGetterService;
             _usersUpdaterService = usersUpdaterService;
             _usersRegistrationService = usersRegistrationService;
+            _usersDeleterService = usersDeleterService;
             _emailService = emailService;
             _logger = logger;
         }
@@ -112,7 +114,7 @@ namespace WholesalerManager.UI.Areas.Administrator.Controllers
                 return NotFound();
             }
 
-            return View(userResponse);
+            return View(userResponse.ToUserEditRequest());
         }
 
         [HttpPost("{id}")]
@@ -142,6 +144,41 @@ namespace WholesalerManager.UI.Areas.Administrator.Controllers
 
             ViewBag.Errors = ModelState.GetErrorMessages();
             return View(editedUser);
+        }
+
+        [HttpPost("{id}")]
+        public async Task<IActionResult> ChangeEnabledStatus(Guid id)
+        {
+            var result = await _usersUpdaterService.ChangeEnabledStatus(id);
+            if (result)
+            {
+                _logger.LogInformation("User with ID {UserId} enabled status updated successfully", id);
+                TempData["InfoMessage"] = "User enabled status updated successfully.";
+            }
+            else
+            {
+                _logger.LogWarning("Failed to update enabled status for user with ID {UserId}", id);
+                TempData["ErrorMessage"] = "Failed to update user enabled status.";
+            }
+
+            return RedirectToAction("Index", "Account");
+        }
+
+        [HttpPost("{id}")]
+        public async Task<IActionResult> RemoveAccount(Guid id)
+        {
+            var result = await _usersDeleterService.DeleteUser(id);
+            if (result)
+            {
+                _logger.LogInformation("User with ID {UserId} deleted successfully", id);
+                TempData["InfoMessage"] = "User deleted successfully.";
+            }
+            else
+            {
+                _logger.LogWarning("Failed to delete user with ID {UserId}", id);
+                TempData["ErrorMessage"] = "Failed to delete user.";
+            }
+            return RedirectToAction("Index", "Account");
         }
     }
 }

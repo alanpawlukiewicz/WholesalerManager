@@ -20,5 +20,7 @@ namespace WholesalerManager.Core.Domain.RepositoryContracts
         Task<IdentityResult> AddNewRoleToUser(ApplicationUser user, string roleName);
 
         Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user);
+
+        Task<ApplicationUser?> GetUserByNameAsync(string name);
     }
 }

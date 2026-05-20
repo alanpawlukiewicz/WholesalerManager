@@ -9,5 +9,7 @@ namespace WholesalerManager.Core.ServiceContracts.UserServiceContracts
     public interface IUsersUpdaterService
     {
         Task<IdentityResult> UpdateUserAsync(UserEditRequest userEditRequest);
+
+        Task<bool> ChangeEnabledStatus(Guid userID);
     }
 }

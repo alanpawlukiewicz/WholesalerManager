@@ -154,6 +154,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped<IUsersGetterService, UsersGetterService>();
 builder.Services.AddScoped<IUsersUpdaterService, UsersUpdaterService>();
 builder.Services.AddScoped<IUsersRegistrationService, UsersRegistrationService>();
+builder.Services.AddScoped<IUsersDeleterService, UsersDeleterService>();
 
 builder.Services.AddHttpContextAccessor();
 

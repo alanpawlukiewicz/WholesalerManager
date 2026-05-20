@@ -50,5 +50,17 @@ namespace WholesalerManager.Core.Services.UserServices
             var user = await _usersRepository.GetUserByIdAsync(userId);
             return user?.ToUserResponse();
         }
+
+        public async Task<UserResponse?> GetUserByNameAsync(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                _logger.LogWarning("Attempted to get user by name, but the provided name was null or whitespace.");
+                return null;
+            }
+
+            var user = await _usersRepository.GetUserByNameAsync(name);
+            return user?.ToUserResponse();
+        }
     }
 }

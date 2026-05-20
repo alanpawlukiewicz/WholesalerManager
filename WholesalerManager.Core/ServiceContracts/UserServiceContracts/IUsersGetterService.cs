@@ -9,6 +9,8 @@ namespace WholesalerManager.Core.ServiceContracts.UserServiceContracts
     {
         Task<UserResponse?> GetUserByIdAsync(Guid userId);
 
+        Task<UserResponse?> GetUserByNameAsync(string name);
+
         Task<List<UserResponse>> GetAllUsersAsync();
 
         Task<string> GeneratePasswordResetTokenAsync(Guid id);
