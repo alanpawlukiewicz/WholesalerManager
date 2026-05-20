@@ -10,6 +10,8 @@ namespace WholesalerManager.Core.ServiceContracts.UserServiceContracts
     {
         Task<IdentityResult> UpdateUserAsync(UserEditRequest userEditRequest);
 
+        Task<IdentityResult> MakeUserChangePassword(Guid id);
+
         Task<bool> ChangeEnabledStatus(Guid userID);
     }
 }

@@ -26,8 +26,20 @@ namespace WholesalerManager.Core.Services.UserServices
             }
 
             matchingUser.IsEnabled = !matchingUser.IsEnabled;
-            var result = await _usersRepository.UpdateUser(matchingUser);
-            return result.Succeeded;
+            await _usersRepository.UpdateUser(matchingUser);
+            return true;
+        }
+
+        public async Task<IdentityResult> MakeUserChangePassword(Guid id)
+        {
+            var matchingUser = await _usersRepository.GetUserByIdAsync(id);
+            if (matchingUser is null)
+            {
+                return IdentityResult.Failed();
+            }
+            matchingUser.MustChangePassword = true;
+
+            return await _usersRepository.UpdateUser(matchingUser);
         }
 
         public async Task<IdentityResult> UpdateUserAsync(UserEditRequest userEditRequest)

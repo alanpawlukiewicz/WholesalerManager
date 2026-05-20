@@ -180,5 +180,50 @@ namespace WholesalerManager.UI.Areas.Administrator.Controllers
             }
             return RedirectToAction("Index", "Account");
         }
+
+        [HttpPost("{id}")]
+        public async Task<IActionResult> ResetAccountPassword(Guid id)
+        {
+            var matchingUser = await _usersGetterService.GetUserByIdAsync(id);
+            if (matchingUser is null)
+            {
+                _logger.LogInformation("Failed to find user with id:{userID}", id);
+                TempData["ErrorMessage"] = "Failed to find user.";
+                return RedirectToAction("Index", "Account");
+            }
+
+            var token = await _usersGetterService.GeneratePasswordResetTokenAsync(id);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+            string? resetLink = Url.Action(
+                                action: "SetPassword",
+                                controller: "Account",
+                                values: new { email = matchingUser.Email, token = encodedToken },
+                                protocol: Request.Scheme);
+
+            if (resetLink == null)
+            {
+                _logger.LogError("Failed to generate password reset link for user {Email}", matchingUser.Email);
+                ModelState.AddModelError("Register", "An error occurred while generating the password reset link. Please try again.");
+                ViewBag.Errors = ModelState.GetErrorMessages();
+
+                return RedirectToAction("Edit", "Account", new { id });
+            }
+
+            var result = await _usersUpdaterService.MakeUserChangePassword(id);
+
+            if(!result.Succeeded)
+            {
+                _logger.LogInformation("Failed to update user with id:{userID}.", id);
+                TempData["ErrorMessage"] = "Failed to update user.";
+                return RedirectToAction("Index", "Account");
+            }
+
+            await _emailService.SendEmailAsync(matchingUser.Email, "Your wholesaler employee account password has been reseted.", $"Please reset your password by clicking <a href='{resetLink}'>here</a>.");
+
+            _logger.LogInformation("User's password with id {id} has benn successfully reseted.", id);
+            TempData["InfoMessage"] = "Password reset request has been successfully sent.";
+            return RedirectToAction("Index", "Account");
+        }
     }
 }

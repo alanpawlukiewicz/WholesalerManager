@@ -33,7 +33,7 @@ namespace WholesalerManager.UI.Controllers
             _logger = logger;
         }
 
-        
+
         [Authorize("RequireNotAuthenticated")]
         [HttpGet]
         public IActionResult Login()
@@ -62,13 +62,27 @@ namespace WholesalerManager.UI.Controllers
 
             var matchingUser = await _usersGetterService.GetUserByNameAsync(loginData.UserName);
 
-            if (matchingUser is not null && matchingUser?.IsEnabled == false)
+            if (matchingUser is not null)
             {
-                _logger.LogWarning("Login attempt for disabled user {UserName}.", loginData.UserName);
-                ModelState.AddModelError("Login", "User account is currently disabled.");
-                ViewBag.Errors = ModelState.GetErrorMessages();
-                return View(loginData);
-            }   
+                if (matchingUser?.IsEnabled == false)
+                {
+                    _logger.LogWarning("Login attempt for disabled user {UserName}.", loginData.UserName);
+                    ModelState.AddModelError("Login", "User account is currently disabled.");
+                    ViewBag.Errors = ModelState.GetErrorMessages();
+                    return View(loginData);
+                }
+
+                if (matchingUser?.MustChangePassword == true)
+                {
+                    string token = await _usersGetterService.GeneratePasswordResetTokenAsync(matchingUser.Id);
+                    string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+                    _logger.LogWarning("Login attempt for user {UserName} who must change password.", loginData.UserName);
+                    TempData["InfoMessage"] = "Please reset your password.";
+                    return RedirectToAction("SetPassword", "Account", new { email = matchingUser.Email, token = encodedToken });
+                }
+            }
+
 
             var result = await _signInManager.PasswordSignInAsync(loginData.UserName, loginData.Password, isPersistent: loginData.KeepSignedIn, lockoutOnFailure: false);
 
@@ -132,7 +146,7 @@ namespace WholesalerManager.UI.Controllers
 
             var user = await _userManager.FindByEmailAsync(model.Email);
 
-            if (user == null)
+            if (user is null)
             {
                 _logger.LogWarning("Password reset attempt for non-existent email: {Email}", model.Email);
                 ModelState.AddModelError("SetPassword", "Invalid email address.");

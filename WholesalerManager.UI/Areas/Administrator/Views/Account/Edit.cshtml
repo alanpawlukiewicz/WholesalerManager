@@ -51,6 +51,11 @@
         </form>
 
         <div class="d-flex justify-content-end gap-2 border-top pt-3">
+            <form asp-action="ResetAccountPassword" asp-controller="Account" method="post" asp-route-id="@Model.Id">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-warning px-4">Reset Password</button>
+            </form>
+
             <form asp-action="ChangeEnabledStatus" asp-controller="Account" method="post" asp-route-id="@Model.Id">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-warning px-4">Activate/Deactivate Account</button>
