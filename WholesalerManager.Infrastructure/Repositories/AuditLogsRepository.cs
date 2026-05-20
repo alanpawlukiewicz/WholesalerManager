@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,6 +34,11 @@ namespace WholesalerManager.Infrastructure.Repositories
 
             var rowsAffected = await _db.SaveChangesAsync();
             return rowsAffected > 0;
+        }
+
+        public async Task<List<AuditLog>> GetAllAuditLogsAsync()
+        {
+            return await _db.AuditLog.Include("User").ToListAsync();
         }
     }
 }

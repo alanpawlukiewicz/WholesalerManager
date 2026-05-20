@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using WholesalerManager.Core.Domain.IdentityEntities;
 
 namespace WholesalerManager.Core.Domain.Entities
 {
@@ -19,5 +21,8 @@ namespace WholesalerManager.Core.Domain.Entities
         public string? IpAddress { get; set; }
 
         public bool Success { get; set; } = false;
+
+        [ForeignKey("UserID")]
+        public ApplicationUser? User { get; set; }
     }
 }
