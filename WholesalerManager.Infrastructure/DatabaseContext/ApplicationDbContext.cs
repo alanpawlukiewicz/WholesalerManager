@@ -21,6 +21,8 @@ namespace WholesalerManager.Infrastructure.DatabaseContext
         public virtual DbSet<Order> Order { get; set; }
         public virtual DbSet<OrderItem> OrderItem { get; set; }
 
+        public virtual DbSet<AuditLog> AuditLog { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

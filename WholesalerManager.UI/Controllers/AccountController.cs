@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Text;
+using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.DTO;
 using WholesalerManager.Core.DTO.UserDTO;
@@ -24,13 +25,15 @@ namespace WholesalerManager.UI.Controllers
         private readonly IUsersGetterService _usersGetterService;
 
         private readonly ILogger<AccountController> _logger;
+        private readonly IAuditLoggerService _auditLogger;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IUsersGetterService usersGetterService, ILogger<AccountController> logger)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IUsersGetterService usersGetterService, ILogger<AccountController> logger, IAuditLoggerService auditLoggerService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _usersGetterService = usersGetterService;
             _logger = logger;
+            _auditLogger = auditLoggerService;
         }
 
 
@@ -86,6 +89,7 @@ namespace WholesalerManager.UI.Controllers
 
             var result = await _signInManager.PasswordSignInAsync(loginData.UserName, loginData.Password, isPersistent: loginData.KeepSignedIn, lockoutOnFailure: false);
 
+            await _auditLogger.LogLoginAttempt(matchingUser?.Id, loginData.UserName, result.Succeeded);
 
             if (!result.Succeeded)
             {

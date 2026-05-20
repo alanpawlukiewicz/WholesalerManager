@@ -49,6 +49,7 @@ builder.Services.AddControllersWithViews(options =>
 });
 
 #region Repositories
+
 builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
 builder.Services.AddScoped<ISuppliersRepository, SuppliersRepository>();
@@ -58,6 +59,7 @@ builder.Services.AddScoped<ICustomersRepository, CustomersRepository>();
 builder.Services.AddScoped<IOrdersRepository, OrdersRepository>();
 builder.Services.AddScoped<IOrderItemsRepository, OrderItemsRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<IAuditLogsRepository, AuditLogsRepository>();
 
 #endregion
 
@@ -164,6 +166,8 @@ builder.Services.AddHttpLogging(logging =>
     logging.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestProperties |
     Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponsePropertiesAndHeaders;
 });
+
+builder.Services.AddScoped<IAuditLoggerService, AuditLoggerService>();
 
 #endregion
 
