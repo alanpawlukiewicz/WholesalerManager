@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Text;
 using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.DTO;
+using WholesalerManager.Core.DTO.UserDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts;

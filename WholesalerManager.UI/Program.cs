@@ -18,6 +18,7 @@ using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.Core.ServiceContracts.SupplierServiceContracts;
+using WholesalerManager.Core.ServiceContracts.UserServiceContracts;
 using WholesalerManager.Core.Services;
 using WholesalerManager.Core.Services.CategoriesServices;
 using WholesalerManager.Core.Services.CustomerServices;
@@ -27,6 +28,7 @@ using WholesalerManager.Core.Services.OrderItemServices;
 using WholesalerManager.Core.Services.OrderServices;
 using WholesalerManager.Core.Services.ProductServices;
 using WholesalerManager.Core.Services.SupplierServices;
+using WholesalerManager.Core.Services.UserServices;
 using WholesalerManager.Infrastructure.DatabaseContext;
 using WholesalerManager.Infrastructure.Persistence;
 using WholesalerManager.Infrastructure.Repositories;
@@ -55,6 +57,7 @@ builder.Services.AddScoped<IDeliveryItemsRepository, DeliveryItemsRepository>();
 builder.Services.AddScoped<ICustomersRepository, CustomersRepository>();
 builder.Services.AddScoped<IOrdersRepository, OrdersRepository>();
 builder.Services.AddScoped<IOrderItemsRepository, OrderItemsRepository>();
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
 #endregion
 
@@ -147,6 +150,12 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
+
+builder.Services.AddScoped<IUsersGetterService, UsersGetterService>();
+builder.Services.AddScoped<IUsersUpdaterService, UsersUpdaterService>();
+builder.Services.AddScoped<IUsersRegistrationService, UsersRegistrationService>();
+
+builder.Services.AddHttpContextAccessor();
 
 // Logging
 builder.Services.AddHttpLogging(logging =>

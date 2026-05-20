@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.Enums;
 
-namespace WholesalerManager.Core.DTO
+namespace WholesalerManager.Core.DTO.UserDTO
 {
     public class RegisterDTO
     {
@@ -18,7 +19,7 @@ namespace WholesalerManager.Core.DTO
         [EmailAddress(ErrorMessage = "Invalid email address format.")]
         public string? Email { get; set; }
 
-        [RegularExpression(@"^\+?[1-9]\d{1,14}$", ErrorMessage = "Invalid phone number format.")]
+        [DataType(DataType.PhoneNumber)]
         public string? Phone { get; set; }
 
         [DataType(DataType.Password)]

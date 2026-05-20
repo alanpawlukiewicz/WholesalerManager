@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace WholesalerManager.Core.DTO
+namespace WholesalerManager.Core.DTO.UserDTO
 {
     public class LoginDTO
     {
