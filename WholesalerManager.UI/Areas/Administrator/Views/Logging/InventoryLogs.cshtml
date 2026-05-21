@@ -1,5 +1,41 @@
-﻿@{
+﻿@model IEnumerable<InventoryLog>
+@{
     ViewBag.Title = "Inventory Logs";
 }
 
-<h1>Inventory Logs</h1>
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <h1 class="mb-0">Inventory Logs</h1>
+    </div>
+
+    @await Component.InvokeAsync("FilterSearchBar", new { controllerName = "Logging", actionName = "Index" })
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(InventoryLog.CreatedAt), displayName = "Created At" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(InventoryLog.OperationType), displayName = "Operation Type" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(InventoryLog.Product.ProductName), displayName = "Product Name" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(InventoryLog.PreviousStock), displayName = "Previous Stock" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(InventoryLog.NewStock), displayName = "New Stock" })
+                    <th>Type</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var log in Model)
+                {
+                    <tr>
+                        <td>@log.CreatedAt</td>
+                        <td>@log.OperationType</td>
+                        <td>@log.Product?.ProductName</td>
+                        <td>@log.PreviousStock</td>
+                        <td>@log.NewStock</td>
+                        <td>@(log.Delivery is null ? "Order" : "Delivery")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

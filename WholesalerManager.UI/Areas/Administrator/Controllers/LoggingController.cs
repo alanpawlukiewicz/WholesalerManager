@@ -10,10 +10,12 @@ namespace WholesalerManager.UI.Areas.Administrator.Controllers
     public class LoggingController : Controller
     {
         private readonly IAuditLoggerService _auditLoggerService;
+        private readonly IInventoryLoggerService _inventoryLoggerService;
 
-        public LoggingController(IAuditLoggerService auditLoggerService)
+        public LoggingController(IAuditLoggerService auditLoggerService, IInventoryLoggerService inventoryLoggerService)
         {
             _auditLoggerService = auditLoggerService;
+            _inventoryLoggerService = inventoryLoggerService;
         }
 
         public async Task<IActionResult> AuditLogs()
@@ -24,7 +26,8 @@ namespace WholesalerManager.UI.Areas.Administrator.Controllers
 
         public async Task<IActionResult> InventoryLogs()
         {
-            return View();
+            var logs = await _inventoryLoggerService.GetInventoryLogsAsync();
+            return View(logs);
         }
     }
 }

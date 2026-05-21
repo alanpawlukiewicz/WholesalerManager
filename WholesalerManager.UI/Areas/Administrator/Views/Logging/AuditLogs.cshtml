@@ -8,16 +8,17 @@
         <h1 class="mb-0">Audit Logs</h1>
     </div>
 
-    @await Component.InvokeAsync("FilterSearchBar", new { controllerName = "logs", actionName = "Index" })
+    @await Component.InvokeAsync("FilterSearchBar", new { controllerName = "Logging", actionName = "Index" })
 
     <div class="table-responsive">
         <table class="table table-striped table-hover align-middle">
             <thead class="table-light">
                 <tr>
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.Timestamp), displayName = "Timestamp" })
                     @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.User.Email), displayName = "Email" })
                     @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.AttemptedUsername), displayName = "Attempted Username" })
                     @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.IpAddress), displayName = "IP Address" })
-                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.Timestamp), displayName = "Timestamp" })
+                    
                     @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.Success), displayName = "Was Successfull" })
                     
                 </tr>
@@ -26,10 +27,11 @@
                 @foreach (var log in Model)
                 {
                     <tr>
+                        <td>@log.Timestamp</td>
                         <td>@log.User?.Email</td>
                         <td>@log.AttemptedUsername</td>
                         <td>@log.IpAddress</td>
-                        <td>@log.Timestamp</td>
+                        
                         <td>@(log.Success ? "Yes" : "No")</td>
                     </tr>
                 }

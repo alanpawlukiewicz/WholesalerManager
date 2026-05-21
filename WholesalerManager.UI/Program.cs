@@ -60,6 +60,7 @@ builder.Services.AddScoped<IOrdersRepository, OrdersRepository>();
 builder.Services.AddScoped<IOrderItemsRepository, OrderItemsRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IAuditLogsRepository, AuditLogsRepository>();
+builder.Services.AddScoped<IInventoryLogsRepository, InventoryLogsRepository>();
 
 #endregion
 
@@ -168,6 +169,7 @@ builder.Services.AddHttpLogging(logging =>
 });
 
 builder.Services.AddScoped<IAuditLoggerService, AuditLoggerService>();
+builder.Services.AddScoped<IInventoryLoggerService, InventoryLoggerService>();
 
 #endregion
 
