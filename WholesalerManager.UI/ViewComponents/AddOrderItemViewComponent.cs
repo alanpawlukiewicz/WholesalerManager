@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WholesalerManager.Core.DTO.ProductDTO;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
-using WholesalerManager.UI.ViewModels;
 
 namespace WholesalerManager.UI.ViewComponents
 {

@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.UserDTO;
 using WholesalerManager.Core.ServiceContracts.UserServiceContracts;

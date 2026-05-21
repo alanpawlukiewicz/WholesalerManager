@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.EntityFrameworkCore;
 using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
-using Microsoft.EntityFrameworkCore;
 
 namespace WholesalerManager.Infrastructure.Repositories
 {

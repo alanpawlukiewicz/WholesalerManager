@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using WholesalerManager.Core.DTO.UserDTO;
 
 namespace WholesalerManager.Core.ServiceContracts.UserServiceContracts

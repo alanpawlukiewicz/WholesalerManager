@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using WholesalerManager.Core.Domain.IdentityEntities;
+﻿using System.ComponentModel.DataAnnotations;
 using WholesalerManager.Core.Enums;
 
 namespace WholesalerManager.Core.DTO.UserDTO

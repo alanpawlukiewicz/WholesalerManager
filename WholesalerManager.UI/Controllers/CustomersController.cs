@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WholesalerManager.Core.DTO;
 using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.Enums;
-using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
+using WholesalerManager.UI.Helpers;
 
 namespace WholesalerManager.UI.Controllers
 {
@@ -34,11 +33,11 @@ namespace WholesalerManager.UI.Controllers
         {
             List<CustomerResponse> customers;
 
-            if(filter is not null && propertyName is not null)
+            if (filter is not null && propertyName is not null)
             {
                 customers = await _customersGetterService.GetFilteredCustomers(propertyName, filter, ignoreCase ?? true);
-            } 
-            else if (sortOrder is  not null && propertyName is not null)
+            }
+            else if (sortOrder is not null && propertyName is not null)
             {
                 customers = await _customersGetterService.GetSortedCustomers(propertyName, sortOrder ?? SortOrderOptions.ASC);
             }
@@ -69,7 +68,7 @@ namespace WholesalerManager.UI.Controllers
             }
 
             bool isAdded = await _customersAdderService.AddCustomer(customerAddRequest);
-            if (!isAdded) 
+            if (!isAdded)
             {
                 _logger.LogError("Failed to add customer.");
                 TempData["ErrorMessage"] = "Customer could not be registered.";

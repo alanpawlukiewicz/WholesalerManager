@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.Domain.RepositoryContracts;
+﻿using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
-using static System.Net.WebRequestMethods;
 
 namespace WholesalerManager.Core.Services.DeliveryServices
 {

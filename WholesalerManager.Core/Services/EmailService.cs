@@ -1,7 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using WholesalerManager.Core.ServiceContracts;
 
 namespace WholesalerManager.Core.Services

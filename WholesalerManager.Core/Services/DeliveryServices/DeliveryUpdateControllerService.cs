@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.Domain.PersistenceContracts;
+﻿using WholesalerManager.Core.Domain.PersistenceContracts;
 using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.DTO.DeliveryItemDTO;
 using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
-using WholesalerManager.Core.Services.DeliveryItemServices;
 
 namespace WholesalerManager.Core.Services.DeliveryServices
 {
@@ -47,7 +43,7 @@ namespace WholesalerManager.Core.Services.DeliveryServices
                 throw;
             }
 
-            
+
         }
     }
 }

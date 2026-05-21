@@ -3,6 +3,10 @@
     <Project Path="WholesalerManager.Core/WholesalerManager.Core.csproj" Id="55584e2d-7235-4c64-884e-ec577618d47a" />
     <Project Path="WholesalerManager.Infrastructure/WholesalerManager.Infrastructure.csproj" />
   </Folder>
-  <Folder Name="/tests/" />
+  <Folder Name="/tests/">
+    <Project Path="WholesalerManager.ControllerTests/WholesalerManager.ControllerTests.csproj" Id="ab896003-67be-4adc-ae00-10d1cc96ac17" />
+    <Project Path="WholesalerManager.IntegrationTests/WholesalerManager.IntegrationTests.csproj" Id="6a62d13a-3ede-43a3-a343-709e81a6d9c0" />
+    <Project Path="WholesalerManager.ServiceTests/WholesalerManager.ServiceTests.csproj" Id="2b3cfa21-abab-44da-8f60-9e7b8c73246b" />
+  </Folder>
   <Project Path="WholesalerManager.UI/WholesalerManager.UI.csproj" />
 </Solution>

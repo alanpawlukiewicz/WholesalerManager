@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WholesalerManager.Core.Enums;
 
 namespace WholesalerManager.UI.ViewComponents
 {

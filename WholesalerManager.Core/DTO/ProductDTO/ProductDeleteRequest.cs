@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WholesalerManager.Core.DTO.ProductDTO
+﻿namespace WholesalerManager.Core.DTO.ProductDTO
 {
     public class ProductDeleteRequest
     {

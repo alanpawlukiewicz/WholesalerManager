@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.Enums;
-using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
+using WholesalerManager.UI.Helpers;
 using WholesalerManager.UI.ViewModels;
 
 namespace WholesalerManager.UI.Controllers
@@ -31,14 +30,14 @@ namespace WholesalerManager.UI.Controllers
         private readonly ILogger<OrdersController> _logger;
 
 
-        public OrdersController(IOrdersGetterService ordersGetterService, 
-            IOrdersAdderService ordersAdderService, 
+        public OrdersController(IOrdersGetterService ordersGetterService,
+            IOrdersAdderService ordersAdderService,
             IOrdersDeleterService ordersDeleterService,
             IOrdersUpdaterService ordersUpdaterService,
             IOrderRegistrationService orderRegistrationService,
             IOrderUpdateCoordinatorService orderUpdateCoordinatorService,
-            IOrderItemsGetterService orderItemsGetterService, 
-            IProductsGetterService productsGetterService, 
+            IOrderItemsGetterService orderItemsGetterService,
+            IProductsGetterService productsGetterService,
             ICustomersGetterService customersGetterService,
             ILogger<OrdersController> logger)
         {

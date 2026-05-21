@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Infrastructure.DatabaseContext;
@@ -67,7 +64,7 @@ namespace WholesalerManager.Infrastructure.Repositories
         public async Task<List<DeliveryItem?>> UpdateMultipleDeliveryItems(List<DeliveryItem> items)
         {
             List<DeliveryItem?> updatedItems = new List<DeliveryItem?>() { };
-            foreach(var item in items)
+            foreach (var item in items)
             {
                 updatedItems.Add(await UpdateDeliveryItem(item));
             }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.DTO.DeliveryDTO;
-using WholesalerManager.Core.DTO.ProductDTO;
+﻿using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.Enums;
 
 namespace WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts

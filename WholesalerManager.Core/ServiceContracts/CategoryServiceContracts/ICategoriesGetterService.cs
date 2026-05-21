@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.DTO.CategoryDTO;
+﻿using WholesalerManager.Core.DTO.CategoryDTO;
 
 namespace WholesalerManager.Core.ServiceContracts.CategoriesServiceContracts
 {

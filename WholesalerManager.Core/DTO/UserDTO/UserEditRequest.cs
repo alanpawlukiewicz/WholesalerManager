@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using WholesalerManager.Core.Domain.IdentityEntities;
-using WholesalerManager.Core.Enums;
 
 namespace WholesalerManager.Core.DTO.UserDTO
 {
@@ -14,10 +10,10 @@ namespace WholesalerManager.Core.DTO.UserDTO
 
         [Required(ErrorMessage = "First name can't be blank.")]
         public string? FirstName { get; set; }
-        
+
         [Required(ErrorMessage = "Last name can't be blank.")]
         public string? LastName { get; set; }
-        
+
         [Required(ErrorMessage = "Username can't be blank.")]
         public string? UserName { get; set; }
 

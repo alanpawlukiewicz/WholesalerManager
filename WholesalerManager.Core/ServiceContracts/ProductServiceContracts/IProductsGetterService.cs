@@ -19,7 +19,7 @@ namespace WholesalerManager.Core.ServiceContracts.ProductServiceContracts
         /// </summary>
         /// <param name="productID"></param>
         /// <returns></returns>
-         Task<ProductResponse?> GetProductById(Guid? productID);
+        Task<ProductResponse?> GetProductById(Guid? productID);
 
         /// <summary>
         /// Asynchronously retrieves a list of products that match the specified filter criteria. The method allows filtering based on a specific property of the product, with an option to ignore case sensitivity during the filtering process.

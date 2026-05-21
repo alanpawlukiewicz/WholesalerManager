@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.Domain.PersistenceContracts;
+﻿using WholesalerManager.Core.Domain.PersistenceContracts;
 using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.DTO.OrderItemDTO;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
-using WholesalerManager.Core.Services.OrderItemServices;
 
 namespace WholesalerManager.Core.Services.OrderServices
 {

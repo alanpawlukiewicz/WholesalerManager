@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.Domain.PersistenceContracts;
+﻿using WholesalerManager.Core.Domain.PersistenceContracts;
 using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.DTO.DeliveryItemDTO;
 using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.Domain.Entities;
+﻿using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO;
 using WholesalerManager.Core.DTO.ProductDTO;
@@ -49,7 +46,7 @@ namespace WholesalerManager.Core.Services.ProductServices
                 throw new ArgumentNullException(nameof(editStockQuantityDTO));
             }
 
-            if(editStockQuantityDTO.ProductID == Guid.Empty || editStockQuantityDTO.NewStockQuantity < 0)
+            if (editStockQuantityDTO.ProductID == Guid.Empty || editStockQuantityDTO.NewStockQuantity < 0)
             {
                 return false;
             }

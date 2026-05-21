@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
-using WholesalerManager.Core.DTO.DeliveryDTO;
-using WholesalerManager.Core.DTO.ProductDTO;
 
 namespace WholesalerManager.Core.Domain.Entities
 {

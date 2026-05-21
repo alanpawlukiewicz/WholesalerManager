@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Rotativa.AspNetCore;
 using WholesalerManager.Core.DTO;
-using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.DTO.ProductDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.CategoriesServiceContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
-using WholesalerManager.UI.ViewModels;
+using WholesalerManager.UI.Helpers;
 
 namespace WholesalerManager.UI.Controllers
 {

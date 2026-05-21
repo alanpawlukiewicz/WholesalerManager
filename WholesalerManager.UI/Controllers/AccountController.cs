@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Text;
-using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.DTO;
 using WholesalerManager.Core.DTO.UserDTO;
-using WholesalerManager.Core.Enums;
-using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts;
 using WholesalerManager.Core.ServiceContracts.UserServiceContracts;
+using WholesalerManager.UI.Helpers;
 
 namespace WholesalerManager.UI.Controllers
 {

@@ -41,7 +41,7 @@ namespace WholesalerManager.Core.Services.ProductServices
             StringComparison stringComparisonType = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
             switch (propertyName)
-            { 
+            {
                 case nameof(ProductResponse.ProductName):
                     return productResponses.Where(p => p.ProductName != null && p.ProductName.Contains(filter, stringComparisonType)).ToList();
                 case nameof(ProductResponse.SKU):

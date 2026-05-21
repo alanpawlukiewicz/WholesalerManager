@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.Domain.RepositoryContracts;
+﻿using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 
 namespace WholesalerManager.Core.Services.ProductServices

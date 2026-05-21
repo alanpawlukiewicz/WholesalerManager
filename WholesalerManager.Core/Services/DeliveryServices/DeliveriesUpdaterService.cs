@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.Domain.Entities;
+﻿using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.Enums;
@@ -51,7 +48,7 @@ namespace WholesalerManager.Core.Services.DeliveryServices
 
             Delivery delivery = deliveryUpdateRequest.ToDelivery();
             Delivery? updatedDelivery = await _deliveriesRepository.UpdateDelivery(delivery);
-            
+
             if (updatedDelivery is null)
             {
                 throw new ArgumentException(nameof(updatedDelivery));

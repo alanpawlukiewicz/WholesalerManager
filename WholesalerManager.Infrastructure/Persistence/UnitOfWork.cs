@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using WholesalerManager.Core.Domain.PersistenceContracts;
 using WholesalerManager.Infrastructure.DatabaseContext;
 

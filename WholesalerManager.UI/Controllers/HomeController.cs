@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.Enums;
@@ -26,7 +25,7 @@ namespace WholesalerManager.UI.Controllers
                 return View();
             }
 
-            if(await _userManager.IsInRoleAsync(user, UserTypeOptions.Administrator.ToString()))
+            if (await _userManager.IsInRoleAsync(user, UserTypeOptions.Administrator.ToString()))
             {
                 return RedirectToAction("Index", "Home", new { area = "Administrator" });
             }

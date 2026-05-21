@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.Domain.Entities;
+﻿using WholesalerManager.Core.Domain.Entities;
 
 namespace WholesalerManager.Core.ServiceContracts
 {

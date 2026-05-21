@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WholesalerManager.Core.DTO
+﻿namespace WholesalerManager.Core.DTO
 {
     public class EditStockQuantityDTO
     {

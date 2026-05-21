@@ -9,7 +9,7 @@ namespace WholesalerManager.Core.Services
 
         public string Generate(string? firstName, string? lastName, int randomPartLength = 6)
         {
-            if(string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
             {
                 throw new ArgumentNullException("Both first name and last name cannot be null or empty.");
             }
@@ -17,7 +17,7 @@ namespace WholesalerManager.Core.Services
             string cleanFirst = firstName.Replace(" ", "").ToLower();
             string cleanLast = lastName.Replace(" ", "").ToLower();
 
-            
+
             var randomPart = new char[randomPartLength];
             for (int i = 0; i < randomPartLength; i++)
             {

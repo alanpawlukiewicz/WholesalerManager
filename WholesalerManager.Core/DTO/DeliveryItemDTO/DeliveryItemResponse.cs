@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
-using WholesalerManager.Core.Domain.Entities;
-using WholesalerManager.Core.DTO.DeliveryDTO;
-using WholesalerManager.Core.DTO.ProductDTO;
+﻿using WholesalerManager.Core.Domain.Entities;
 
 namespace WholesalerManager.Core.DTO.DeliveryItemDTO
 {
@@ -30,7 +23,7 @@ namespace WholesalerManager.Core.DTO.DeliveryItemDTO
         public DeliveryItemUpdateRequest ToDeliveryItemUpdateRequest()
         {
             return new DeliveryItemUpdateRequest()
-            { 
+            {
                 DeliveryItemID = DeliveryItemID,
                 DeliveryID = DeliveryID,
                 ProductID = ProductID,
@@ -57,7 +50,7 @@ namespace WholesalerManager.Core.DTO.DeliveryItemDTO
                 DeliveryItemID = DeliveryItemID,
                 DeliveryID = DeliveryID,
                 ProductID = ProductID,
-                Quantity= Quantity,
+                Quantity = Quantity,
                 PriceAtSale = PriceAtSale
             };
         }

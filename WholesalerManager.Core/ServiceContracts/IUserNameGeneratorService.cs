@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WholesalerManager.Core.ServiceContracts
+﻿namespace WholesalerManager.Core.ServiceContracts
 {
     /// <summary>
     /// Defines a service for generating a username by combining a user's first name, last name, and a random string sequence.

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts
+﻿namespace WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts
 {
     /// <summary>
     /// Defines a service for deleting delivery records by their unique identifier.

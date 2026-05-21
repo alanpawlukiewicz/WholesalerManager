@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WholesalerManager.Core.ServiceContracts.ProductServiceContracts
+﻿namespace WholesalerManager.Core.ServiceContracts.ProductServiceContracts
 {
     public interface IProductsDeleterService
     {

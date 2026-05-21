@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.Domain.Entities;
+﻿using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
 
@@ -22,7 +19,7 @@ namespace WholesalerManager.Core.Services.OrderServices
 
         public async Task<bool> CheckStockAvailabilityForOrder(Guid? orderID)
         {
-            if (orderID is null) 
+            if (orderID is null)
             {
                 throw new ArgumentNullException(nameof(orderID));
             }

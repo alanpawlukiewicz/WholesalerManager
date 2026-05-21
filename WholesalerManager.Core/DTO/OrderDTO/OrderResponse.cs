@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.Domain.Entities;
-using WholesalerManager.Core.DTO.OrderDTO;
-using WholesalerManager.Core.DTO.OrderItemDTO;
+﻿using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Enums;
 
 namespace WholesalerManager.Core.DTO.OrderDTO

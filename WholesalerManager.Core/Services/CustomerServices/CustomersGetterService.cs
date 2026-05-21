@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.Domain.RepositoryContracts;
+﻿using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
@@ -47,9 +44,9 @@ namespace WholesalerManager.Core.Services.CustomerServices
         public async Task<List<CustomerResponse>> GetFilteredCustomers(string? propertyName, string? filter, bool ignoreCase = true)
         {
             var allCustomers = await _customersRepository.GetAllCustomers();
-            var customerResponses =  allCustomers.Select(c => c.ToCustomerResponse()).ToList();
+            var customerResponses = allCustomers.Select(c => c.ToCustomerResponse()).ToList();
 
-            if(string.IsNullOrWhiteSpace(propertyName) || string.IsNullOrWhiteSpace(filter))
+            if (string.IsNullOrWhiteSpace(propertyName) || string.IsNullOrWhiteSpace(filter))
             {
                 return customerResponses;
             }

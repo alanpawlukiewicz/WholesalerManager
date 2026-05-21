@@ -1,22 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using WholesalerManager.Core.Domain.Entities;
-using WholesalerManager.Core.DTO;
-using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.DTO.DeliveryDTO;
-using WholesalerManager.Core.DTO.DeliveryItemDTO;
-using WholesalerManager.Core.DTO.ProductDTO;
 using WholesalerManager.Core.Enums;
-using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.Core.ServiceContracts.SupplierServiceContracts;
-using WholesalerManager.Core.Services.DeliveryServices;
-using WholesalerManager.Core.Services.ProductServices;
-using WholesalerManager.Core.Services.SupplierServices;
-using WholesalerManager.UI.ViewComponents;
+using WholesalerManager.UI.Helpers;
 using WholesalerManager.UI.ViewModels;
 
 namespace WholesalerManager.UI.Controllers
@@ -41,17 +32,17 @@ namespace WholesalerManager.UI.Controllers
 
         private readonly ILogger<DeliveriesController> _logger;
 
-        public DeliveriesController(IDeliveriesGetterService deliveriesGetterService, 
-            IDeliveriesAdderService deliveriesAdderService, 
-            IDeliveriesUpdaterService deliveriesUpdaterService, 
-            IDeliveriesDeleterService deliveriesDeleterService, 
+        public DeliveriesController(IDeliveriesGetterService deliveriesGetterService,
+            IDeliveriesAdderService deliveriesAdderService,
+            IDeliveriesUpdaterService deliveriesUpdaterService,
+            IDeliveriesDeleterService deliveriesDeleterService,
             IDeliveryRegistrationService deliveryRegistrationService,
             IDeliveryUpdateControllerService deliveryUpdateControllerService,
 
-            IDeliveryItemsAdderService deliveryItemsAdderService, 
-            IDeliveryItemsGetterService deliveryItemsGetterService, 
-            IDeliveryItemsUpdaterService deliveryItemsUpdaterService, 
-            ISuppliersGetterService suppliersGetterService, 
+            IDeliveryItemsAdderService deliveryItemsAdderService,
+            IDeliveryItemsGetterService deliveryItemsGetterService,
+            IDeliveryItemsUpdaterService deliveryItemsUpdaterService,
+            ISuppliersGetterService suppliersGetterService,
             IProductsGetterService productsGetterService,
             ILogger<DeliveriesController> logger)
         {

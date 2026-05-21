@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WholesalerManager.Core.Domain.PersistenceContracts
+﻿namespace WholesalerManager.Core.Domain.PersistenceContracts
 {
     /// <summary>
     /// Defines a unit of work for managing database transactions.

@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace WholesalerManager.Core.Helpers
+namespace WholesalerManager.UI.Helpers
 {
     public static class ErrorMessagesHelper
     {

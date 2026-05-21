@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WholesalerManager.Core.Domain.Entities;
+﻿using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.Enums;
@@ -66,7 +63,7 @@ namespace WholesalerManager.Core.Services.OrderServices
             Order order = orderUpdateRequest.ToOrder();
 
             Order? updatedOrder = await _ordersRepository.UpdateOrder(order);
-            
+
             if (updatedOrder is null)
             {
                 throw new ArgumentException(nameof(updatedOrder));

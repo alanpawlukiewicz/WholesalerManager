@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WholesalerManager.Core.ServiceContracts.OrderServiceContracts
+﻿namespace WholesalerManager.Core.ServiceContracts.OrderServiceContracts
 {
     /// <summary>
     /// Defines a service for asynchronously checking whether sufficient stock is available to fulfill a specified order.

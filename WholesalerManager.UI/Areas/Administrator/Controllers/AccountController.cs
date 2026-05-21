@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.DTO.UserDTO;
-using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts;
 using WholesalerManager.Core.ServiceContracts.UserServiceContracts;
+using WholesalerManager.UI.Helpers;
 
 namespace WholesalerManager.UI.Areas.Administrator.Controllers
 {
@@ -101,7 +100,7 @@ namespace WholesalerManager.UI.Areas.Administrator.Controllers
             TempData["InfoMessage"] = "User successfully registered.";
             return RedirectToAction("Index", "Home");
 
-            
+
         }
 
         [HttpGet("{id}")]
@@ -212,7 +211,7 @@ namespace WholesalerManager.UI.Areas.Administrator.Controllers
 
             var result = await _usersUpdaterService.MakeUserChangePassword(id);
 
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 _logger.LogInformation("Failed to update user with id:{userID}.", id);
                 TempData["ErrorMessage"] = "Failed to update user.";
