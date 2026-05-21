@@ -59,33 +59,27 @@ namespace WholesalerManager.UI.Controllers
                 return View(loginData);
             }
 
-            var matchingUser = await _usersGetterService.GetUserByNameAsync(loginData.UserName);
+            var matchingUser = await _userManager.FindByNameAsync(loginData.UserName);
 
-            if (matchingUser is not null)
+            if (matchingUser is null)
             {
-                if (matchingUser?.IsEnabled == false)
-                {
-                    _logger.LogWarning("Login attempt for disabled user {UserName}.", loginData.UserName);
-                    ModelState.AddModelError("Login", "User account is currently disabled.");
-                    ViewBag.Errors = ModelState.GetErrorMessages();
-                    return View(loginData);
-                }
-
-                if (matchingUser?.MustChangePassword == true)
-                {
-                    string token = await _usersGetterService.GeneratePasswordResetTokenAsync(matchingUser.Id);
-                    string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-
-                    _logger.LogWarning("Login attempt for user {UserName} who must change password.", loginData.UserName);
-                    TempData["InfoMessage"] = "Please reset your password.";
-                    return RedirectToAction("SetPassword", "Account", new { email = matchingUser.Email, token = encodedToken });
-                }
+                _logger.LogWarning("Invalid login attempt: user {UserName} not found.", loginData.UserName);
+                ModelState.AddModelError("Login", "Invalid username or password.");
+                ViewBag.Errors = ModelState.GetErrorMessages();
+                return View(loginData);
             }
 
+            if (!matchingUser.IsEnabled)
+            {
+                _logger.LogWarning("Login attempt for disabled user {UserName}.", loginData.UserName);
+                ModelState.AddModelError("Login", "User account is currently disabled.");
+                ViewBag.Errors = ModelState.GetErrorMessages();
+                return View(loginData);
+            }
 
-            var result = await _signInManager.PasswordSignInAsync(loginData.UserName, loginData.Password, isPersistent: loginData.KeepSignedIn, lockoutOnFailure: false);
+            var result = await _signInManager.CheckPasswordSignInAsync(matchingUser, loginData.Password, lockoutOnFailure: false);
 
-            await _auditLogger.LogLoginAttempt(matchingUser?.Id, loginData.UserName, result.Succeeded);
+            await _auditLogger.LogLoginAttempt(matchingUser.Id, loginData.UserName, result.Succeeded);
 
             if (!result.Succeeded)
             {
@@ -95,6 +89,18 @@ namespace WholesalerManager.UI.Controllers
 
                 return View(loginData);
             }
+
+            if (matchingUser.MustChangePassword)
+            {
+                string token = await _usersGetterService.GeneratePasswordResetTokenAsync(matchingUser.Id);
+                string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+                _logger.LogWarning("Login attempt for user {UserName} who must change password.", loginData.UserName);
+                TempData["InfoMessage"] = "Please reset your password.";
+                return RedirectToAction("SetPassword", "Account", new { email = matchingUser.Email, token = encodedToken });
+            }
+
+            await _signInManager.PasswordSignInAsync(loginData.UserName, loginData.Password, isPersistent: loginData.KeepSignedIn, lockoutOnFailure: false);
 
             _logger.LogInformation("User {UserName} logged in successfully.", loginData.UserName);
             TempData["InfoMessage"] = "Successfully logged in.";

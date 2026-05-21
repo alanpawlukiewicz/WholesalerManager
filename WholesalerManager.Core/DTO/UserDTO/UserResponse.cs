@@ -11,9 +11,9 @@ namespace WholesalerManager.Core.DTO.UserDTO
 
         public string? UserName { get; set; }
 
-        public bool? MustChangePassword { get; set; }
+        public bool MustChangePassword { get; set; }
 
-        public bool? IsEnabled { get; set; }
+        public bool IsEnabled { get; set; }
 
         public string? Email { get; set; }
 
