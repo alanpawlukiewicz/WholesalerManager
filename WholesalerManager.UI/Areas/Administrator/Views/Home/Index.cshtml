@@ -1,6 +1,57 @@
-﻿<h1>Administrator Dashboard</h1>
+﻿@{
+    ViewBag.Title = "Administrator Dashboard";
+}
+<div class="card shadow-sm max-width-600 mx-auto my-5">
+    <div class="card-header bg-light py-3 text-center border-bottom-0">
+        <div class="text-primary mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-sliders" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8zm9.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1z" />
+            </svg>
+        </div>
+        <h1 class="h3 mb-0 text-dark fw-bold">Administrator Dashboard</h1>
+        <p class="text-muted small mb-0 mt-1">Select an administrative action or view system logs</p>
+    </div>
 
-<br />
-<a asp-controller="Account" asp-action="Index" class="nav-link">Manage Accounts</a><br />
-<a asp-controller="Logging" asp-action="AuditLogs" class="nav-link">Browse Audit Logs</a><br />
-<a asp-controller="Logging" asp-action="InventoryLogs" class="nav-link">Browse Inventory Logs</a><br />
+    <div class="card-body p-4">
+        <div class="d-grid gap-3">
+            <a asp-controller="Account" asp-action="Index" class="btn btn-outline-primary btn-lg text-start d-flex align-items-center justify-content-between p-3 rounded-3 shadow-sm transition-all hover-lift">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-primary-subtle text-primary p-2 rounded-circle">
+                        <img src="~/images/group.svg" alt="group" height="20" width="20" />
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6">Manage Accounts</div>
+                        <div class="small text-muted fw-normal">Create, edit, and control system user access</div>
+                    </div>
+                </div>
+                <span class="text-primary">&rarr;</span>
+            </a>
+
+            <a asp-controller="Logging" asp-action="AuditLogs" class="btn btn-outline-secondary btn-lg text-start d-flex align-items-center justify-content-between p-3 rounded-3 shadow-sm transition-all hover-lift">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-secondary-subtle text-secondary p-2 rounded-circle">
+                        <img src="~/images/shield_lock.svg" alt="shield" height="20" width="20" />
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6">Browse Audit Logs</div>
+                        <div class="small text-muted fw-normal">Monitor security actions and user operations</div>
+                    </div>
+                </div>
+                <span class="text-secondary">&rarr;</span>
+            </a>
+
+            <a asp-controller="Logging" asp-action="InventoryLogs" class="btn btn-outline-secondary btn-lg text-start d-flex align-items-center justify-content-between p-3 rounded-3 shadow-sm transition-all hover-lift">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-secondary-subtle text-secondary p-2 rounded-circle">
+                        <img class="" src="~/images/package.svg" alt="package" height="20" width="20" />
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6">Browse Inventory Logs</div>
+                        <div class="small text-muted fw-normal">Track stock alterations and warehouse actions</div>
+                    </div>
+                </div>
+                <span class="text-secondary">&rarr;</span>
+            </a>
+        </div>
+    </div>
+</div>
