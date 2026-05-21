@@ -73,7 +73,7 @@ namespace WholesalerManager.UI.Controllers
 
             if (filter is not null && propertyName is not null)
             {
-                deliveries = await _deliveriesGetterService.GetFilteredDeliveries(propertyName, filter, ignoreCase ?? true);
+                deliveries = await _deliveriesGetterService.GetFilteredDeliveries(propertyName, filter, ignoreCase ?? false);
             }
 
             else if (sortOrder is not null && propertyName is not null)

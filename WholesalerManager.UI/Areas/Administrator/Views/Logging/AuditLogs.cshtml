@@ -8,18 +8,18 @@
         <h1 class="mb-0">Audit Logs</h1>
     </div>
 
-    @await Component.InvokeAsync("FilterSearchBar", new { controllerName = "Logging", actionName = "Index" })
+    @await Component.InvokeAsync("FilterSearchBar", new { controllerName = "Logging", actionName = "AuditLogs" })
 
     <div class="table-responsive">
         <table class="table table-striped table-hover align-middle">
             <thead class="table-light">
                 <tr>
-                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.Timestamp), displayName = "Timestamp" })
-                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.User.Email), displayName = "Email" })
-                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.AttemptedUsername), displayName = "Attempted Username" })
-                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.IpAddress), displayName = "IP Address" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.Timestamp), displayName = "Timestamp", actionName = "AuditLogs" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.User.Email), displayName = "Email", actionName = "AuditLogs" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.AttemptedUsername), displayName = "Attempted Username", actionName = "AuditLogs" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.IpAddress), displayName = "IP Address", actionName = "AuditLogs" })
                     
-                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.Success), displayName = "Was Successfull" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(AuditLog.Success), displayName = "Was Successfull", actionName = "AuditLogs" })
                     
                 </tr>
             </thead>

@@ -1,7 +1,7 @@
 ﻿@if (Context.Request.Query["propertyName"].ToString() == ViewBag.PropertyName && Context.Request.Query["sortOrder"].ToString() == nameof(SortOrderOptions.ASC))
 {
     <th class="align-middle">
-        <a asp-action="Index" asp-route-propertyName="@ViewBag.PropertyName" asp-route-sortOrder="@nameof(SortOrderOptions.DESC)" class="text-decoration-none d-inline-flex align-items-center gap-1 link-dark">
+        <a asp-action="@ViewBag.ActionName" asp-route-propertyName="@ViewBag.PropertyName" asp-route-sortOrder="@nameof(SortOrderOptions.DESC)" class="text-decoration-none d-inline-flex align-items-center gap-1 link-dark">
             @ViewBag.DisplayName <img src="~/images/arrow_drop_down.svg" alt="arrow down" />
         </a>
     </th>
@@ -9,7 +9,7 @@
 else if (Context.Request.Query["propertyName"].ToString() == ViewBag.PropertyName && Context.Request.Query["sortOrder"].ToString() == nameof(SortOrderOptions.DESC))
 {
     <th class="align-middle">
-        <a asp-action="Index" asp-route-propertyName="@ViewBag.PropertyName" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)" class="text-decoration-none d-inline-flex align-items-center gap-1 link-dark">
+        <a asp-action="@ViewBag.ActionName" asp-route-propertyName="@ViewBag.PropertyName" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)" class="text-decoration-none d-inline-flex align-items-center gap-1 link-dark">
             @ViewBag.DisplayName <img src="~/images/arrow_drop_up.svg" alt="arrow up" />
         </a>
     </th>
@@ -17,7 +17,7 @@ else if (Context.Request.Query["propertyName"].ToString() == ViewBag.PropertyNam
 else
 {
     <th class="align-middle">
-        <a asp-action="Index" asp-route-propertyName="@ViewBag.PropertyName" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)" class="text-decoration-none d-inline-flex align-items-center gap-1 link-secondary">
+        <a asp-action="@ViewBag.ActionName" asp-route-propertyName="@ViewBag.PropertyName" asp-route-sortOrder="@nameof(SortOrderOptions.ASC)" class="text-decoration-none d-inline-flex align-items-center gap-1 link-secondary">
             @ViewBag.DisplayName
         </a>
     </th>

@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
+using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.DTO.UserDTO;
+using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts;
 using WholesalerManager.Core.ServiceContracts.UserServiceContracts;
 using WholesalerManager.UI.Helpers;
@@ -41,9 +43,26 @@ namespace WholesalerManager.UI.Areas.Administrator.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] string? propertyName, [FromQuery] string? filter, [FromQuery] bool? ignoreCase, [FromQuery] SortOrderOptions? sortOrder)
         {
-            var users = await _usersGetterService.GetAllUsersAsync();
+            List<UserResponse> users;
+            if (filter is not null && propertyName is not null)
+            {
+                users = await _usersGetterService.GetFilteredUsers(propertyName, filter, ignoreCase ?? false);
+            }
+
+            else if (sortOrder is not null && propertyName is not null)
+            {
+                users = await _usersGetterService.GetSortedUsers(propertyName, sortOrder ?? SortOrderOptions.ASC);
+            }
+            else
+            {
+                users = await _usersGetterService.GetAllUsersAsync();
+            }
+
+            ViewBag.FieldNames = new List<string>{ nameof(UserResponse.FirstName),
+                nameof(UserResponse.LastName), nameof(UserResponse.UserName), nameof(UserResponse.Email), nameof(UserResponse.PhoneNumber) };
+
             return View(users);
         }
 

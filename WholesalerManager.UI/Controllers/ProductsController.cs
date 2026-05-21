@@ -42,7 +42,7 @@ namespace WholesalerManager.UI.Controllers
 
             if (filter is not null && propertyName is not null)
             {
-                products = await _productsGetterService.GetFilteredProducts(propertyName, filter, ignoreCase ?? true);
+                products = await _productsGetterService.GetFilteredProducts(propertyName, filter, ignoreCase ?? false);
             }
 
             else if (sortOrder is not null && propertyName is not null)
