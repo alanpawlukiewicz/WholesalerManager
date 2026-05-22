@@ -63,18 +63,13 @@ namespace WholesalerManager.Core.Services.ProductServices
 
             if (productID is null)
             {
-                return null;
+                _logger.LogError("{variableName} from {methodName} from {serviceName} is null.", nameof(productID), nameof(GetProductById), nameof(ProductsGetterService));
+                throw new ArgumentNullException(nameof(productID));
             }
 
             Product? foundProduct = await _productsRepository.GetProductById(productID.Value);
 
-            if (foundProduct is null)
-            {
-                _logger.LogInformation("{methodName} from {serviceName} did not find a product with ID: {productID}.", nameof(GetProductById), nameof(ProductsGetterService), productID);
-                return null;
-            }
-
-            return foundProduct.ToProductResponse();
+            return foundProduct?.ToProductResponse();
         }
 
         public async Task<List<ProductResponse>> GetSortedProducts(string? propertyName, SortOrderOptions sortOrder = SortOrderOptions.ASC)

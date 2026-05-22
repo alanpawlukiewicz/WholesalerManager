@@ -84,7 +84,7 @@ builder.Services.AddScoped<IDeliveriesAdderService, DeliveriesAdderService>();
 builder.Services.AddScoped<IDeliveriesUpdaterService, DeliveriesUpdaterService>();
 builder.Services.AddScoped<IDeliveriesDeleterService, DeliveriesDeleterService>();
 builder.Services.AddScoped<IDeliveryRegistrationService, DeliveryRegistrationService>();
-builder.Services.AddScoped<IDeliveryUpdateControllerService, DeliveryUpdateControllerService>();
+builder.Services.AddScoped<IDeliveryUpdateCoordinatorService, DeliveryUpdateCoordinatorService>();
 
 // DeliveryItems
 builder.Services.AddScoped<IDeliveryItemsGetterService, DeliveryItemsGetterService>();

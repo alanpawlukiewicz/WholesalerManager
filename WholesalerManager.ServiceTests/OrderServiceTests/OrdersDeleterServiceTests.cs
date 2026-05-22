@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
@@ -13,15 +14,17 @@ namespace WholesalerManager.ServiceTests.OrderServiceTests
     public class OrdersDeleterServiceTests
     {
         private readonly Mock<IOrdersRepository> _ordersRepositoryMock;
+        private readonly Mock<ILogger<OrdersDeleterService>> _loggerMock;
         private readonly IFixture _fixture;
         private readonly IOrdersDeleterService _sut;
 
         public OrdersDeleterServiceTests()
         {
             _ordersRepositoryMock = new Mock<IOrdersRepository>();
+            _loggerMock = new Mock<ILogger<OrdersDeleterService>>();
             _fixture = new Fixture();
 
-            _sut = new OrdersDeleterService(_ordersRepositoryMock.Object);
+            _sut = new OrdersDeleterService(_ordersRepositoryMock.Object, _loggerMock.Object);
         }
 
         #region DeleteOrderByID

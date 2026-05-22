@@ -1,4 +1,5 @@
-﻿using WholesalerManager.Core.Domain.RepositoryContracts;
+﻿using Microsoft.Extensions.Logging;
+using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.OrderItemDTO;
 using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
@@ -8,16 +9,20 @@ namespace WholesalerManager.Core.Services.OrderItemServices
     public class OrderItemsAdderService : IOrderItemsAdderService
     {
         private readonly IOrderItemsRepository _orderItemsRepository;
+        private readonly ILogger<OrderItemsAdderService> _logger;
 
-        public OrderItemsAdderService(IOrderItemsRepository orderItemsRepository)
+        public OrderItemsAdderService(IOrderItemsRepository orderItemsRepository, ILogger<OrderItemsAdderService> logger)
         {
             _orderItemsRepository = orderItemsRepository;
+            _logger = logger;
         }
 
         public async Task<OrderItemResponse> AddOrderItem(OrderItemAddRequest? itemAddRequest)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(AddOrderItem), nameof(OrderItemsAdderService));
             if (itemAddRequest is null)
             {
+                _logger.LogError("{requestName} from {methodName} from {serviceName} is null.", nameof(itemAddRequest), nameof(AddMultipleOrderItems), nameof(OrderItemsAdderService));
                 throw new ArgumentNullException(nameof(itemAddRequest));
             }
 
@@ -33,8 +38,10 @@ namespace WholesalerManager.Core.Services.OrderItemServices
 
         public async Task<List<OrderItemResponse>> AddMultipleOrderItems(List<OrderItemAddRequest>? itemAddRequests)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(AddMultipleOrderItems), nameof(OrderItemsAdderService));
             if (itemAddRequests is null)
             {
+                _logger.LogError("{requestName} from {methodName} from {serviceName} is null.", nameof(itemAddRequests), nameof(AddMultipleOrderItems), nameof(OrderItemsAdderService));
                 throw new ArgumentNullException(nameof(itemAddRequests));
             }
 

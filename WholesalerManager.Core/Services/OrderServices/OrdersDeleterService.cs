@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using WholesalerManager.Core.Domain.RepositoryContracts;
-using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
-using WholesalerManager.Core.Services.OrderServices;
 
 namespace WholesalerManager.Core.Services.DeliveryServices
 {

@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
@@ -15,12 +16,14 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
     public class OrderItemsGetterServiceTests
     {
         private readonly Mock<IOrderItemsRepository> _orderItemsRepositoryMock;
+        private readonly Mock<ILogger<OrderItemsGetterService>> _loggerMock;
         private readonly IFixture _fixture;
         private readonly IOrderItemsGetterService _sut;
 
         public OrderItemsGetterServiceTests()
         {
             _orderItemsRepositoryMock = new Mock<IOrderItemsRepository>();
+            _loggerMock = new Mock<ILogger<OrderItemsGetterService>>();
 
             _fixture = new Fixture();
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>()
@@ -28,7 +31,7 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
                               .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-            _sut = new OrderItemsGetterService(_orderItemsRepositoryMock.Object);
+            _sut = new OrderItemsGetterService(_orderItemsRepositoryMock.Object, _loggerMock.Object);
         }
 
         #region Helpers
@@ -117,13 +120,10 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
         #region GetAllOrderItemsFromOrder
 
         [Fact]
-        public async Task GetAllOrderItemsFromOrder_NullOrderId_ReturnsNull()
+        public async Task GetAllOrderItemsFromOrder_NullOrderId_ThrowsArgumentNullException()
         {
-            // Act
-            var result = await _sut.GetAllOrderItemsFromOrder(null);
-
-            // Assert – repository should never be called when ID is null
-            result.Should().BeNull();
+            // Assert – system should throw exception when ID is null
+            await _sut.Invoking(i => i.GetAllOrderItemsFromOrder(null)).Should().ThrowAsync<ArgumentNullException>();
             _orderItemsRepositoryMock.Verify(
                 r => r.GetAllOrderItemsFromOrder(It.IsAny<Guid>()), Times.Never);
         }

@@ -1,10 +1,13 @@
 ﻿using AutoFixture;
+using Castle.Core.Logging;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.SupplierDTO;
 using WholesalerManager.Core.ServiceContracts.SupplierServiceContracts;
+using WholesalerManager.Core.Services.OrderItemServices;
 using WholesalerManager.Core.Services.SupplierServices;
 using Xunit;
 
@@ -17,6 +20,7 @@ namespace WholesalerManager.ServiceTests
         private readonly Mock<ISuppliersRepository> _suppliersRepositoryMock;
         private readonly IFixture _fixture;
         private readonly ISuppliersGetterService _sut;
+        private readonly Mock<ILogger<SuppliersGetterService>> _loggerMock;
 
         public SuppliersGetterServiceTests()
         {
@@ -28,7 +32,9 @@ namespace WholesalerManager.ServiceTests
                               .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-            _sut = new SuppliersGetterService(_suppliersRepositoryMock.Object);
+            _loggerMock = new Mock<ILogger<SuppliersGetterService>>();
+
+            _sut = new SuppliersGetterService(_suppliersRepositoryMock.Object, _loggerMock.Object);
         }
 
         #region GetAllSuppliers
@@ -94,13 +100,10 @@ namespace WholesalerManager.ServiceTests
         #region GetSupplierByID
 
         [Fact]
-        public async Task GetSupplierByID_NullId_ReturnsNull()
+        public async Task GetSupplierByID_NullId_ThrowsArgumentNullException()
         {
-            // Act
-            var result = await _sut.GetSupplierByID(null);
-
-            // Assert – repository should never be called when ID is null
-            result.Should().BeNull();
+            // Assert – system should throw exception when ID is null
+            await _sut.Invoking(i => i.GetSupplierByID(null)).Should().ThrowAsync<ArgumentNullException>();
             _suppliersRepositoryMock.Verify(r => r.GetSupplierByID(It.IsAny<Guid>()), Times.Never);
         }
 

@@ -1,5 +1,7 @@
 ﻿using AutoFixture;
+using Castle.Core.Logging;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
@@ -12,15 +14,17 @@ namespace WholesalerManager.ServiceTests.ProductServiceTests
     public class ProductsDeleterServiceTests
     {
         private readonly Mock<IProductsRepository> _productsRepositoryMock;
+        private readonly Mock<ILogger<ProductsDeleterService>> _loggerMock;
         private readonly IFixture _fixture;
         private readonly IProductsDeleterService _sut;
 
         public ProductsDeleterServiceTests()
         {
             _productsRepositoryMock = new Mock<IProductsRepository>();
+            _loggerMock = new Mock<ILogger<ProductsDeleterService>>();
             _fixture = new Fixture();
 
-            _sut = new ProductsDeleterService(_productsRepositoryMock.Object);
+            _sut = new ProductsDeleterService(_productsRepositoryMock.Object, _loggerMock.Object);
         }
 
         #region DeleteProduct

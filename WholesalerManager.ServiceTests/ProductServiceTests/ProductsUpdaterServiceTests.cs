@@ -1,5 +1,7 @@
 ﻿using AutoFixture;
+using Castle.Core.Logging;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
@@ -18,6 +20,7 @@ namespace WholesalerManager.ServiceTests.ProductServiceTests
         private readonly Mock<IProductsRepository> _productsRepositoryMock;
         private readonly IFixture _fixture;
         private readonly IProductsUpdaterService _sut;
+        private readonly Mock<ILogger<ProductsUpdaterService>> _loggerMock;
 
         public ProductsUpdaterServiceTests()
         {
@@ -29,7 +32,9 @@ namespace WholesalerManager.ServiceTests.ProductServiceTests
                               .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-            _sut = new ProductsUpdaterService(_productsRepositoryMock.Object);
+            _loggerMock = new Mock<ILogger<ProductsUpdaterService>>();
+
+            _sut = new ProductsUpdaterService(_productsRepositoryMock.Object, _loggerMock.Object);
         }
 
         #region Helpers

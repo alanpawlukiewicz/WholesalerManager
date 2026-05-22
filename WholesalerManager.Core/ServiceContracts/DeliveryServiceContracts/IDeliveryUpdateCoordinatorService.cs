@@ -3,7 +3,7 @@ using WholesalerManager.Core.DTO.DeliveryItemDTO;
 
 namespace WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts
 {
-    public interface IDeliveryUpdateControllerService
+    public interface IDeliveryUpdateCoordinatorService
     {
         Task<DeliveryResponse> UpdateFullDelivery(DeliveryUpdateRequest? deliveryUpdateRequest, List<DeliveryItemUpdateRequest>? items);
     }

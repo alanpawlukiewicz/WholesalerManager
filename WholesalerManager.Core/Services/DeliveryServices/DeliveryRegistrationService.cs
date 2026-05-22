@@ -1,4 +1,5 @@
-﻿using WholesalerManager.Core.Domain.PersistenceContracts;
+﻿using Microsoft.Extensions.Logging;
+using WholesalerManager.Core.Domain.PersistenceContracts;
 using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.DTO.DeliveryItemDTO;
 using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
@@ -11,17 +12,22 @@ namespace WholesalerManager.Core.Services.DeliveryServices
         private readonly IDeliveriesAdderService _deliveriesAdderService;
         private readonly IDeliveryItemsAdderService _deliveryItemsAdderService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<DeliveryRegistrationService> _logger;
 
-        public DeliveryRegistrationService(IDeliveriesAdderService deliveriesAdderService, IDeliveryItemsAdderService deliveryItemsAdderService, IUnitOfWork unitOfWork)
+        public DeliveryRegistrationService(IDeliveriesAdderService deliveriesAdderService, IDeliveryItemsAdderService deliveryItemsAdderService, IUnitOfWork unitOfWork, ILogger<DeliveryRegistrationService> logger)
         {
             _deliveriesAdderService = deliveriesAdderService;
             _deliveryItemsAdderService = deliveryItemsAdderService;
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
         public async Task<DeliveryResponse> RegisterFullDelivery(DeliveryAddRequest? deliveryAddRequest, List<DeliveryItemAddRequest>? items)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(RegisterFullDelivery), nameof(DeliveryRegistrationService));
+
             if (deliveryAddRequest is null || items is null)
             {
+                _logger.LogError("{requestName} or {requestName2} from {methodName} from {serviceName} is null.", nameof(deliveryAddRequest), nameof(items), nameof(RegisterFullDelivery), nameof(DeliveryRegistrationService));
                 throw new ArgumentNullException(nameof(deliveryAddRequest));
             }
 
@@ -38,8 +44,9 @@ namespace WholesalerManager.Core.Services.DeliveryServices
 
                 return delivery;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError("Exception caught from {methodName} from {serviceName}: {ex}.", nameof(RegisterFullDelivery), nameof(DeliveryRegistrationService), ex);
                 await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }

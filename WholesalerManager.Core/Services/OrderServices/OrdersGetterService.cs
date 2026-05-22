@@ -69,7 +69,7 @@ namespace WholesalerManager.Core.Services.OrderServices
             if (orderID is null)
             {
                 _logger.LogError("{variableName} from {methodName} from {serviceName} is null.", nameof(orderID), nameof(GetOrderByID), nameof(OrdersGetterService));
-                return null;
+                throw new ArgumentNullException(nameof(orderID));
             }
             var order = await _ordersRepository.GetOrderByID(orderID.Value);
             return order?.ToOrderResponse();

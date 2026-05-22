@@ -29,7 +29,8 @@ namespace WholesalerManager.Core.Services.SupplierServices
 
             if (supplierID is null)
             {
-                return null;
+                _logger.LogError("{variableName} from {methodName} from {serviceName} is null.", nameof(supplierID), nameof(GetSupplierByID), nameof(SuppliersGetterService));
+                throw new ArgumentNullException(nameof(supplierID));
             }
             var foundSupplier = await _suppliersRepository.GetSupplierByID(supplierID.Value);
             return foundSupplier?.ToSupplierResponse();

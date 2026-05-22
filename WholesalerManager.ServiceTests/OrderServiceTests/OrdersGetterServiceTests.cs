@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
@@ -16,12 +17,14 @@ namespace WholesalerManager.ServiceTests.OrderServiceTests
     public class OrdersGetterServiceTests
     {
         private readonly Mock<IOrdersRepository> _ordersRepositoryMock;
+        private readonly Mock<ILogger<OrdersGetterService>> _loggerMock;
         private readonly IFixture _fixture;
         private readonly IOrdersGetterService _sut;
 
         public OrdersGetterServiceTests()
         {
             _ordersRepositoryMock = new Mock<IOrdersRepository>();
+            _loggerMock = new Mock<ILogger<OrdersGetterService>>();
 
             _fixture = new Fixture();
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>()
@@ -29,7 +32,7 @@ namespace WholesalerManager.ServiceTests.OrderServiceTests
                               .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-            _sut = new OrdersGetterService(_ordersRepositoryMock.Object);
+            _sut = new OrdersGetterService(_ordersRepositoryMock.Object, _loggerMock.Object);
         }
 
         #region Helpers
@@ -91,13 +94,10 @@ namespace WholesalerManager.ServiceTests.OrderServiceTests
         #region GetOrderByID
 
         [Fact]
-        public async Task GetOrderByID_NullId_ReturnsNull()
+        public async Task GetOrderByID_NullId_ThrowsArgumentNullException()
         {
-            // Act
-            var result = await _sut.GetOrderByID(null);
-
-            // Assert – repository should never be called when ID is null
-            result.Should().BeNull();
+            // Assert – system should throw exception when ID is null
+            await _sut.Invoking(i => i.GetOrderByID(null)).Should().ThrowAsync<ArgumentNullException>();
             _ordersRepositoryMock.Verify(r => r.GetOrderByID(It.IsAny<Guid>()), Times.Never);
         }
 

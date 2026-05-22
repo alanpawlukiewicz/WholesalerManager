@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
@@ -15,6 +16,7 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
     {
         private readonly Mock<IOrderItemsRepository> _orderItemsRepositoryMock;
         private readonly Mock<IOrderItemsAdderService> _orderItemsAdderServiceMock;
+        private readonly Mock<ILogger<OrderItemsUpdaterService>> _loggerMock;
         private readonly IFixture _fixture;
         private readonly IOrderItemsUpdaterService _sut;
 
@@ -22,7 +24,7 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
         {
             _orderItemsRepositoryMock = new Mock<IOrderItemsRepository>();
             _orderItemsAdderServiceMock = new Mock<IOrderItemsAdderService>();
-
+            _loggerMock = new Mock<ILogger<OrderItemsUpdaterService>>();
             _fixture = new Fixture();
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>()
                               .ToList()
@@ -31,7 +33,8 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
 
             _sut = new OrderItemsUpdaterService(
                 _orderItemsRepositoryMock.Object,
-                _orderItemsAdderServiceMock.Object
+                _orderItemsAdderServiceMock.Object,
+                _loggerMock.Object
             );
         }
 

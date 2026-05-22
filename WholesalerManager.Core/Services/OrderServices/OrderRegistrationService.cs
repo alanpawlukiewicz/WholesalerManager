@@ -4,7 +4,6 @@ using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.DTO.OrderItemDTO;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
-using WholesalerManager.Core.Services.ProductServices;
 
 namespace WholesalerManager.Core.Services.OrderServices
 {
@@ -28,7 +27,7 @@ namespace WholesalerManager.Core.Services.OrderServices
             _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(RegisterFullOrder), nameof(OrderRegistrationService));
             if (orderRequest is null || items is null)
             {
-                _logger.LogError("{requestName} or {requestName2} from {methodName} from {serviceName} is null.", nameof(orderRequest), nameof(items) , nameof(RegisterFullOrder), nameof(OrderRegistrationService));
+                _logger.LogError("{requestName} or {requestName2} from {methodName} from {serviceName} is null.", nameof(orderRequest), nameof(items), nameof(RegisterFullOrder), nameof(OrderRegistrationService));
                 throw new ArgumentNullException("Order request and items cannot be null.");
             }
 

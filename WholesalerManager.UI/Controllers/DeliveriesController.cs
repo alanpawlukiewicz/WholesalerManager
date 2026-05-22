@@ -20,7 +20,7 @@ namespace WholesalerManager.UI.Controllers
         private readonly IDeliveriesUpdaterService _deliveriesUpdaterService;
         private readonly IDeliveriesDeleterService _deliveryDeleterService;
         private readonly IDeliveryRegistrationService _deliveryRegistrationService;
-        private readonly IDeliveryUpdateControllerService _deliveryUpdateControllerService;
+        private readonly IDeliveryUpdateCoordinatorService _deliveryUpdateControllerService;
 
         private readonly IDeliveryItemsAdderService _deliveryItemsAdderService;
         private readonly IDeliveryItemsGetterService _deliveryItemsGetterService;
@@ -37,7 +37,7 @@ namespace WholesalerManager.UI.Controllers
             IDeliveriesUpdaterService deliveriesUpdaterService,
             IDeliveriesDeleterService deliveriesDeleterService,
             IDeliveryRegistrationService deliveryRegistrationService,
-            IDeliveryUpdateControllerService deliveryUpdateControllerService,
+            IDeliveryUpdateCoordinatorService deliveryUpdateControllerService,
 
             IDeliveryItemsAdderService deliveryItemsAdderService,
             IDeliveryItemsGetterService deliveryItemsGetterService,

@@ -97,13 +97,10 @@ namespace WholesalerManager.ServiceTests.ProductServiceTests
         #region GetProductById
 
         [Fact]
-        public async Task GetProductById_NullId_ReturnsNull()
+        public async Task GetProductById_NullId_ThrowsArgumentNullException()
         {
-            // Act
-            var result = await _sut.GetProductById(null);
-
-            // Assert – repository should never be called when ID is null
-            result.Should().BeNull();
+            // Assert – system throws exception when ID is null
+            await _sut.Invoking(i => i.GetProductById(null)).Should().ThrowAsync<ArgumentNullException>(); ;
             _productsRepositoryMock.Verify(r => r.GetProductById(It.IsAny<Guid>()), Times.Never);
         }
 

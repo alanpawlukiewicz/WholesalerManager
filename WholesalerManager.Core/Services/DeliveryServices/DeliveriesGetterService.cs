@@ -1,4 +1,5 @@
-﻿using WholesalerManager.Core.Domain.RepositoryContracts;
+﻿using Microsoft.Extensions.Logging;
+using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
@@ -8,23 +9,30 @@ namespace WholesalerManager.Core.Services.DeliveryServices
     public class DeliveriesGetterService : IDeliveriesGetterService
     {
         private readonly IDeliveriesRepository _deliveriesRepository;
+        private readonly ILogger<DeliveriesGetterService> _logger;
 
-        public DeliveriesGetterService(IDeliveriesRepository deliveriesRepository)
+        public DeliveriesGetterService(IDeliveriesRepository deliveriesRepository, ILogger<DeliveriesGetterService> logger)
         {
             _deliveriesRepository = deliveriesRepository;
+            _logger = logger;
         }
 
         public async Task<List<DeliveryResponse>> GetAllDeliveries()
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(GetAllDeliveries), nameof(DeliveriesGetterService));
+
             var deliveries = await _deliveriesRepository.GetAllDeliveries();
             return deliveries.Select(d => d.ToDeliveryResponse()).ToList();
         }
 
         public async Task<DeliveryResponse?> GetDeliveryById(Guid? deliveryID)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(GetDeliveryById), nameof(DeliveriesGetterService));
+
             if (deliveryID is null)
             {
-                return null;
+                _logger.LogError("{requestName} from {methodName} from {serviceName} is null.", nameof(deliveryID), nameof(GetDeliveryById), nameof(DeliveriesGetterService));
+                throw new ArgumentNullException(nameof(deliveryID));
             }
             var delivery = await _deliveriesRepository.GetDeliveryById(deliveryID.Value);
             return delivery?.ToDeliveryResponse();
@@ -32,6 +40,8 @@ namespace WholesalerManager.Core.Services.DeliveryServices
 
         public async Task<List<DeliveryResponse>> GetFilteredDeliveries(string? propertyName, string? filter, bool ignoreCase = true)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(GetFilteredDeliveries), nameof(DeliveriesGetterService));
+
             var allDeliveries = await _deliveriesRepository.GetAllDeliveries();
             var deliveryResponses = allDeliveries.Select(d => d.ToDeliveryResponse()).ToList();
 
@@ -66,6 +76,8 @@ namespace WholesalerManager.Core.Services.DeliveryServices
 
         public async Task<List<DeliveryResponse>> GetSortedDeliveries(string? propertyName, SortOrderOptions sortOrder = SortOrderOptions.ASC)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(GetSortedDeliveries), nameof(DeliveriesGetterService));
+
             var allDeliveries = await _deliveriesRepository.GetAllDeliveries();
             var deliveryResponses = allDeliveries.Select(d => d.ToDeliveryResponse()).ToList();
 
