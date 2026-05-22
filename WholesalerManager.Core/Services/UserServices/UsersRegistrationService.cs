@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.UserDTO;
+using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts;
 using WholesalerManager.Core.ServiceContracts.UserServiceContracts;
 
@@ -29,6 +30,8 @@ namespace WholesalerManager.Core.Services.UserServices
 
         public async Task<UserResponse?> RegisterUserAsync(RegisterDTO registerData)
         {
+            ValidationHelper.ModelValidation(registerData);
+
             bool passwordNotSet = string.IsNullOrWhiteSpace(registerData.Password);
 
             ApplicationUser user = new ApplicationUser()

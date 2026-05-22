@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Helpers;
 
@@ -10,6 +11,9 @@ namespace WholesalerManager.Core.DTO.OrderItemDTO
 
         [Required(ErrorMessage = "Please select product connected to order.")]
         public Guid? ProductID { get; set; }
+
+        [Range(0, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
+        [NotNull]
         public int Quantity { get; set; }
 
         [RegularExpression("^\\d+([.,]\\d{1,2})?$", ErrorMessage = "Unit price must be of money type.")]

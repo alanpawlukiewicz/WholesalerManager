@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.UserDTO;
+using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.UserServiceContracts;
 
 namespace WholesalerManager.Core.Services.UserServices
@@ -41,6 +42,8 @@ namespace WholesalerManager.Core.Services.UserServices
 
         public async Task<IdentityResult> UpdateUserAsync(UserEditRequest userEditRequest)
         {
+            ValidationHelper.ModelValidation(userEditRequest);
+
             return await _usersRepository.UpdateUser(userEditRequest.ToApplicationUser());
         }
     }

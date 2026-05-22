@@ -8,9 +8,8 @@ using WholesalerManager.Core.DTO.ProductDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.Core.Services.ProductServices;
-using Xunit;
 
-namespace WholesalerManager.ServiceTests
+namespace WholesalerManager.ServiceTests.ProductServiceTests
 {
     public class ProductsGetterServiceTests
     {

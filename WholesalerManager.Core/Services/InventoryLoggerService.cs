@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
-using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts;
 
@@ -47,11 +46,11 @@ namespace WholesalerManager.Core.Services
                     return allLogs.Where(l => l.OperationType != null
                     && l.OperationType.Contains(filter, stringComparisonType)).ToList();
                 case nameof(InventoryLog.Product.ProductName):
-                    return allLogs.Where(l => l.Product != null 
+                    return allLogs.Where(l => l.Product != null
                     && l.Product.ProductName != null
                     && l.Product.ProductName.Contains(filter, stringComparisonType)).ToList();
                 case nameof(InventoryLog.PreviousStock):
-                    return allLogs.Where(l =>  l.PreviousStock.ToString().Contains(filter, stringComparisonType)).ToList();
+                    return allLogs.Where(l => l.PreviousStock.ToString().Contains(filter, stringComparisonType)).ToList();
                 case nameof(InventoryLog.NewStock):
                     return allLogs.Where(l => l.NewStock.ToString().Contains(filter, stringComparisonType)).ToList();
                 default:

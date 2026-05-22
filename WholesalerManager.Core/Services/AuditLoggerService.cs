@@ -2,11 +2,8 @@
 using Microsoft.Extensions.Logging;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
-using WholesalerManager.Core.DTO.DeliveryDTO;
-using WholesalerManager.Core.DTO.UserDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts;
-using WholesalerManager.Core.Services.UserServices;
 
 namespace WholesalerManager.Core.Services
 {
