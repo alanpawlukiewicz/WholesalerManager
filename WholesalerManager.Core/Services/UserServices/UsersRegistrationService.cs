@@ -30,6 +30,7 @@ namespace WholesalerManager.Core.Services.UserServices
 
         public async Task<UserResponse?> RegisterUserAsync(RegisterDTO registerData)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(RegisterUserAsync), nameof(UsersRegistrationService));
             ValidationHelper.ModelValidation(registerData);
 
             bool passwordNotSet = string.IsNullOrWhiteSpace(registerData.Password);

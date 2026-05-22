@@ -1,4 +1,5 @@
-﻿using WholesalerManager.Core.Domain.RepositoryContracts;
+﻿using Microsoft.Extensions.Logging;
+using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
@@ -10,17 +11,21 @@ namespace WholesalerManager.Core.Services.OrderServices
     {
         private readonly IOrdersRepository _ordersRepository;
         private readonly ICustomersGetterService _customersGetterService;
+        private readonly ILogger<OrdersAdderService> _logger;
 
-        public OrdersAdderService(IOrdersRepository ordersRepository, ICustomersGetterService customersGetterService)
+        public OrdersAdderService(IOrdersRepository ordersRepository, ICustomersGetterService customersGetterService, ILogger<OrdersAdderService> logger)
         {
             _ordersRepository = ordersRepository;
             _customersGetterService = customersGetterService;
+            _logger = logger;
         }
 
         public async Task<OrderResponse> AddOrder(OrderAddRequest? orderAddRequest)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(AddOrder), nameof(OrdersAdderService));
             if (orderAddRequest is null)
             {
+                _logger.LogError("{requestName} from {methodName} from {serviceName} is null.", nameof(orderAddRequest), nameof(AddOrder), nameof(OrdersAdderService));
                 throw new ArgumentNullException(nameof(orderAddRequest));
             }
 
@@ -29,6 +34,7 @@ namespace WholesalerManager.Core.Services.OrderServices
             var customer = await _customersGetterService.GetCustomerByID(orderAddRequest.CustomerID);
             if (customer is null)
             {
+                _logger.LogError("{requestName} from {methodName} from {serviceName} is null.", nameof(customer), nameof(AddOrder), nameof(OrdersAdderService));
                 throw new ArgumentException(nameof(customer));
             }
 

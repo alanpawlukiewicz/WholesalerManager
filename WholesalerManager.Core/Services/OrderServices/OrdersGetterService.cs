@@ -1,4 +1,5 @@
-﻿using WholesalerManager.Core.Domain.RepositoryContracts;
+﻿using Microsoft.Extensions.Logging;
+using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
@@ -8,20 +9,25 @@ namespace WholesalerManager.Core.Services.OrderServices
     public class OrdersGetterService : IOrdersGetterService
     {
         private readonly IOrdersRepository _ordersRepository;
-
-        public OrdersGetterService(IOrdersRepository ordersRepository)
+        private readonly ILogger<OrdersGetterService> _logger;
+        public OrdersGetterService(IOrdersRepository ordersRepository, ILogger<OrdersGetterService> logger)
         {
             _ordersRepository = ordersRepository;
+            _logger = logger;
         }
 
         public async Task<List<OrderResponse>> GetAllOrders()
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(GetAllOrders), nameof(OrdersGetterService));
+
             var orders = await _ordersRepository.GetAllOrders();
             return orders.Select(o => o.ToOrderResponse()).ToList();
         }
 
         public async Task<List<OrderResponse>> GetFilteredOrders(string? propertyName, string? filter, bool ignoreCase = true)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(GetFilteredOrders), nameof(OrdersGetterService));
+
             var allOrders = await _ordersRepository.GetAllOrders();
             var orderResponses = allOrders.Select(o => o.ToOrderResponse()).ToList();
 
@@ -58,8 +64,11 @@ namespace WholesalerManager.Core.Services.OrderServices
 
         public async Task<OrderResponse?> GetOrderByID(Guid? orderID)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(GetOrderByID), nameof(OrdersGetterService));
+
             if (orderID is null)
             {
+                _logger.LogError("{variableName} from {methodName} from {serviceName} is null.", nameof(orderID), nameof(GetOrderByID), nameof(OrdersGetterService));
                 return null;
             }
             var order = await _ordersRepository.GetOrderByID(orderID.Value);
@@ -68,6 +77,8 @@ namespace WholesalerManager.Core.Services.OrderServices
 
         public async Task<List<OrderResponse>> GetSortedOrders(string? propertyName, SortOrderOptions sortOrder = SortOrderOptions.ASC)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(GetSortedOrders), nameof(OrdersGetterService));
+
             var allOrders = await _ordersRepository.GetAllOrders();
             var orderResponses = allOrders.Select(o => o.ToOrderResponse()).ToList();
 

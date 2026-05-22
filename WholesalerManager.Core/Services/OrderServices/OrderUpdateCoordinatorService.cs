@@ -1,4 +1,5 @@
-﻿using WholesalerManager.Core.Domain.PersistenceContracts;
+﻿using Microsoft.Extensions.Logging;
+using WholesalerManager.Core.Domain.PersistenceContracts;
 using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.DTO.OrderItemDTO;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
@@ -11,16 +12,20 @@ namespace WholesalerManager.Core.Services.OrderServices
         private readonly IOrdersUpdaterService _ordersUpdaterService;
         private readonly IOrderItemsUpdaterService _orderItemsUpdaterService;
         private readonly IUnitOfWork _unitOfWork;
-        public OrderUpdateCoordinatorService(IOrdersUpdaterService ordersUpdaterService, IOrderItemsUpdaterService orderItemsUpdaterService, IUnitOfWork unitOfWork)
+        private readonly ILogger<OrderUpdateCoordinatorService> _logger;
+        public OrderUpdateCoordinatorService(IOrdersUpdaterService ordersUpdaterService, IOrderItemsUpdaterService orderItemsUpdaterService, IUnitOfWork unitOfWork, ILogger<OrderUpdateCoordinatorService> logger)
         {
             _ordersUpdaterService = ordersUpdaterService;
             _orderItemsUpdaterService = orderItemsUpdaterService;
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
         public async Task<OrderResponse> UpdateFullOrder(OrderUpdateRequest? orderRequest, List<OrderItemUpdateRequest>? items)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(UpdateFullOrder), nameof(OrderUpdateCoordinatorService));
             if (orderRequest is null || items is null)
             {
+                _logger.LogError("{requestName} or {requestName2} from {methodName} from {serviceName} is null.", nameof(orderRequest), nameof(items), nameof(UpdateFullOrder), nameof(OrderUpdateCoordinatorService));
                 throw new ArgumentNullException("Order request and items cannot be null.");
             }
 
@@ -35,8 +40,9 @@ namespace WholesalerManager.Core.Services.OrderServices
 
                 return order;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError("Exception caught from {methodName} from {serviceName}: {ex}.", nameof(UpdateFullOrder), nameof(OrderUpdateCoordinatorService), ex);
                 await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }
