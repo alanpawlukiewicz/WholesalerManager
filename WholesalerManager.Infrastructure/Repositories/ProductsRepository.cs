@@ -62,6 +62,7 @@ namespace WholesaleManager.Infrastructure.Repositories
 
             if (matchingProduct is null)
             {
+                _logger.LogWarning("Product not found.");
                 return null;
             }
 

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
+using WholesalerManager.Core.Services.DeliveryServices;
 using WholesalerManager.Infrastructure.DatabaseContext;
 
 namespace WholesalerManager.Infrastructure.Repositories
@@ -19,6 +20,7 @@ namespace WholesalerManager.Infrastructure.Repositories
 
         public async Task<bool> AddAuditLogAsync(AuditLog auditLog)
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(AddAuditLogAsync), nameof(AuditLogsRepository));
             try
             {
                 var result = await _db.AuditLog.AddAsync(auditLog);
@@ -35,6 +37,7 @@ namespace WholesalerManager.Infrastructure.Repositories
 
         public async Task<List<AuditLog>> GetAllAuditLogsAsync()
         {
+            _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(GetAllAuditLogsAsync), nameof(AuditLogsRepository));
             return await _db.AuditLog.Include("User").ToListAsync();
         }
     }
