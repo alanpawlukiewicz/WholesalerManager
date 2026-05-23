@@ -24,4 +24,13 @@
     <ProjectReference Include="..\WholesalerManager.Core\WholesalerManager.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="DbScripts\seed.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DbScripts\structure.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

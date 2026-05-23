@@ -33,5 +33,42 @@ namespace WholesalerManager.Infrastructure.DatabaseContext
             modelBuilder.Entity<Order>()
                 .ToTable(tb => tb.UseSqlOutputClause(false));
         }
+
+        public static void InitializeDatabase(ApplicationDbContext context)
+        {
+            if (!context.Database.CanConnect())
+            {
+                context.Database.EnsureCreated();
+
+                var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                var structureScriptPath = Path.Combine(baseDir, "DbScripts", "structure.sql");
+                var seedScriptPath = Path.Combine(baseDir, "DbScripts", "seed.sql");
+
+                if (File.Exists(structureScriptPath))
+                {
+                    var structureSql = File.ReadAllText(structureScriptPath);
+                    ExecuteRawSqlScript(context, structureSql);
+                }
+
+                if (File.Exists(seedScriptPath))
+                {
+                    var seedSql = File.ReadAllText(seedScriptPath);
+                    ExecuteRawSqlScript(context, seedSql);
+                }
+            }
+        }
+
+        private static void ExecuteRawSqlScript(ApplicationDbContext context, string script)
+        {
+            var commandTexts = script.Split(new[] { "\r\nGO\r\n", "\nGO\n", "\rGO\r" }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var commandText in commandTexts)
+            {
+                if (!string.IsNullOrWhiteSpace(commandText))
+                {
+                    context.Database.ExecuteSqlRaw(commandText);
+                }
+            }
+        }
     }
 }

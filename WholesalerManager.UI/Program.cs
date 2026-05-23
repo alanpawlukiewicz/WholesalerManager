@@ -216,6 +216,22 @@ app.UseSerilogRequestLogging(options =>
     };
 });
 
+// Create database if it doesn't exist
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        ApplicationDbContext.InitializeDatabase(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "There has been an error when trying to create database.");
+    }
+}
+
 app.MapControllers();
 
 app.MapControllerRoute(
