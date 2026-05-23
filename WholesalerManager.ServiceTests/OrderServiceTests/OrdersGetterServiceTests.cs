@@ -8,11 +8,10 @@ using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
 using WholesalerManager.Core.Services.OrderServices;
-using Xunit;
 
 namespace WholesalerManager.ServiceTests.OrderServiceTests
 {
-    
+
 
     public class OrdersGetterServiceTests
     {

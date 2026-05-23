@@ -7,11 +7,10 @@ using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.OrderItemDTO;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.Services.OrderItemServices;
-using Xunit;
 
 namespace WholesalerManager.ServiceTests.OrderItemServiceTests
 {
-    
+
 
     public class OrderItemsAdderServiceTests
     {

@@ -3,9 +3,6 @@ using MailKit.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using WholesalerManager.Core.Configuration;
 using WholesalerManager.Core.ServiceContracts;
 

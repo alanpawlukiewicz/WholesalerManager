@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using Castle.Core.Logging;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -9,11 +8,10 @@ using WholesalerManager.Core.DTO;
 using WholesalerManager.Core.DTO.ProductDTO;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.Core.Services.ProductServices;
-using Xunit;
 
 namespace WholesalerManager.ServiceTests.ProductServiceTests
 {
-    
+
 
     public class ProductsUpdaterServiceTests
     {

@@ -10,11 +10,10 @@ using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
 using WholesalerManager.Core.Services.OrderServices;
-using Xunit;
 
 namespace WholesalerManager.ServiceTests.OrderServiceTests
 {
-    
+
 
     public class OrdersAdderServiceTests
     {

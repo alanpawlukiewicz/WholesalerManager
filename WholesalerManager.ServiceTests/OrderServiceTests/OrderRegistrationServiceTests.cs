@@ -9,7 +9,6 @@ using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
 using WholesalerManager.Core.Services.OrderServices;
-using Xunit;
 
 namespace WholesalerManager.ServiceTests.OrderServiceTests
 {

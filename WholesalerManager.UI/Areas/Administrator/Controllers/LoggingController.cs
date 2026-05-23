@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WholesalerManager.Core.Domain.Entities;
-using WholesalerManager.Core.DTO.UserDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts;
 
@@ -39,7 +38,7 @@ namespace WholesalerManager.UI.Areas.Administrator.Controllers
                 logs = await _auditLoggerService.GetAuditLogsAsync();
             }
 
-            ViewBag.FieldNames = new List<string>{ nameof(AuditLog.Timestamp), nameof(AuditLog.User.Email), nameof(AuditLog.AttemptedUsername), nameof(AuditLog.IpAddress)};
+            ViewBag.FieldNames = new List<string> { nameof(AuditLog.Timestamp), nameof(AuditLog.User.Email), nameof(AuditLog.AttemptedUsername), nameof(AuditLog.IpAddress) };
 
             return View(logs);
         }
@@ -62,7 +61,7 @@ namespace WholesalerManager.UI.Areas.Administrator.Controllers
                 logs = await _inventoryLoggerService.GetInventoryLogsAsync();
             }
 
-            ViewBag.FieldNames = new List<string>{ nameof(InventoryLog.CreatedAt), nameof(InventoryLog.OperationType), nameof(InventoryLog.Product.ProductName), nameof(InventoryLog.PreviousStock), nameof(InventoryLog.NewStock), };
+            ViewBag.FieldNames = new List<string> { nameof(InventoryLog.CreatedAt), nameof(InventoryLog.OperationType), nameof(InventoryLog.Product.ProductName), nameof(InventoryLog.PreviousStock), nameof(InventoryLog.NewStock), };
             return View(logs);
         }
     }

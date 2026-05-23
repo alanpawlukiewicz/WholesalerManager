@@ -5,11 +5,10 @@ using Moq;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
 using WholesalerManager.Core.Services.DeliveryServices;
-using Xunit;
 
 namespace WholesalerManager.ServiceTests.OrderServiceTests
 {
-    
+
 
     public class OrdersDeleterServiceTests
     {

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
-using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.DTO.UserDTO;
 using WholesalerManager.Core.Enums;

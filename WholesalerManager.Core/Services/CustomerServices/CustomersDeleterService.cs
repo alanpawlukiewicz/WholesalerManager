@@ -20,7 +20,7 @@ namespace WholesalerManager.Core.Services.CustomerServices
         public async Task<bool> DeleteCustomer(CustomerDeleteRequest? customerDeleteRequest)
         {
             _logger.LogInformation("{methodName} from {serviceName} has been invoked.", nameof(DeleteCustomer), nameof(CustomersDeleterService));
-            if (customerDeleteRequest is null)
+            if (customerDeleteRequest is null || customerDeleteRequest.CustomerID == Guid.Empty)
             {
                 _logger.LogError("{requestName} from {methodName} from {serviceName} is null.", nameof(customerDeleteRequest), nameof(DeleteCustomer), nameof(CustomersDeleterService));
                 throw new ArgumentNullException(nameof(customerDeleteRequest));

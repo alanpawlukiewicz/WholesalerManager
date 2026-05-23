@@ -22,8 +22,8 @@ namespace WholesalerManager.ServiceTests.ProductServiceTests
         public ProductsAdderServiceTests()
         {
             _productsRepositoryMock = new Mock<IProductsRepository>();
-            _loggerMock = new  Mock<ILogger<ProductsAdderService>>();
-        _fixture = new Fixture();
+            _loggerMock = new Mock<ILogger<ProductsAdderService>>();
+            _fixture = new Fixture();
 
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>()
                               .ToList()

@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Infrastructure.DatabaseContext;
-using WholesalerManager.Infrastructure.Repositories;
 
 namespace WholesaleManager.Infrastructure.Repositories
 {

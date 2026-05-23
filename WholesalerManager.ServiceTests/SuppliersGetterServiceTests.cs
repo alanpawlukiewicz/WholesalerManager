@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using Castle.Core.Logging;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -7,13 +6,11 @@ using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.SupplierDTO;
 using WholesalerManager.Core.ServiceContracts.SupplierServiceContracts;
-using WholesalerManager.Core.Services.OrderItemServices;
 using WholesalerManager.Core.Services.SupplierServices;
-using Xunit;
 
 namespace WholesalerManager.ServiceTests
 {
-    
+
 
     public class SuppliersGetterServiceTests
     {

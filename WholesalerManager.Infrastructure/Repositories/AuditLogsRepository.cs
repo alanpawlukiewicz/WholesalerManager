@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
-using WholesalerManager.Core.Services.DeliveryServices;
 using WholesalerManager.Infrastructure.DatabaseContext;
 
 namespace WholesalerManager.Infrastructure.Repositories
