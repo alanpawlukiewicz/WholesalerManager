@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 using WholesaleManager.Infrastructure.Repositories;
+using WholesalerManager.Core.Configuration;
 using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.Domain.PersistenceContracts;
 using WholesalerManager.Core.Domain.RepositoryContracts;
@@ -116,7 +117,16 @@ builder.Services.AddScoped<IUserNameGeneratorService, UserNameGeneratorService>(
 builder.Services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
 
 // Email sending
-builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddScoped<IEmailService, EmailMockService>();
+}
+else
+{
+    builder.Services.AddScoped<IEmailService, EmailService>();
+}
 
 // Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

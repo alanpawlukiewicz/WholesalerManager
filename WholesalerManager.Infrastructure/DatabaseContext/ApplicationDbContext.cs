@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.IdentityEntities;
 
@@ -38,7 +40,8 @@ namespace WholesalerManager.Infrastructure.DatabaseContext
         {
             if (!context.Database.CanConnect())
             {
-                context.Database.EnsureCreated();
+                var databaseCreator = context.Database.GetService<IRelationalDatabaseCreator>();
+                databaseCreator.Create();
 
                 var baseDir = AppDomain.CurrentDomain.BaseDirectory;
                 var structureScriptPath = Path.Combine(baseDir, "DbScripts", "structure.sql");
