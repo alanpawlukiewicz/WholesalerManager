@@ -30,6 +30,11 @@ namespace WholesalerManager.UI.Controllers
                 return RedirectToAction("Index", "Home", new { area = "Administrator" });
             }
 
+            if (await _userManager.IsInRoleAsync(user, UserTypeOptions.Sales.ToString()))
+            {
+                return RedirectToAction("Index", "Home", new { area = "Sales" });
+            }
+
             return View();
         }
     }

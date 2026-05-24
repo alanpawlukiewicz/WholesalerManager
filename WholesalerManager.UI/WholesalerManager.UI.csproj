@@ -33,6 +33,7 @@
   <ItemGroup>
     <Folder Include="Areas\Administrator\Models\" />
     <Folder Include="Areas\Administrator\Views\Shared\" />
+    <Folder Include="Areas\Sales\Models\" />
   </ItemGroup>
 
 </Project>

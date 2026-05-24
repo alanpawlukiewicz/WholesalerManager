@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "Sales Dashboard";
+}
+<div class="card shadow-sm max-width-600 mx-auto my-5">
+    <div class="card-header bg-light py-3 text-center border-bottom-0">
+        <div class="text-primary mb-2">
+            <img src="~/images/dashboard.svg" alt="dashboard" height="40" width="40" />
+        </div>
+        <h1 class="h3 mb-0 text-dark fw-bold">Sales Dashboard</h1>
+        <p class="text-muted small mb-0 mt-1">Quick access to product catalog, orders, and customer management</p>
+    </div>
+
+    <div class="card-body p-4">
+        <div class="d-grid gap-3">
+            <a asp-controller="Products" asp-action="Index" asp-area="" class="btn btn-outline-primary btn-lg text-start d-flex align-items-center justify-content-between p-3 rounded-3 shadow-sm transition-all hover-lift">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-primary-subtle text-primary p-2 rounded-circle">
+                        <img src="~/images/search_dashboard.svg" alt="search" height="20" width="20" />
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6">Search Products</div>
+                        <div class="small text-muted fw-normal">Browse through stock availability and prices</div>
+                    </div>
+                </div>
+                <span class="text-primary">&rarr;</span>
+            </a>
+
+            <a asp-controller="Orders" asp-action="Index" asp-area="" class="btn btn-outline-secondary btn-lg text-start d-flex align-items-center justify-content-between p-3 rounded-3 shadow-sm transition-all hover-lift">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-secondary-subtle text-secondary p-2 rounded-circle">
+                        <img src="~/images/add_shopping_cart.svg" alt="shopping cart" height="20" width="20" />
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6">Manage Orders</div>
+                        <div class="small text-muted fw-normal">Track status, register new sales, and handle updates</div>
+                    </div>
+                </div>
+                <span class="text-secondary">&rarr;</span>
+            </a>
+
+            <a asp-controller="Customers" asp-action="Index" asp-area="" class="btn btn-outline-secondary btn-lg text-start d-flex align-items-center justify-content-between p-3 rounded-3 shadow-sm transition-all hover-lift">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-secondary-subtle text-secondary p-2 rounded-circle">
+                        <img src="~/images/person_edit.svg" alt="edit person" height="20" width="20" />
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6">Manage Customers</div>
+                        <div class="small text-muted fw-normal">View client details, TIN directory, and profiles</div>
+                    </div>
+                </div>
+                <span class="text-secondary">&rarr;</span>
+            </a>
+        </div>
+    </div>
+</div>
