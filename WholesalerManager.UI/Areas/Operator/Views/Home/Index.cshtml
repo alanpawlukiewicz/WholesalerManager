@@ -1,0 +1,106 @@
+﻿@{
+    ViewBag.Title = "Operator Dashboard";
+}
+
+<div class="card shadow-sm max-width-600 mx-auto my-5">
+    <div class="card-header bg-light py-3 text-center border-bottom-0">
+        <div class="text-primary mb-2">
+            <img src="~/images/dashboard.svg" alt="dashboard" height="40" width="40" />
+        </div>
+        <h1 class="h3 mb-0 text-dark fw-bold">Operator Dashboard</h1>
+        <p class="text-muted small mb-0 mt-1">Manage warehouse shipments, intake deliveries, and look up items</p>
+    </div>
+
+    <div class="card-body p-4">
+        <div class="d-grid gap-3">
+            <a asp-controller="Orders" asp-action="Index" asp-area="" asp-route-propertyName="@nameof(OrderResponse.Status)" asp-route-filter="@nameof(OrderStatus.PAID)" class="btn btn-outline-primary btn-lg text-start d-flex align-items-center justify-content-between p-3 rounded-3 shadow-sm transition-all hover-lift">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-primary-subtle text-primary p-2 rounded-circle">
+                        <img src="~/images/order_approve.svg" alt="order" height="20" width="20" />
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6">Find Orders to Ship</div>
+                        <div class="small text-muted fw-normal">Locate all paid orders ready for packing and dispatch</div>
+                    </div>
+                </div>
+                <span class="text-primary">&rarr;</span>
+            </a>
+
+            <a asp-controller="Deliveries" asp-action="Index" asp-area="" asp-route-propertyName="@nameof(DeliveryResponse.Status)" asp-route-filter="@nameof(DeliveryStatus.IN_TRANSIT)" class="btn btn-outline-secondary btn-lg text-start d-flex align-items-center justify-content-between p-3 rounded-3 shadow-sm transition-all hover-lift">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-secondary-subtle text-secondary p-2 rounded-circle">
+                        <img src="~/images/delivery_truck.svg" alt="delivery truck" height="20" width="20" />
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6">Receive Deliveries</div>
+                        <div class="small text-muted fw-normal">Accept inbound shipments currently in transit</div>
+                    </div>
+                </div>
+                <span class="text-secondary">&rarr;</span>
+            </a>
+
+            <button type="button" id="find-sku-button" class="btn btn-outline-secondary btn-lg text-start d-flex align-items-center justify-content-between p-3 rounded-3 shadow-sm transition-all hover-lift">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-secondary-subtle text-secondary p-2 rounded-circle">
+                        <img src="~/images/barcode.svg" alt="scanner" height="20" width="20" />
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6">Find Product by SKU</div>
+                        <div class="small text-muted fw-normal">Quick search using item identifiers</div>
+                    </div>
+                </div>
+                <span class="text-secondary">&rarr;</span>
+            </button>
+
+            <a asp-controller="Products" asp-action="Index" asp-area="" class="btn btn-outline-secondary btn-lg text-start d-flex align-items-center justify-content-between p-3 rounded-3 shadow-sm transition-all hover-lift">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-secondary-subtle text-secondary p-2 rounded-circle">
+                        <img src="~/images/box.svg" alt="box" height="20" width="20" />
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6">Browse Products</div>
+                        <div class="small text-muted fw-normal">View total stock catalog and directory listings</div>
+                    </div>
+                </div>
+                <span class="text-secondary">&rarr;</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<form asp-controller="Products" asp-action="Index" asp-area="" method="get">
+    <div class="modal fade" id="find-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow border-0">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold text-dark">Find Product by SKU</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-2">
+                        <label for="find-sku-input" class="form-label fw-medium text-muted">Enter product SKU stock key:</label>
+                        <input id="find-sku-input" name="filter" type="text" class="form-control form-control-lg text-center font-monospace" placeholder="e.g. SKU-12345" required />
+                    </div>
+                    <input name="propertyName" type="hidden" value="@nameof(ProductResponse.SKU)" />
+                    <input name="ignoreCase" type="hidden" value="true" />
+                </div>
+                <div class="modal-footer bg-light border-top-0 px-4">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary px-4" id="modal-find-btn">Find Item</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script>
+        const findSKUBUtton = document.getElementById('find-sku-button');
+        const findModal = new bootstrap.Modal(document.getElementById('find-modal'));
+
+        findSKUBUtton.addEventListener("click", async () => {
+            findModal.show();
+        });
+    </script>
+}
