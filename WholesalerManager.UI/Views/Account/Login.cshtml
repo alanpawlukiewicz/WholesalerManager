@@ -15,7 +15,7 @@
         <form asp-controller="Account" asp-action="Login" asp-route-ReturnURL="@Context.Request.Query["ReturnURL"]" method="post">
 
             <div class="mb-3">
-                <label asp-for="UserName" class="form-label fw-medium text-muted">Username</label>
+                <label asp-for="UserName" class="form-label fw-medium text-muted">Username or E-mail</label>
                 <div class="input-group">
                     <span class="input-group-text bg-light text-secondary">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">

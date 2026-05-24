@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Net.Mail;
 using System.Text;
 using WholesalerManager.Core.Domain.IdentityEntities;
 using WholesalerManager.Core.DTO;
@@ -59,7 +60,9 @@ namespace WholesalerManager.UI.Controllers
                 return View(loginData);
             }
 
-            var matchingUser = await _userManager.FindByNameAsync(loginData.UserName);
+            // Check if username is email
+            bool isEmail = MailAddress.TryCreate(loginData.UserName, out _);
+            var matchingUser = isEmail ? await _userManager.FindByEmailAsync(loginData.UserName) : await _userManager.FindByNameAsync(loginData.UserName);
 
             if (matchingUser is null)
             {
@@ -79,7 +82,7 @@ namespace WholesalerManager.UI.Controllers
 
             var result = await _signInManager.CheckPasswordSignInAsync(matchingUser, loginData.Password, lockoutOnFailure: false);
 
-            await _auditLogger.LogLoginAttempt(matchingUser.Id, loginData.UserName, result.Succeeded);
+            await _auditLogger.LogLoginAttempt(matchingUser.Id, matchingUser.UserName!, result.Succeeded);
 
             if (!result.Succeeded)
             {
@@ -100,7 +103,7 @@ namespace WholesalerManager.UI.Controllers
                 return RedirectToAction("SetPassword", "Account", new { email = matchingUser.Email, token = encodedToken });
             }
 
-            await _signInManager.PasswordSignInAsync(loginData.UserName, loginData.Password, isPersistent: loginData.KeepSignedIn, lockoutOnFailure: false);
+            await _signInManager.PasswordSignInAsync(matchingUser.UserName!, loginData.Password, isPersistent: loginData.KeepSignedIn, lockoutOnFailure: false);
 
             _logger.LogInformation("User {UserName} logged in successfully.", loginData.UserName);
             TempData["InfoMessage"] = "Successfully logged in.";
