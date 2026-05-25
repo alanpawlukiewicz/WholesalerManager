@@ -1,0 +1,39 @@
+﻿@model IEnumerable<ProductResponse>
+@{
+    Layout = null;
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" asp-fallback-test-class="visually-hidden" asp-fallback-href="@Url.Content("~/styles/bootstrap.min.css")">
+<link href="@Url.Content("~/styles/Style.css")" rel="stylesheet" />
+
+<h1>Products Report</h1>
+<p>Generated on: @ViewBag.CurrentDateTime</p>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th class="align-middle d-inline-flex align-items-center gap-1">Product Name</th>
+                <th class="align-middle d-inline-flex align-items-center gap-1">SKU</th>
+                <th class="align-middle d-inline-flex align-items-center gap-1">Description</th>
+                <th class="align-middle d-inline-flex align-items-center gap-1">Category</th>
+                <th class="align-middle d-inline-flex align-items-center gap-1">Unit Price</th>
+                <th class="align-middle d-inline-flex align-items-center gap-1">Stock Quantity</th>
+                <th class="align-middle d-inline-flex align-items-center gap-1">Reorder Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td>@product.ProductName</td>
+                    <td>@product.SKU</td>
+                    <td>@product.ProductDescription</td>
+                    <td>@product.CategoryName</td>
+                    <td class="unit-price">@product.FormattedUnitPrice</td>
+                    <td class="stock-quantity">@product.StockQuantity</td>
+                    <td>@product.ReorderLevel</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

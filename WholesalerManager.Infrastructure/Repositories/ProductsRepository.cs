@@ -51,7 +51,25 @@ namespace WholesaleManager.Infrastructure.Repositories
 
         public async Task<List<Product>> GetProductsNeedingReorder()
         {
-            return await _db.sp_GetProductsNeedingReorder();
+            var products = await _db.sp_GetProductsNeedingReorder();
+            var categoryIds = products.Select(p => p.CategoryID).Distinct().ToList();
+
+            var categories = await _db.Category
+                .Where(c => categoryIds.Contains(c.CategoryID))
+                .ToDictionaryAsync(c => c.CategoryID);
+
+            return products.Select(p => new Product
+            {
+                ProductID = p.ProductID,
+                CategoryID = p.CategoryID,
+                ProductDescription = p.ProductDescription,
+                ProductName = p.ProductName,
+                ReorderLevel = p.ReorderLevel,
+                SKU = p.SKU,
+                StockQuantity = p.StockQuantity,
+                UnitPrice = p.UnitPrice,
+                Category = p.CategoryID.HasValue && categories.TryGetValue(p.CategoryID.Value, out var cat) ? cat : null
+            }).ToList();
         }
 
         public async Task<int> Save()

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Rotativa.AspNetCore;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 
 namespace WholesalerManager.UI.Areas.Manager.Controllers
@@ -21,6 +22,18 @@ namespace WholesalerManager.UI.Areas.Manager.Controllers
         {
             var products = await _productsGetterService.GetProductsNeedingReorder();
             return View(products);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ProductsNeedingReorderPDF()
+        {
+            var products = await _productsGetterService.GetProductsNeedingReorder();
+            ViewBag.CurrentDateTime = DateTime.Now.ToString("g");
+            return new ViewAsPdf("ProductsNeedingReorderPDF", products, ViewData)
+            {
+                PageMargins = new Rotativa.AspNetCore.Options.Margins(20, 20, 20, 20),
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape
+            };
         }
     }
 }
