@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.Enums;
+using WholesalerManager.Core.Exceptions;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
@@ -137,7 +138,15 @@ namespace WholesalerManager.UI.Controllers
                 return RedirectToAction("Index", "Orders");
             }
 
-            await _orderRegistrationService.RegisterFullOrder(registerOrderViewModel.OrderAddRequest, registerOrderViewModel.Items);
+            try
+            {
+                await _orderRegistrationService.RegisterFullOrder(registerOrderViewModel.OrderAddRequest, registerOrderViewModel.Items);
+            }
+            catch (InsufficientProductStockException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return View(registerOrderViewModel);
+            }
 
             _logger.LogInformation("Order registered successfully with CustomerID: {CustomerID}", registerOrderViewModel.OrderAddRequest?.CustomerID);
             TempData["InfoMessage"] = $"Order has been registered successfully.";

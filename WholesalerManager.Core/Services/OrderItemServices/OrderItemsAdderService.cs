@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.OrderItemDTO;
+using WholesalerManager.Core.Exceptions;
 using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
+using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 
 namespace WholesalerManager.Core.Services.OrderItemServices
 {
@@ -10,11 +12,13 @@ namespace WholesalerManager.Core.Services.OrderItemServices
     {
         private readonly IOrderItemsRepository _orderItemsRepository;
         private readonly ILogger<OrderItemsAdderService> _logger;
+        private readonly IProductsGetterService _productsGetterService;
 
-        public OrderItemsAdderService(IOrderItemsRepository orderItemsRepository, ILogger<OrderItemsAdderService> logger)
+        public OrderItemsAdderService(IOrderItemsRepository orderItemsRepository, ILogger<OrderItemsAdderService> logger, IProductsGetterService productsGetterService)
         {
             _orderItemsRepository = orderItemsRepository;
             _logger = logger;
+            _productsGetterService = productsGetterService;
         }
 
         public async Task<OrderItemResponse> AddOrderItem(OrderItemAddRequest? itemAddRequest)
@@ -27,6 +31,20 @@ namespace WholesalerManager.Core.Services.OrderItemServices
             }
 
             ValidationHelper.ModelValidation(itemAddRequest);
+
+            var matchingProduct = await _productsGetterService.GetProductById(itemAddRequest.ProductID);
+
+            if (matchingProduct is null)
+            {
+                _logger.LogError("Matching product does not exist.");
+                throw new ArgumentNullException(nameof(matchingProduct));
+            }
+
+            if (matchingProduct.StockQuantity < itemAddRequest.Quantity)
+            {
+                _logger.LogError($"Item: {matchingProduct.ProductName} exceeds product's stock quantity: {matchingProduct.StockQuantity.ToString()}");
+                throw new InsufficientProductStockException($"Item: {matchingProduct.ProductName} exceeds product's stock quantity: {matchingProduct.StockQuantity.ToString()}.");
+            }
 
             var item = itemAddRequest.ToOrderItem();
             item.OrderItemID = Guid.NewGuid();

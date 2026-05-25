@@ -2,6 +2,7 @@
 using WholesalerManager.Core.Domain.PersistenceContracts;
 using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.DTO.OrderItemDTO;
+using WholesalerManager.Core.Exceptions;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
 
@@ -47,7 +48,7 @@ namespace WholesalerManager.Core.Services.OrderServices
             }
             catch (Exception ex)
             {
-                _logger.LogError("Exception caught from {methodName} from {serviceName}: {ex}.", nameof(RegisterFullOrder), nameof(OrderRegistrationService), ex);
+                _logger.LogError("Exception caught from {methodName} from {serviceName}: {ex}.", nameof(RegisterFullOrder), nameof(OrderRegistrationService), ex.Message);
                 await _unitOfWork.RollbackTransactionAsync();
                 throw;
             }

@@ -5,17 +5,20 @@ using Moq;
 using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.OrderItemDTO;
+using WholesalerManager.Core.DTO.ProductDTO;
+using WholesalerManager.Core.Exceptions;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
+using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.Core.Services.OrderItemServices;
 
 namespace WholesalerManager.ServiceTests.OrderItemServiceTests
 {
 
-
     public class OrderItemsAdderServiceTests
     {
         private readonly Mock<IOrderItemsRepository> _orderItemsRepositoryMock;
         private readonly Mock<ILogger<OrderItemsAdderService>> _loggerMock;
+        private readonly Mock<IProductsGetterService> _productsGetterServiceMock;
         private readonly IFixture _fixture;
         private readonly IOrderItemsAdderService _sut;
 
@@ -23,6 +26,7 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
         {
             _orderItemsRepositoryMock = new Mock<IOrderItemsRepository>();
             _loggerMock = new Mock<ILogger<OrderItemsAdderService>>();
+            _productsGetterServiceMock = new Mock<IProductsGetterService>();
 
             _fixture = new Fixture();
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>()
@@ -30,7 +34,11 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
                               .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-            _sut = new OrderItemsAdderService(_orderItemsRepositoryMock.Object, _loggerMock.Object);
+            _sut = new OrderItemsAdderService(
+                _orderItemsRepositoryMock.Object,
+                _loggerMock.Object,
+                _productsGetterServiceMock.Object
+            );
         }
 
         #region Helpers
@@ -41,12 +49,21 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
             var request = _fixture.Build<OrderItemAddRequest>()
                 .With(r => r.OrderID, Guid.NewGuid())
                 .With(r => r.ProductID, Guid.NewGuid())
-                .With(r => r.Quantity, _fixture.Create<int>())
+                .With(r => r.Quantity, 5)
                 .With(r => r.PriceAtSale, "19.99")
                 .Create();
 
             configure?.Invoke(request);
             return request;
+        }
+
+        // Creates a ProductResponse with sufficient stock for the given quantity
+        private ProductResponse CreateProductWithStock(Guid productId, int stockQuantity)
+        {
+            return _fixture.Build<ProductResponse>()
+                .With(p => p.ProductID, productId)
+                .With(p => p.StockQuantity, stockQuantity)
+                .Create();
         }
 
         // Creates an OrderItem entity returned by the repository after adding
@@ -62,6 +79,21 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
                 .Create();
         }
 
+        // Sets up a full successful AddOrderItem flow
+        private void SetupSuccessfulAdd(OrderItemAddRequest request, int stockQuantity = 100)
+        {
+            var product = CreateProductWithStock(request.ProductID!.Value, stockQuantity);
+            var addedItem = CreateAddedOrderItem(request);
+
+            _productsGetterServiceMock
+                .Setup(s => s.GetProductById(request.ProductID))
+                .ReturnsAsync(product);
+
+            _orderItemsRepositoryMock
+                .Setup(r => r.AddOrderItem(It.IsAny<OrderItem>()))
+                .ReturnsAsync(addedItem);
+        }
+
         #endregion
 
         #region AddOrderItem
@@ -69,10 +101,11 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
         [Fact]
         public async Task AddOrderItem_NullRequest_ThrowsArgumentNullException()
         {
-            // Act & Assert – null request should throw before any repository call
+            // Act & Assert – null request should throw before any service or repository call
             await _sut.Invoking(s => s.AddOrderItem(null))
                       .Should().ThrowAsync<ArgumentNullException>();
 
+            _productsGetterServiceMock.Verify(s => s.GetProductById(It.IsAny<Guid?>()), Times.Never);
             _orderItemsRepositoryMock.Verify(r => r.AddOrderItem(It.IsAny<OrderItem>()), Times.Never);
         }
 
@@ -86,6 +119,7 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
             await _sut.Invoking(s => s.AddOrderItem(request))
                       .Should().ThrowAsync<ArgumentException>();
 
+            _productsGetterServiceMock.Verify(s => s.GetProductById(It.IsAny<Guid?>()), Times.Never);
             _orderItemsRepositoryMock.Verify(r => r.AddOrderItem(It.IsAny<OrderItem>()), Times.Never);
         }
 
@@ -93,16 +127,16 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
         [InlineData("abc")]
         [InlineData("12.345")]
         [InlineData("-5.00")]
-        public async Task AddOrderItem_InvalidPriceAtSale_ThrowsArgumentException(string? price)
+        public async Task AddOrderItem_InvalidPriceAtSale_ThrowsArgumentException(string price)
         {
-            // Arrange – PriceAtSale regex rejects non-money formats; null and empty string
-            // pass validation because the field has no [Required] attribute
+            // Arrange – PriceAtSale must match the money regex pattern
             var request = CreateValidItemAddRequest(r => r.PriceAtSale = price);
 
             // Act & Assert
             await _sut.Invoking(s => s.AddOrderItem(request))
                       .Should().ThrowAsync<ArgumentException>();
 
+            _productsGetterServiceMock.Verify(s => s.GetProductById(It.IsAny<Guid?>()), Times.Never);
             _orderItemsRepositoryMock.Verify(r => r.AddOrderItem(It.IsAny<OrderItem>()), Times.Never);
         }
 
@@ -124,16 +158,70 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
                     .Create())
                 .Create();
 
+            var product = CreateProductWithStock(request.ProductID!.Value, 100);
+
+            _productsGetterServiceMock
+                .Setup(s => s.GetProductById(request.ProductID))
+                .ReturnsAsync(product);
+
             _orderItemsRepositoryMock
                 .Setup(r => r.AddOrderItem(It.IsAny<OrderItem>()))
                 .ReturnsAsync(addedItem);
 
             // Act
             var result = await _sut.Invoking(s => s.AddOrderItem(request))
-                                   .Should().NotThrowAsync();
+                                    .Should().NotThrowAsync();
 
             // Assert – price defaults to 0 when null or empty is provided
             result.Subject.PriceAtSale.Should().Be(0m);
+        }
+
+        [Fact]
+        public async Task AddOrderItem_ProductNotFound_ThrowsArgumentNullException()
+        {
+            // Arrange – product referenced by the request does not exist
+            var request = CreateValidItemAddRequest();
+
+            _productsGetterServiceMock
+                .Setup(s => s.GetProductById(request.ProductID))
+                .ReturnsAsync((ProductResponse?)null);
+
+            // Act & Assert
+            await _sut.Invoking(s => s.AddOrderItem(request))
+                      .Should().ThrowAsync<ArgumentNullException>();
+
+            _orderItemsRepositoryMock.Verify(r => r.AddOrderItem(It.IsAny<OrderItem>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task AddOrderItem_InsufficientStock_ThrowsInsufficientProductStockException()
+        {
+            // Arrange – ordered quantity exceeds available stock
+            var request = CreateValidItemAddRequest(r => r.Quantity = 10);
+            var product = CreateProductWithStock(request.ProductID!.Value, stockQuantity: 5);
+
+            _productsGetterServiceMock
+                .Setup(s => s.GetProductById(request.ProductID))
+                .ReturnsAsync(product);
+
+            // Act & Assert – custom exception thrown when stock is insufficient
+            await _sut.Invoking(s => s.AddOrderItem(request))
+                      .Should().ThrowAsync<InsufficientProductStockException>();
+
+            _orderItemsRepositoryMock.Verify(r => r.AddOrderItem(It.IsAny<OrderItem>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task AddOrderItem_ExactStockMatch_DoesNotThrow()
+        {
+            // Arrange – ordered quantity exactly equals available stock
+            var request = CreateValidItemAddRequest(r => r.Quantity = 10);
+
+            SetupSuccessfulAdd(request, stockQuantity: 10);
+
+            // Act & Assert – exact match should be allowed
+            await _sut.Invoking(s => s.AddOrderItem(request))
+                      .Should().NotThrowAsync();
         }
 
         [Fact]
@@ -141,11 +229,7 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
         {
             // Arrange
             var request = CreateValidItemAddRequest();
-            var addedItem = CreateAddedOrderItem(request);
-
-            _orderItemsRepositoryMock
-                .Setup(r => r.AddOrderItem(It.IsAny<OrderItem>()))
-                .ReturnsAsync(addedItem);
+            SetupSuccessfulAdd(request);
 
             // Act
             var result = await _sut.AddOrderItem(request);
@@ -161,6 +245,11 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
             // Arrange
             var request = CreateValidItemAddRequest();
             var addedItem = CreateAddedOrderItem(request);
+            var product = CreateProductWithStock(request.ProductID!.Value, 100);
+
+            _productsGetterServiceMock
+                .Setup(s => s.GetProductById(request.ProductID))
+                .ReturnsAsync(product);
 
             _orderItemsRepositoryMock
                 .Setup(r => r.AddOrderItem(It.IsAny<OrderItem>()))
@@ -184,11 +273,7 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
         {
             // Arrange
             var request = CreateValidItemAddRequest();
-            var addedItem = CreateAddedOrderItem(request);
-
-            _orderItemsRepositoryMock
-                .Setup(r => r.AddOrderItem(It.IsAny<OrderItem>()))
-                .ReturnsAsync(addedItem);
+            SetupSuccessfulAdd(request);
 
             // Act
             await _sut.AddOrderItem(request);
@@ -203,7 +288,12 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
             // Arrange
             var request = CreateValidItemAddRequest();
             var addedItem = CreateAddedOrderItem(request);
+            var product = CreateProductWithStock(request.ProductID!.Value, 100);
             OrderItem? capturedItem = null;
+
+            _productsGetterServiceMock
+                .Setup(s => s.GetProductById(request.ProductID))
+                .ReturnsAsync(product);
 
             // Capture the item passed to the repository to verify its contents
             _orderItemsRepositoryMock
@@ -237,18 +327,6 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
         }
 
         [Fact]
-        public async Task AddMultipleOrderItems_ListWithInvalidItem_ThrowsArgumentException()
-        {
-            // Arrange – one item in the list fails validation
-            var validItem = CreateValidItemAddRequest();
-            var invalidItem = CreateValidItemAddRequest(r => r.ProductID = null);
-
-            // Act & Assert – validation failure on any item should throw
-            await _sut.Invoking(s => s.AddMultipleOrderItems(new List<OrderItemAddRequest> { validItem, invalidItem }))
-                      .Should().ThrowAsync<ArgumentException>();
-        }
-
-        [Fact]
         public async Task AddMultipleOrderItems_EmptyList_ReturnsEmptyList()
         {
             // Arrange – empty list is valid, should return empty response list
@@ -258,6 +336,39 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
             // Assert
             result.Should().BeEmpty();
             _orderItemsRepositoryMock.Verify(r => r.AddOrderItem(It.IsAny<OrderItem>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task AddMultipleOrderItems_ListWithInvalidItem_ThrowsArgumentException()
+        {
+            // Arrange – one item in the list fails validation
+            var validItem = CreateValidItemAddRequest();
+            var invalidItem = CreateValidItemAddRequest(r => r.ProductID = null);
+
+            // Act & Assert – validation failure on any item should throw before processing
+            await _sut.Invoking(s => s.AddMultipleOrderItems(
+                    new List<OrderItemAddRequest> { validItem, invalidItem }))
+                      .Should().ThrowAsync<ArgumentException>();
+        }
+
+        [Fact]
+        public async Task AddMultipleOrderItems_OneItemWithInsufficientStock_ThrowsInsufficientProductStockException()
+        {
+            // Arrange – second item exceeds available stock
+            var request1 = CreateValidItemAddRequest(r => r.Quantity = 3);
+            var request2 = CreateValidItemAddRequest(r => r.Quantity = 50);
+
+            SetupSuccessfulAdd(request1, stockQuantity: 100);
+
+            var productWithLowStock = CreateProductWithStock(request2.ProductID!.Value, stockQuantity: 5);
+            _productsGetterServiceMock
+                .Setup(s => s.GetProductById(request2.ProductID))
+                .ReturnsAsync(productWithLowStock);
+
+            // Act & Assert
+            await _sut.Invoking(s => s.AddMultipleOrderItems(
+                    new List<OrderItemAddRequest> { request1, request2 }))
+                      .Should().ThrowAsync<InsufficientProductStockException>();
         }
 
         [Fact]
@@ -271,16 +382,10 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
             CreateValidItemAddRequest(),
         };
 
-            // Each request gets its own added entity returned by the repository
+            // Each request gets its own product and added entity
             foreach (var request in requests)
             {
-                var addedItem = CreateAddedOrderItem(request);
-
-                _orderItemsRepositoryMock
-                    .Setup(r => r.AddOrderItem(It.Is<OrderItem>(i =>
-                        i.OrderID == request.OrderID &&
-                        i.ProductID == request.ProductID)))
-                    .ReturnsAsync(addedItem);
+                SetupSuccessfulAdd(request);
             }
 
             // Act
@@ -303,13 +408,7 @@ namespace WholesalerManager.ServiceTests.OrderItemServiceTests
 
             foreach (var request in requests)
             {
-                var addedItem = CreateAddedOrderItem(request);
-
-                _orderItemsRepositoryMock
-                    .Setup(r => r.AddOrderItem(It.Is<OrderItem>(i =>
-                        i.OrderID == request.OrderID &&
-                        i.ProductID == request.ProductID)))
-                    .ReturnsAsync(addedItem);
+                SetupSuccessfulAdd(request);
             }
 
             // Act
