@@ -25,11 +25,6 @@ namespace WholesalerManager.UI.Controllers
                 return View();
             }
 
-            if (await _userManager.IsInRoleAsync(user, UserTypeOptions.Administrator.ToString()))
-            {
-                return RedirectToAction("Index", "Home", new { area = "Administrator" });
-            }
-
             if (await _userManager.IsInRoleAsync(user, UserTypeOptions.Sales.ToString()))
             {
                 return RedirectToAction("Index", "Home", new { area = "Sales" });
@@ -39,6 +34,17 @@ namespace WholesalerManager.UI.Controllers
             {
                 return RedirectToAction("Index", "Home", new { area = "Operator" });
             }
+
+            if (await _userManager.IsInRoleAsync(user, UserTypeOptions.Manager.ToString()))
+            {
+                return RedirectToAction("Index", "Home", new { area = "Manager" });
+            }
+
+            if (await _userManager.IsInRoleAsync(user, UserTypeOptions.Administrator.ToString()))
+            {
+                return RedirectToAction("Index", "Home", new { area = "Administrator" });
+            }
+
 
             return View();
         }

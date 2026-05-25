@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WholesalerManager.Core.DTO.DeliveryDTO;
+using WholesalerManager.Core.DTO.DeliveryItemDTO;
+using WholesalerManager.Core.DTO.ProductDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
@@ -104,9 +106,9 @@ namespace WholesalerManager.UI.Controllers
         }
 
         [Authorize(Roles = "Administrator,Manager")]
-        [Route("[action]")]
+        [Route("[action]/{productID?}")]
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(Guid? productID = null)
         {
             var suppliers = await _suppliersGetterService.GetAllSuppliers();
             ViewBag.Suppliers = suppliers.Select(s => new SelectListItem()
@@ -115,11 +117,41 @@ namespace WholesalerManager.UI.Controllers
                 Text = s.SupplierName
             });
             ViewBag.CurrentDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+
+            // Restock logic
+            if (productID is not null)
+            {
+                var matchingProduct = await _productsGetterService.GetProductById(productID);
+
+                if (matchingProduct is null)
+                {
+                    TempData["ErrorMessage"] = $"Product could not be found.";
+                    return RedirectToAction("ProductsNeedingReorder", "Products", new { area ="Manager" });
+                }
+
+                var deliveryItem = new DeliveryItemAddRequest()
+                {
+                    ProductID = productID,
+                    PriceAtSale = matchingProduct.FormattedUnitPrice,
+                    Quantity = matchingProduct.ReorderLevel
+                };
+
+                RegisterDeliveryViewModel rdvm = new RegisterDeliveryViewModel()
+                {
+                    Items = new List<DeliveryItemAddRequest>()
+                    {
+                        deliveryItem
+                    }
+                };
+
+                return View(rdvm);
+            }
+
             return View();
         }
 
         [Authorize(Roles = "Administrator,Manager")]
-        [Route("[action]")]
+        [Route("[action]/{productID?}")]
         [HttpPost]
         public async Task<IActionResult> Create(RegisterDeliveryViewModel registerDeliveryViewModel)
         {
@@ -235,7 +267,7 @@ namespace WholesalerManager.UI.Controllers
 
 
         [Authorize(Roles = "Administrator,Manager")]
-        [Route("get-product/{index}")]
+        [Route("/get-product/{index}")]
         [HttpGet]
         public IActionResult GetProduct(int index)
         {

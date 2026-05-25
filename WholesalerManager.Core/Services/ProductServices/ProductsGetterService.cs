@@ -57,6 +57,11 @@ namespace WholesalerManager.Core.Services.ProductServices
 
         }
 
+        public async Task<int> GetNumberOfProductsNeedingReorder()
+        {
+            return (await _productsRepository.GetProductsNeedingReorder()).Count();
+        }
+
         public async Task<ProductResponse?> GetProductById(Guid? productID)
         {
             _logger.LogInformation("{methodName} from {serviceName} has been invoked with productID: {productID}.", nameof(GetProductById), nameof(ProductsGetterService), productID);
@@ -70,6 +75,12 @@ namespace WholesalerManager.Core.Services.ProductServices
             Product? foundProduct = await _productsRepository.GetProductById(productID.Value);
 
             return foundProduct?.ToProductResponse();
+        }
+
+        public async Task<List<ProductResponse>> GetProductsNeedingReorder()
+        {
+            var products = await _productsRepository.GetProductsNeedingReorder();
+            return products.Select(p => p.ToProductResponse()).ToList();
         }
 
         public async Task<List<ProductResponse>> GetSortedProducts(string? propertyName, SortOrderOptions sortOrder = SortOrderOptions.ASC)

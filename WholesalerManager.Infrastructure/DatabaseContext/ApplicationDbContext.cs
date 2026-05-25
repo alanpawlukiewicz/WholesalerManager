@@ -73,5 +73,11 @@ namespace WholesalerManager.Infrastructure.DatabaseContext
                 }
             }
         }
+
+        // Procedures
+        public async Task<List<Product>> sp_GetProductsNeedingReorder()
+        {
+            return await Product.FromSqlRaw("EXECUTE [dbo].[Get_Products_Needing_Reorder]").ToListAsync();
+        }
     }
 }

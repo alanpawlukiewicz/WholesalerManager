@@ -1,0 +1,51 @@
+﻿@model IEnumerable<ProductResponse>
+@{
+    ViewBag.Title = "Products needing reorder";
+}
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Products</h1>
+        <div>
+            <a asp-controller="Products" asp-action="ProductsPDF" class="btn btn-success d-inline-flex align-items-center gap-2">
+                Download as PDF
+            </a>
+        </div>
+    </div>
+
+    @await Component.InvokeAsync("FilterSearchBar", new { controllerName = "Products", actionName = "Index" })
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.ProductName), displayName = "Product Name" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.SKU), displayName = "SKU" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.ProductDescription), displayName = "Description" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.CategoryName), displayName = "Category" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.UnitPrice), displayName = "Unit Price" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.StockQuantity), displayName = "Stock Quantity" })
+                    @await Component.InvokeAsync("TableHeader", new { propertyName = nameof(ProductResponse.ReorderLevel), displayName = "Reorder Level" })
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <td>@product.ProductName</td>
+                        <td>@product.SKU</td>
+                        <td>@product.ProductDescription</td>
+                        <td>@product.CategoryName</td>
+                        <td class="unit-price">@product.FormattedUnitPrice</td>
+                        <td class="stock-quantity">@product.StockQuantity</td>
+                        <td>@product.ReorderLevel</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-primary" asp-controller="Deliveries" asp-action="Create" asp-area="" asp-route-productID="@product.ProductID">Make new order</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

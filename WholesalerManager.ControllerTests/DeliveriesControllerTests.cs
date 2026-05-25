@@ -274,7 +274,7 @@ namespace WholesalerManager.ControllerTests
             _sut.TempData = new TempDataDictionary(httpContext, tempDataProvider);
 
             // Act
-            var result = await _sut.Create(null!);
+            var result = await _sut.Create((RegisterDeliveryViewModel)null!);
 
             // Assert – redirected to Index when view model is null
             var redirectResult = result.Should().BeOfType<RedirectToActionResult>().Subject;

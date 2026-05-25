@@ -42,7 +42,16 @@ namespace WholesalerManager.Core.Domain.RepositoryContracts
         /// <returns>True if the product was successfully deleted; otherwise, false.</returns>
         Task<bool> DeleteProduct(Guid productID);
 
+        /// <summary>
+        /// Asynchronously get products having stock quantity lesser than reorder level.
+        /// </summary>
+        /// <returns>List of products</returns>
+        Task<List<Product>> GetProductsNeedingReorder();
 
+        /// <summary>
+        /// Asynchronously saves changes to database. 
+        /// </summary>
+        /// <returns>Number of affected rows.</returns>
         Task<int> Save();
     }
 }

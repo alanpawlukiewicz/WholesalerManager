@@ -37,5 +37,17 @@ namespace WholesalerManager.Core.ServiceContracts.ProductServiceContracts
         /// <param name="sortOrder">The sort order (ascending or descending).</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a list of <see cref="ProductResponse"/> objects representing the sorted products.</returns>
         Task<List<ProductResponse>> GetSortedProducts(string? propertyName, SortOrderOptions sortOrder = SortOrderOptions.ASC);
+
+        /// <summary>
+        /// Asynchronously gets products needing reorder.
+        /// </summary>
+        /// <returns>List of ProductResponse DTOs.</returns>
+        Task<List<ProductResponse>> GetProductsNeedingReorder();
+
+        /// <summary>
+        /// Asynchronously gets number of products needing reorder.
+        /// </summary>
+        /// <returns>Number of database rows.</returns>
+        Task<int> GetNumberOfProductsNeedingReorder();
     }
 }

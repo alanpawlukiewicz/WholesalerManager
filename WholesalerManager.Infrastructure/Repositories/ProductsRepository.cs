@@ -49,6 +49,11 @@ namespace WholesaleManager.Infrastructure.Repositories
             return await _db.Product.Include("Category").FirstOrDefaultAsync(p => p.ProductID == productID);
         }
 
+        public async Task<List<Product>> GetProductsNeedingReorder()
+        {
+            return await _db.sp_GetProductsNeedingReorder();
+        }
+
         public async Task<int> Save()
         {
             return await _db.SaveChangesAsync();

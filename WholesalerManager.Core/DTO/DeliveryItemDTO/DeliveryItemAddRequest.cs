@@ -10,6 +10,7 @@ namespace WholesalerManager.Core.DTO.DeliveryItemDTO
         [Required(ErrorMessage = "Please select product connected to delivery.")]
         public Guid? ProductID { get; set; }
 
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger or equal {1}")]
         public int Quantity { get; set; }
 
         [RegularExpression("^\\d+([.,]\\d{1,2})?$", ErrorMessage = "Unit price must be of money type.")]

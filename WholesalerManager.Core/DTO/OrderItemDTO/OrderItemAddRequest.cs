@@ -12,7 +12,7 @@ namespace WholesalerManager.Core.DTO.OrderItemDTO
         [Required(ErrorMessage = "Please select product connected to order.")]
         public Guid? ProductID { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger or equal {1}")]
         [NotNull]
         public int Quantity { get; set; }
 
