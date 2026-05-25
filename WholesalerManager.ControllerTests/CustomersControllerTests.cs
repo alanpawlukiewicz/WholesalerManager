@@ -9,7 +9,6 @@ using WholesalerManager.Core.DTO.CustomerDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts.CustomerServiceContracts;
 using WholesalerManager.UI.Controllers;
-using Xunit;
 
 namespace WholesalerManager.ControllerTests
 {

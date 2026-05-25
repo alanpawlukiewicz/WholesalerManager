@@ -12,11 +12,10 @@ using WholesalerManager.Core.DTO.UserDTO;
 using WholesalerManager.Core.ServiceContracts;
 using WholesalerManager.Core.ServiceContracts.UserServiceContracts;
 using WholesalerManager.UI.Controllers;
-using Xunit;
 
 namespace WholesalerManager.ControllerTests
 {
-    
+
 
     public class AccountControllerTests
     {

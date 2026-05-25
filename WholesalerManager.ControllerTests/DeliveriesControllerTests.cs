@@ -17,7 +17,6 @@ using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.Core.ServiceContracts.SupplierServiceContracts;
 using WholesalerManager.UI.Controllers;
 using WholesalerManager.UI.ViewModels;
-using Xunit;
 
 namespace WholesalerManager.ControllerTests
 {

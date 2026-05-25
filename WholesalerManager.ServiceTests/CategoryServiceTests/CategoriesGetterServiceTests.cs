@@ -7,7 +7,6 @@ using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.CategoryDTO;
 using WholesalerManager.Core.ServiceContracts.CategoriesServiceContracts;
 using WholesalerManager.Core.Services.CategoriesServices;
-using Xunit;
 
 namespace WholesalerManager.ServiceTests.CategoryServiceTests
 {

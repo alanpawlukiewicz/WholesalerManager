@@ -13,11 +13,10 @@ using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts.CategoriesServiceContracts;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 using WholesalerManager.UI.Controllers;
-using Xunit;
 
 namespace WholesalerManager.ControllerTests
 {
-    
+
 
     public class ProductsControllerTests
     {

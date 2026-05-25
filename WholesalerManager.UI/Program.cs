@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 using Serilog;
 using Serilog.Events;
 using WholesaleManager.Infrastructure.Repositories;
@@ -204,7 +205,7 @@ app.UseHttpsRedirection();
 app.UseHttpLogging();
 
 // Rotativa configuration for making PDF files from views
-Rotativa.AspNetCore.RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePath: "Rotativa");
+RotativaConfiguration.Setup(app.Environment.WebRootPath, "Rotativa");
 
 app.UseStaticFiles();
 
@@ -254,3 +255,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+public partial class Program { }
