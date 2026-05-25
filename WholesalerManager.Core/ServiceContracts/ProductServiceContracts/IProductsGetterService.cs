@@ -49,5 +49,11 @@ namespace WholesalerManager.Core.ServiceContracts.ProductServiceContracts
         /// </summary>
         /// <returns>Number of database rows.</returns>
         Task<int> GetNumberOfProductsNeedingReorder();
+
+        /// <summary>
+        /// Asynchronously gets products needing reorder and turns them into CSV file.
+        /// </summary>
+        /// <returns></returns>
+        Task<MemoryStream> GetProductsNeedingReorderCSV();
     }
 }
