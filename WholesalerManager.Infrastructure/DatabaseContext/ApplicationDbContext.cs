@@ -34,6 +34,18 @@ namespace WholesalerManager.Infrastructure.DatabaseContext
                 .ToTable(tb => tb.UseSqlOutputClause(false));
             modelBuilder.Entity<Order>()
                 .ToTable(tb => tb.UseSqlOutputClause(false));
+
+            modelBuilder.Entity<DeliveryItem>()
+            .Property(di => di.PriceAtSale)
+            .HasPrecision(18, 2);
+
+            modelBuilder.Entity<OrderItem>()
+                .Property(oi => oi.PriceAtSale)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Product>()
+                .Property(p => p.UnitPrice)
+                .HasPrecision(18, 2);
         }
 
         public static void InitializeDatabase(ApplicationDbContext context)
