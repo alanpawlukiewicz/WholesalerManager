@@ -2,7 +2,6 @@
 using WholesalerManager.Core.Domain.PersistenceContracts;
 using WholesalerManager.Core.DTO.OrderDTO;
 using WholesalerManager.Core.DTO.OrderItemDTO;
-using WholesalerManager.Core.Exceptions;
 using WholesalerManager.Core.ServiceContracts.OrderItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.OrderServiceContracts;
 

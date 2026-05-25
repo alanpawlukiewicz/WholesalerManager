@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WholesalerManager.Core.DTO.DeliveryDTO;
 using WholesalerManager.Core.DTO.DeliveryItemDTO;
-using WholesalerManager.Core.DTO.ProductDTO;
 using WholesalerManager.Core.Enums;
 using WholesalerManager.Core.ServiceContracts.DeliveryItemServiceContracts;
 using WholesalerManager.Core.ServiceContracts.DeliveryServiceContracts;
@@ -126,7 +125,7 @@ namespace WholesalerManager.UI.Controllers
                 if (matchingProduct is null)
                 {
                     TempData["ErrorMessage"] = $"Product could not be found.";
-                    return RedirectToAction("ProductsNeedingReorder", "Products", new { area ="Manager" });
+                    return RedirectToAction("Index", "Deliveries");
                 }
 
                 var deliveryItem = new DeliveryItemAddRequest()

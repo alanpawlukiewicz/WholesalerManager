@@ -35,5 +35,12 @@ namespace WholesalerManager.UI.Areas.Manager.Controllers
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape
             };
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ProductsNeedingReorderCSV()
+        {
+            MemoryStream csv = await _productsGetterService.GetProductsNeedingReorderCSV();
+            return File(csv, "application/csv", "ProductsNeedingReorder.csv");
+        }
     }
 }

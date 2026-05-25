@@ -3,6 +3,7 @@ using WholesalerManager.Core.Domain.Entities;
 using WholesalerManager.Core.Domain.RepositoryContracts;
 using WholesalerManager.Core.DTO.ProductDTO;
 using WholesalerManager.Core.Enums;
+using WholesalerManager.Core.Helpers;
 using WholesalerManager.Core.ServiceContracts.ProductServiceContracts;
 
 namespace WholesalerManager.Core.Services.ProductServices
@@ -82,6 +83,8 @@ namespace WholesalerManager.Core.Services.ProductServices
             var products = await _productsRepository.GetProductsNeedingReorder();
             return products.Select(p => p.ToProductResponse()).ToList();
         }
+
+        public async Task<MemoryStream> GetProductsNeedingReorderCSV() => await CsvCreator.CreateCsv(await GetProductsNeedingReorder(), [nameof(ProductResponse.ProductID), nameof(ProductResponse.CategoryID), nameof(ProductResponse.FormattedUnitPrice)]);
 
         public async Task<List<ProductResponse>> GetSortedProducts(string? propertyName, SortOrderOptions sortOrder = SortOrderOptions.ASC)
         {
